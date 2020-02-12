@@ -1,0 +1,23 @@
+Hurtig git guide:
+
+For at pushe til repo:
+først: git pull origin master
+det er for at hente evt ændringer ned på dit eget repo og håndtere dem med dine opdateringer
+
+efter evt merge conflicts er håndteret
+
+git add <filename.lort> eller -A for alle filer
+tilføjer ændrede filer, der skal ændres, til master
+
+git commit -m "tekst"
+gemmer ændring i lokalt repo, ie du kan commite flere gange uden at pushe
+
+git push origin master
+pusher alle dine ændringer
+
+på liste form:
+
+git pull origin master
+git add -A
+git commit "get rekt"
+git push origin master
