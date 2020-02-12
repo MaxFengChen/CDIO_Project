@@ -1,4 +1,9 @@
-safdjaæljsajsaædlfjsaHelllsafdlakjdso WorldLUDERS
 SAUCE!
+<<<<<<< HEAD
 SucYEET
 YEET 2.0
+=======
+YEET
+YEET 2.0
+MARKUS ØDELÆGGER ALT
+>>>>>>> 198aac20fa46db3645205ff81268bc6c3314ac92
