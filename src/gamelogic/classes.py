@@ -43,7 +43,7 @@ class Playing_Card:
         self.value = value
         self.visible = visible
     
-card = Playing_Card(Suits.HEARTS, Color.RED, Pile.STOCK, Value.SEVEN, Visible.TRUE)
+card = Playing_Card(Suit.HEARTS, Color.RED, Pile.STOCK, Value.SEVEN, Visible.TRUE)
 
 print(card.suit, card.color, card.pile, card.value, card.visible)
 
