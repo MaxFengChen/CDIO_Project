@@ -1,6 +1,5 @@
 from enum import Enum 
 import random
-import sys
 
 NOCARDS = 52
 NOCARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
