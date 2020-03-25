@@ -1,24 +1,23 @@
 from enum import Enum 
 
 class Suits(Enum):
-    HEARTS = 1
-    DIAMONDS = 2
-    CLUBS = 3
-    SPADES = 4
+    HEARTS = 0
+    DIAMONDS = 1
+    CLUBS = 2
+    SPADES = 3
 
 class Color(Enum):
-    RED = 1
-    BLACK = 2
+    RED = 0
+    BLACK = 1
 
 class Pile(Enum):
-    STOCK = 1
-    TABLEAU = 2
-    FOUNDATION= 3
-    WASTE = 4
+    STOCK = 0
+    TABLEAU = 1
+    FOUNDATION= 2
+    WASTE = 3
 
 class Value(Enum):
-    A = 1
-    ONE = 1
+    ACE = 1
     TWO = 2
     THREE = 3
     FOUR = 4
