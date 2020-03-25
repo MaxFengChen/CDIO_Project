@@ -49,8 +49,9 @@ class Playing_Card:
         self.visible = visible
 
 def setupTable():
+    # Setup a simple deck for testing
     colorSelect = 0
-    
+
     # Generate a complete deck.
     for suitSelect in range(4):
         for valueSelect in range(1, 14):
@@ -84,7 +85,6 @@ def printCards():
         print("Card number:", printCounter, card.suit, card.color, card.pile, card.value, card.visible)
         printCounter+=1
 
-
+# Code runs here
 setupTable()
-
 printCards()
