@@ -4,6 +4,8 @@ import random
 NOCARDS = 52
 NOCARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
 cards = []
+tableau_piles = []
+
 
 class Suit(Enum):
     HEARTS = 0
@@ -72,8 +74,8 @@ def setupTable():
     # Shuffle the deck.
     random.shuffle(cards)
 
-    # Make first 28 cards the playing cards in the plateau.
-    tableau_piles = []
+    # Make first 28 cards the playing cards in the plateau and organize into piles.
+    print("Each pile looks like:")
     card = 0
     for pile in range(1, 8):
         newPile = tableauPile(pile)
@@ -81,18 +83,18 @@ def setupTable():
             currentCard = cards[card]
             currentCard.pile = Pile.TABLEAU 
             print("pile", pile, "card", cardnr) 
+
+            # Make the top card in the pile visible.
+            if cardnr == pile:
+                currentCard.visible = Visible.TRUE 
+
             newPile.Cards.append(cards[card])
             card+=1
-            print(newPile.Cards[-1].value, newPile.Cards[-1].suit)
+            print(newPile.Cards[-1].value, newPile.Cards[-1].suit, newPile.Cards[-1].visible)
+
         tableau_piles.append(newPile)
-        print(len(tableau_piles))    
-    print()
-
-    # Make the first seven cards the visible plateau cards.
-
-    for card in range(7):
-        cards[card].visible = Visible.TRUE
-
+        print("Size of the pile:", len(tableau_piles), "\n")
+    
     # Make the rest of the cards the playing cards in the stockpile.
     for card in range(NOCARDS_PLATEAU, NOCARDS):
         cards[card].pile = Pile.STOCK
@@ -100,6 +102,7 @@ def setupTable():
 
 def printCards():
     # Print the current state of the deck in the terminal.
+    print("The entire deck looks like:")
     printCounter = 0
     for card in cards:
         print("Card number:", printCounter, card.suit, card.color, card.pile, card.value, card.visible)
