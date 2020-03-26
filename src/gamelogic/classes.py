@@ -36,6 +36,7 @@ class Value(Enum):
     QUEEN = 12
     KING = 13
 
+
 class Visible(Enum):
     FALSE = 0
     TRUE = 1
@@ -47,6 +48,12 @@ class Playing_Card:
         self.pile = pile
         self.value = value
         self.visible = visible
+
+class tableauPile:
+    def __init__(self, number):
+        self.Cards = []
+        self.frontCard = None
+        self.number = number
 
 def setupTable():
     # Setup a simple deck for testing
@@ -66,10 +73,23 @@ def setupTable():
     random.shuffle(cards)
 
     # Make first 28 cards the playing cards in the plateau.
-    for card in range(NOCARDS_PLATEAU):
-        cards[card].pile = Pile.TABLEAU
+    tableau_piles = []
+    card = 0
+    for pile in range(1, 8):
+        newPile = tableauPile(pile)
+        for cardnr in range (1, pile+1):
+            currentCard = cards[card]
+            currentCard.pile = Pile.TABLEAU 
+            print("pile", pile, "card", cardnr) 
+            newPile.Cards.append(cards[card])
+            card+=1
+            print(newPile.Cards[-1].value, newPile.Cards[-1].suit)
+        tableau_piles.append(newPile)
+        print(len(tableau_piles))    
+    print()
 
     # Make the first seven cards the visible plateau cards.
+
     for card in range(7):
         cards[card].visible = Visible.TRUE
 
