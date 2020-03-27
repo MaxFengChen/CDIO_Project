@@ -6,6 +6,7 @@ NOCARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
 cards = []
 tableau_piles = []
 
+foundations_piles = []
 
 class Suit(Enum):
     # HEARTS = 0
@@ -71,6 +72,19 @@ class tableauPile:
         self.frontCard = None
         self.number = number
 
+class stockPile:
+    def __init__(self):
+        self.Cards = []
+        self.frontCard = None
+
+class foundationPile:
+    def __init__(self, suit):
+        self.Cards = []
+        self.frontCard = None
+        self.suit = suit
+
+stock = stockPile()
+
 def setupTable():
     # Setup a simple deck for testing
     colorSelect = 0
@@ -111,10 +125,17 @@ def setupTable():
         tableau_piles.append(newPile)
         newPile.frontCard.visible = 1
         print("Size of the pile:", len(tableau_piles))
-    
     # Make the rest of the cards the playing cards in the stockpile.
+    #stock = stockPile()
     for card in range(NOCARDS_PLATEAU, NOCARDS):
         cards[card].pile = Pile.STOCK
+        stock.Cards.append(cards[card])
+        cards[card].visible = 1
+        stock.frontCard =  cards[card]
+    #Initialize the Foundation piles
+    for suit in Suit:
+        newFoundationPile = foundationPile(suit)
+        foundations_piles.append(newFoundationPile)
 
 
 def printCards():
@@ -127,15 +148,30 @@ def printCards():
 
 # Code runs here
 def printTable():
+    # Print first line with Stock pile and the Foundation piles
     str = ""
-    for i in range(7):
+    if(stock.frontCard == None):
+        str = "0,X     "
+    else:
+        str = stock.frontCard.getCardString() + "     "
+    for i in range(len(foundations_piles)):
+        if (foundations_piles[i].frontCard == None):
+            str = str + "0," + foundations_piles[i].suit.name + "  "
+        else:
+            str = str + foundations_piles[i].frontCard.getCardString() + " "
+    print(str)
+    print("")
+    str = ""
+    # Print Tableau piles
+    for j in range(len(tableau_piles)):
         for pile in tableau_piles:
-            if len(pile.Cards) > i :
-               str = str + pile.Cards[i].getCardString() + "  "
+            if len(pile.Cards) > j :
+               str = str + pile.Cards[j].getCardString() + "  "
             else:
                 str = str + "     "
         print(str)
         str = ""
+        
 
 setupTable()
 #printCards()
