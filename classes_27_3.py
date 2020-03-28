@@ -146,6 +146,18 @@ def printCards():
         print("Card number:", printCounter, card.suit, card.color, card.pile, card.value, card.visible)
         printCounter+=1
 
+def winCheck():
+    # Check if all cards are visible and thus you game can be won
+    check = 0;
+    for card in cards:
+        if card.visible == Visible.FALSE:
+            check = 1;
+            break
+    
+    if check is 0:
+        print("Congrats you have won!", end="\n")
+
+
 # Code runs here
 def printTable():
     # Print first line with Stock pile and the Foundation piles
@@ -171,8 +183,10 @@ def printTable():
                 str = str + "     "
         print(str)
         str = ""
-        
+
+ 
 
 setupTable()
 #printCards()
 printTable()
+winCheck()
