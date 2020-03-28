@@ -57,7 +57,7 @@ class Playing_Card:
         self.visible = visible
     
     def getCardString(self):
-        if(self.visible == 1):
+        if(self.visible == Visible.TRUE):
             if (self.value.value < 10):
                 return str(0) + str(self.value.value) + "," + str(self.suit.name)
             else:
@@ -124,14 +124,14 @@ def setupTable():
             # print(newPile.Cards[-1].value, newPile.Cards[-1].suit, newPile.Cards[-1].visible)
 
         tableau_piles.append(newPile)
-        newPile.frontCard.visible = 1
+        newPile.frontCard.visible = Visible.TRUE
         # print("Size of the pile:", len(tableau_piles))
     # Make the rest of the cards the playing cards in the stockpile.
     #stock = stockPile()
     for card in range(NOCARDS_PLATEAU, NOCARDS):
         cards[card].pile = Pile.STOCK
         stock.Cards.append(cards[card])
-        cards[card].visible = 1
+        cards[card].visible = Visible.TRUE
         stock.frontCard =  cards[card]
     #Initialize the Foundation piles
     for suit in Suit:
@@ -166,7 +166,7 @@ def removeCardFrom_TableauPile(card, tabPile):
             tabPile.frontCard = None
         else:
             tabPile.frontCard = tabPile.Cards[-1]
-            tabPile.frontCard.visible = 1
+            tabPile.frontCard.visible = Visible.TRUE
         
 def addToGoal(card, goalPile, fromPile):
     #Don't call this call start_addToGoal(), but this adds the card to the foundation pile
@@ -183,6 +183,32 @@ def start_AddToGoal(card, fromPile):
             break
     else:
         print("Illegal move", end=" ")
+
+def start_addToTableau(cardList, fromPile, toPile):
+    #The one to call, this checks if the move is legal
+    topCard = cardList[0]
+    if topCard.color != toPile.frontCard.color:
+        if Value(topCard.value).value - Value(toPile.frontCard.value).value is -1:
+            addToTableau(cardList, toPile, fromPile)
+        else:
+            print("Wrong value on card")
+    else:
+        print("Wrong color card")
+
+def addToTableau(cardList, toPile, fromPile, ):
+    #move a card from one tableau pile to another
+    for card in cardList:
+        removeCardFrom_TableauPile(card, fromPile)
+    toPile.Cards.extend(cardList)    
+    
+    
+    print(" ")
+
+def insertCard(cardval, cardsuit, cardpile, cardcolor, inPile):
+    #for adding certain cards in testing
+    inPile.Cards.append(Playing_Card(Suit(cardsuit), Color(cardcolor), Pile.TABLEAU, Value(cardval), Visible.TRUE))
+
+
 def printTable():
     # Print first line with Stock pile and the Foundation piles
     str = ""
@@ -212,6 +238,16 @@ def printTable():
 # Code runs here 
 setupTable()
 # printCards()
-printTable()
+# printTable()
+# tableau_piles[1].frontCard.value = Value(1)
+# tableau_piles[1].frontCard.suit = Suit(3)
+# tableau_piles[1].frontCard.color = Color.BLACK
+# tableau_piles[3].frontCard.value = Value(2)
+# tableau_piles[3].frontCard.suit = Suit(3)
+# tableau_piles[3].frontCard.color = Color.BLACK
+# insertCard(Value(8), Suit(3), Pile.TABLEAU, Color.BLACK, tableau_piles[1])
+# insertCard(Value(7), Suit(0), Pile.TABLEAU, Color.RED, tableau_piles[1])
+printTable();
+start_addToTableau([tableau_piles[1].Cards[-1]], tableau_piles[1], tableau_piles[3])
 printTable()
 winCheck()
