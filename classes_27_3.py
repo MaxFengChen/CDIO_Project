@@ -81,6 +81,7 @@ class foundationPile:
     def __init__(self, suit):
         self.Cards = []
         self.frontCard = None
+        self.nextCard = None
         self.suit = suit
 
 stock = stockPile()
@@ -103,14 +104,14 @@ def setupTable():
     random.shuffle(cards)
 
     # Make first 28 cards the playing cards in the plateau and organize into piles.
-    print("Each pile looks like:")
+    # print("Each pile looks like:")
     card = 0
     for pile in range(1, 8):
         newPile = tableauPile(pile)
         for cardnr in range (1, pile+1):
             currentCard = cards[card]
             currentCard.pile = Pile.TABLEAU 
-            print("pile", pile, "card", cardnr) 
+            # print("pile", pile, "card", cardnr) 
 
             # Make the top card in the pile visible.
             if cardnr == pile:
@@ -120,11 +121,11 @@ def setupTable():
             newPile.frontCard = cards[card]
             
             card+=1
-            print(newPile.Cards[-1].value, newPile.Cards[-1].suit, newPile.Cards[-1].visible)
+            # print(newPile.Cards[-1].value, newPile.Cards[-1].suit, newPile.Cards[-1].visible)
 
         tableau_piles.append(newPile)
         newPile.frontCard.visible = 1
-        print("Size of the pile:", len(tableau_piles))
+        # print("Size of the pile:", len(tableau_piles))
     # Make the rest of the cards the playing cards in the stockpile.
     #stock = stockPile()
     for card in range(NOCARDS_PLATEAU, NOCARDS):
@@ -135,6 +136,7 @@ def setupTable():
     #Initialize the Foundation piles
     for suit in Suit:
         newFoundationPile = foundationPile(suit)
+        newFoundationPile.nextCard = Value.ACE
         foundations_piles.append(newFoundationPile)
 
 
@@ -153,12 +155,32 @@ def winCheck():
         if card.visible == Visible.FALSE:
             check = 1;
             break
-    
     if check is 0:
         print("Congrats you have won!", end="\n")
 
+def removeFrom_TableauPile(card, tabPile):
+    tabPile.Cards.remove(card)
+    if card is tabPile.frontCard:
+        if len(tabPile.Cards) is 0:
+            tabPile.frontCard = None
+        else:
+            tabPile.frontCard = tabPile.Cards[-1]
+            tabPile.frontCard.visible = 1
+        
+def addToGoal(card, goalPile, fromPile):
+    goalPile.frontCard = card
+    goalPile.nextCard = Value(goalPile.nextCard.value + 1)
+    removeFrom_TableauPile(card, fromPile)
+    goalPile.Cards.append(card)
 
-# Code runs here
+
+def start_AddToGoal(card, fromPile):
+    for winPile in foundations_piles:
+        if winPile.nextCard == card.value and winPile.suit == card.suit:
+            addToGoal(card, winPile, fromPile)
+            break
+    else:
+        print("Illegal move", end=" ")
 def printTable():
     # Print first line with Stock pile and the Foundation piles
     str = ""
@@ -184,9 +206,10 @@ def printTable():
         print(str)
         str = ""
 
- 
 
+# Code runs here 
 setupTable()
-#printCards()
+# printCards()
+printTable()
 printTable()
 winCheck()
