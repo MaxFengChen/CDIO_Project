@@ -3,9 +3,9 @@ import random
 
 NOCARDS = 52
 NOCARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
+
 cards = []
 tableau_piles = []
-
 foundations_piles = []
 
 class Suit(Enum):
@@ -43,7 +43,6 @@ class Value(Enum):
     QUEEN = 12
     KING = 13
 
-
 class Visible(Enum):
     FALSE = 0
     TRUE = 1
@@ -57,14 +56,13 @@ class Playing_Card:
         self.visible = visible
     
     def getCardString(self):
-        if(self.visible == Visible.TRUE):
-            if (self.value.value < 10):
+        if self.visible == Visible.TRUE:
+            if self.value.value < 10:
                 return str(0) + str(self.value.value) + "," + str(self.suit.name)
             else:
                 return str(self.value.value) + "," + str(self.suit.name)
         else:
             return "###" 
-
 
 class tableauPile:
     def __init__(self, number):
@@ -119,7 +117,6 @@ def setupTable(cards):
 
             newPile.Cards.append(cards[card])
             newPile.frontCard = cards[card]
-            
             card+=1
             # print(newPile.Cards[-1].value, newPile.Cards[-1].suit, newPile.Cards[-1].visible)
 
@@ -149,19 +146,19 @@ def printCards():
 
 def winCheck():
     # Check if all cards are visible and thus you game can be won
-    check = 0;
+    check = 0
     for card in cards:
         if card.visible == Visible.FALSE:
-            check = 1;
+            check = 1
             break
-    if check is 0:
+    if check == 0:
         print("Congrats you have won!", end="\n")
 
 def removeCardFrom_TableauPile(card, tabPile):
     #removes a card from the Tableau piles
     tabPile.Cards.remove(card)
-    if card is tabPile.frontCard:
-        if len(tabPile.Cards) is 0:
+    if card == tabPile.frontCard:
+        if len(tabPile.Cards) == 0:
             tabPile.frontCard = None
         else:
             tabPile.frontCard = tabPile.Cards[-1]
@@ -187,20 +184,18 @@ def start_addToTableau(cardList, fromPile, toPile):
     #The one to call, this checks if the move is legal
     topCard = cardList[0]
     if topCard.color != toPile.frontCard.color:
-        if Value(topCard.value).value - Value(toPile.frontCard.value).value is -1:
+        if Value(topCard.value).value - Value(toPile.frontCard.value).value == -1:
             addToTableau(cardList, toPile, fromPile)
         else:
             print("Wrong value on card")
     else:
         print("Wrong color card")
 
-def addToTableau(cardList, toPile, fromPile, ):
+def addToTableau(cardList, toPile, fromPile):
     #move a card from one tableau pile to another
     for card in cardList:
         removeCardFrom_TableauPile(card, fromPile)
     toPile.Cards.extend(cardList)    
-    
-    
     print(" ")
 
 def insertCard(cardval, cardsuit, cardpile, cardcolor, inPile):
@@ -215,13 +210,13 @@ def printTable():
     else:
         str = stock.frontCard.getCardString() + "     "
     for i in range(len(foundations_piles)):
-        if (foundations_piles[i].frontCard == None):
+        if foundations_piles[i].frontCard == None:
             str = str + "0," + foundations_piles[i].suit.name + "  "
         else:
             str = str + foundations_piles[i].frontCard.getCardString() + " "
-    print(str)
-    print("")
+    print(str,"\n")
     str = ""
+
     # Print Tableau piles
     for j in range(len(tableau_piles)):
         for pile in tableau_piles:
@@ -245,7 +240,7 @@ setupTable(cards)
 # tableau_piles[3].frontCard.color = Color.BLACK
 # insertCard(Value(8), Suit(3), Pile.TABLEAU, Color.BLACK, tableau_piles[1])
 # insertCard(Value(7), Suit(0), Pile.TABLEAU, Color.RED, tableau_piles[1])
-printTable();
+printTable()
 start_addToTableau([tableau_piles[1].Cards[-1]], tableau_piles[1], tableau_piles[3])
 printTable()
 winCheck()
