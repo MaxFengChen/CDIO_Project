@@ -86,7 +86,7 @@ class foundationPile:
 
 stock = stockPile()
 
-def setupTable():
+def setupTable(cards):
     # Setup a simple deck for testing
     colorSelect = 0
 
@@ -138,7 +138,6 @@ def setupTable():
         newFoundationPile = foundationPile(suit)
         newFoundationPile.nextCard = Value.ACE
         foundations_piles.append(newFoundationPile)
-
 
 def printCards():
     # Print the current state of the deck in the terminal.
@@ -208,7 +207,6 @@ def insertCard(cardval, cardsuit, cardpile, cardcolor, inPile):
     #for adding certain cards in testing
     inPile.Cards.append(Playing_Card(Suit(cardsuit), Color(cardcolor), Pile.TABLEAU, Value(cardval), Visible.TRUE))
 
-
 def printTable():
     # Print first line with Stock pile and the Foundation piles
     str = ""
@@ -236,7 +234,7 @@ def printTable():
 
 
 # Code runs here 
-setupTable()
+setupTable(cards)
 # printCards()
 # printTable()
 # tableau_piles[1].frontCard.value = Value(1)
