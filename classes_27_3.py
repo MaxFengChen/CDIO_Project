@@ -158,7 +158,8 @@ def winCheck():
     if check is 0:
         print("Congrats you have won!", end="\n")
 
-def removeFrom_TableauPile(card, tabPile):
+def removeCardFrom_TableauPile(card, tabPile):
+    #removes a card from the Tableau piles
     tabPile.Cards.remove(card)
     if card is tabPile.frontCard:
         if len(tabPile.Cards) is 0:
@@ -168,13 +169,14 @@ def removeFrom_TableauPile(card, tabPile):
             tabPile.frontCard.visible = 1
         
 def addToGoal(card, goalPile, fromPile):
+    #Don't call this call start_addToGoal(), but this adds the card to the foundation pile
     goalPile.frontCard = card
     goalPile.nextCard = Value(goalPile.nextCard.value + 1)
-    removeFrom_TableauPile(card, fromPile)
+    removeCardFrom_TableauPile(card, fromPile)
     goalPile.Cards.append(card)
 
-
 def start_AddToGoal(card, fromPile):
+    #The one to call, this checks if the move is legal
     for winPile in foundations_piles:
         if winPile.nextCard == card.value and winPile.suit == card.suit:
             addToGoal(card, winPile, fromPile)
