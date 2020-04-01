@@ -229,7 +229,7 @@ def start_add_to_tableau(cardList, fromPile, toPile):
     else:
         print("Wrong color card")
 
-def waste2stock ():
+def waste_to_stock ():
     # Add entire waste pile to stock pile
     buffer = wastePile.cards
     wastePile.cards = []
@@ -238,25 +238,29 @@ def waste2stock ():
     stock.cards.extend(reversed(buffer)) # Need to reverse the array, so that it is in the same order as it started
     stock.frontCard = buffer[0]
 
-def waste2tableau(toPile):
-    buffer = wastePile.frontCard
-    if buffer.color != toPile.frontCard.color:
-        if (buffer.value.value - toPile.frontCard.value.value == -1):
-            wastePile.cards.remove(wastePile.frontCard)
-            if len(wastePile.cards) != 0:
-                wastePile.frontCard = wastePile.cards[LAST_INDEX]
-                wastePile.frontCard.visible = Visible.TRUE
-            else:
-                wastePile.frontCard = None
-            
-            toPile.cards.append(buffer)
-            toPile.frontCard = buffer
-        else:
-            print("Wrong value on card")
+def waste_to_tableau(toPile):
+    if len(wastePile.cards) == 0:
+        print("Wastepile is empty\n")
+        
     else:
-        print("Wrong color on card")
+        buffer = wastePile.frontCard
+        if buffer.color != toPile.frontCard.color:
+            if (buffer.value.value - toPile.frontCard.value.value == -1):
+                wastePile.cards.remove(wastePile.frontCard)
+                if len(wastePile.cards) != 0:
+                    wastePile.frontCard = wastePile.cards[LAST_INDEX]
+                    wastePile.frontCard.visible = Visible.TRUE
+                else:
+                    wastePile.frontCard = None
+            
+                toPile.cards.append(buffer)
+                toPile.frontCard = buffer
+            else:
+                print("Wrong value on card")
+        else:
+            print("Wrong color on card")
 
-def drawFromStock (): 
+def draw_from_stock (): 
     # Draw card from stock and add it to waste
     if len(stock.cards) == 0:
         print("No more cards in stock pile.\n Adding waste pile to stock pile\n")   
@@ -272,6 +276,7 @@ def drawFromStock ():
 
         wastePile.cards.append(buffer)
         wastePile.frontCard = buffer
+        wastePile.frontCard.visible = Visible.TRUE
 
         print(wastePile.frontCard.to_string(), " has been added to waste pile\n")
 
@@ -317,8 +322,8 @@ def print_table():
 setup_table()
 # print_cards()
 # print_table()
-# tableauPiles[1].frontCard.value = Value(1)
-# tableauPiles[1].frontCard.suit = Suit(3)
+# tableauPiles[3].frontCard.value = Value(13)
+# tableauPiles[3].frontCard.suit = Suit(1)
 # tableauPiles[1].frontCard.color = Color.BLACK
 # tableauPiles[3].frontCard.value = Value(2)
 # tableauPiles[3].frontCard.suit = Suit(3)
@@ -330,15 +335,15 @@ print_table()
 #start_add_to_tableau([tableauPiles[1].cards[LAST_INDEX]], tableauPiles[1], tableauPiles[3])
 
 for i in range(5):
-    drawFromStock() #Run 25 times to test the waste2Stock function
+    draw_from_stock() #Run 25 times to test the waste2Stock function
 
-    waste2tableau(tableauPiles[0])
-    waste2tableau(tableauPiles[1])
-    waste2tableau(tableauPiles[2])
-    waste2tableau(tableauPiles[3])
-    waste2tableau(tableauPiles[4])
-    waste2tableau(tableauPiles[5])
-    waste2tableau(tableauPiles[6])
+    waste_to_tableau(tableauPiles[0])
+    waste_to_tableau(tableauPiles[1])
+    waste_to_tableau(tableauPiles[2])
+    waste_to_tableau(tableauPiles[3])
+    waste_to_tableau(tableauPiles[4])
+    waste_to_tableau(tableauPiles[5])
+    waste_to_tableau(tableauPiles[6])
 
 
 print_table()
