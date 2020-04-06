@@ -92,7 +92,7 @@ class PlayingCard:
             else:
                 return str(self.value.value) + "," + str(self.suit.name)
         else:
-            return "###"
+            return "####"
 
     def to_string_verbose(self):
         return str(self.suit.name) + " " + str(self.color.name) + " " + str(self.pile.name) + " " + str(self.value.value) + " " + str(self.visible.name)
@@ -119,3 +119,4 @@ class FoundationPile:
         self.frontCard = None
         self.nextCard = None
         self.suit = suit
+        

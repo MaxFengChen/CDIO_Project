@@ -39,6 +39,7 @@ tableauPiles = []
 foundationsPiles = []
 stock = StockPile()
 wastePile = WastePile()
+lowestNeededCard = Value(2)
 
 def setup_table():
     # Setup a simple deck for testing
@@ -109,7 +110,7 @@ def remove_from_tableau_pile(card, tableauPile):
 def add_to_goal(card, goalPile, fromPile):
     # Don't call this call start_add_to_goal(), but this adds the card to the foundation pile
     goalPile.frontCard = card
-    goalPile.nextCard = goalPile.nextCard.value + 1
+    goalPile.nextCard = Value(goalPile.nextCard.value + 1)
     remove_from_tableau_pile(card, fromPile)
     goalPile.cards.append(card)
 
@@ -213,7 +214,7 @@ def print_table():
         str = stock.frontCard.to_string() + "     "
     for i in range(len(foundationsPiles)):
         if foundationsPiles[i].frontCard == None:
-            str = str + "0," + foundationsPiles[i].suit.name + "  "
+            str = str + "0," + foundationsPiles[i].suit.name + " "
         else:
             str = str + foundationsPiles[i].frontCard.to_string() + " "
     print(str,"\n")
@@ -223,7 +224,7 @@ def print_table():
     for j in range(len(tableauPiles)):
         for pile in tableauPiles:
             if len(pile.cards) > j:
-               str = str + pile.cards[j].to_string() + "  "
+               str = str + pile.cards[j].to_string() + " "
             else:
                 str = str + "     "
         print(str)

@@ -39,20 +39,20 @@ from classes import *
 setup_table()
 # print_cards()
 # print_table()
-# tableauPiles[3].frontCard.value = Value(13)
-# tableauPiles[3].frontCard.suit = Suit(1)
-# tableauPiles[1].frontCard.color = Color.BLACK
-# tableauPiles[3].frontCard.value = Value(2)
-# tableauPiles[3].frontCard.suit = Suit(3)
-# tableauPiles[3].frontCard.color = Color.BLACK
+tableauPiles[1].frontCard.value = Value(1)
+tableauPiles[1].frontCard.suit = Suit(3)
+tableauPiles[1].frontCard.color = Color.BLACK
+tableauPiles[3].frontCard.value = Value(2)
+tableauPiles[3].frontCard.suit = Suit(3)
+tableauPiles[3].frontCard.color = Color.BLACK
 # insert_card(Value(8), Suit(3), Pile.TABLEAU, Color.BLACK, tableauPiles[1])
 # insert_card(Value(7), Suit(0), Pile.TABLEAU, Color.RED, tableauPiles[1])
-# print_table()
+print_table()
 #print_cards()
 #start_add_to_tableau([tableauPiles[1].cards[LAST_INDEX]], tableauPiles[1], tableauPiles[3])
 again = 0
 while again != '1':
     print_table()
-    give_advice_and_do(tableauPiles, stock, foundationsPiles)
+    give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
     win_check()
-    again = input("If you want to stop press 1")
+    again = input("If you want to stop press 1 ")
