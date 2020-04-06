@@ -48,6 +48,16 @@ class Suit(Enum):
     D = 2
     S = 3
 
+    def get_color(self):
+        if self == Suit.H:
+            return Color.RED
+        if self == Suit.C:
+            return Color.BLACK
+        if self == Suit.D:
+            return Color.RED
+        if self == Suit.S:
+            return Color.BLACK
+
 class Color(Enum):
     RED = 0
     BLACK = 1

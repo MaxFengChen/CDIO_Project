@@ -33,13 +33,14 @@
 
 from classes import *
 import random
+from colorama import Fore, Back, Style
 
 playingCards = []
 tableauPiles = []
 foundationsPiles = []
 stock = StockPile()
 wastePile = WastePile()
-lowestNeededCard = Value(2)
+lowestNeededCard = Value.TWO
 
 def setup_table():
     # Setup a simple deck for testing
@@ -134,8 +135,9 @@ def start_add_to_tableau(cardList, fromPile, toPile):
     # The one to call, this checks if the move is legal
     topCard = cardList[0]
     if topCard.color != toPile.frontCard.color:
-        if (topCard.value.value - toPile.frontCard.value.value == -1):
+        if topCard.value.value - toPile.frontCard.value.value == -1:
             add_to_tableau(cardList, toPile, fromPile)
+
         else:
             print("Wrong value on card")
     else:
@@ -157,7 +159,7 @@ def waste_to_tableau(toPile):
     else:
         buffer = wastePile.frontCard
         if buffer.color != toPile.frontCard.color:
-            if (buffer.value.value - toPile.frontCard.value.value == -1):
+            if buffer.value.value - toPile.frontCard.value.value == -1:
                 wastePile.cards.remove(wastePile.frontCard)
                 if len(wastePile.cards) != 0:
                     wastePile.frontCard = wastePile.cards[LAST_INDEX]
@@ -206,17 +208,33 @@ def print_cards():
         printCounter+=1
 
 def print_table():
+    print(f"{Back.LIGHTWHITE_EX}") # Add a background color to the 
     # Print first line with Stock pile and the Foundation piles
     str = ""
     if stock.frontCard == None:
         str = "0,X     "
     else:
-        str = stock.frontCard.to_string() + "     "
+        # Add coloring to the stock pile
+        if stock.frontCard.suit.get_color() == Color.BLACK:
+            stringColor = f"{Fore.BLACK}"
+        elif stock.frontCard.suit.get_color() == Color.RED:
+            stringColor = f"{Fore.RED}"
+        str = str + stringColor
+
+        str = str + stock.frontCard.to_string() + "     "
     for i in range(len(foundationsPiles)):
+        # Add coloring to the foundation piles
+        if foundationsPiles[i].suit.get_color() == Color.BLACK:
+            stringColor = f"{Fore.BLACK}"
+        elif foundationsPiles[i].suit.get_color() == Color.RED:
+            stringColor = f"{Fore.RED}"
+        str = str + stringColor
+
         if foundationsPiles[i].frontCard == None:
             str = str + "0," + foundationsPiles[i].suit.name + " "
         else:
             str = str + foundationsPiles[i].frontCard.to_string() + " "
+    
     print(str,"\n")
     str = ""
 
@@ -224,8 +242,21 @@ def print_table():
     for j in range(len(tableauPiles)):
         for pile in tableauPiles:
             if len(pile.cards) > j:
-               str = str + pile.cards[j].to_string() + " "
+                # Add coloring to the plateau cards
+                if pile.cards[j].visible == Visible.TRUE:
+                    if pile.cards[j].suit.get_color() == Color.BLACK:
+                        stringColor = f"{Fore.BLACK}"
+                    elif pile.cards[j].suit.get_color() == Color.RED:
+                        stringColor = f"{Fore.RED}"
+                else:
+                    stringColor = f"{Fore.GREEN}"
+                str = str + stringColor
+
+                str = str + pile.cards[j].to_string() + " "
             else:
                 str = str + "     "
         print(str)
         str = ""
+    # Remove all coloring
+    print(f"{Style.RESET_ALL}")
+

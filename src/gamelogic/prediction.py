@@ -33,22 +33,25 @@
 from testing import *
 from classes import *
 
+def suit_verbose(card):
+    if card.suit.value == 0:
+        return "HEARTS"
+    elif card.suit.value == 1:
+        return "CLUBS"
+    elif card.suit.value == 2:
+        return "DIAMONDS"
+    elif card.suit.value == 3:
+        return "SPADES"
+
 def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
-    #See if there's any Aces that can be added to the foundations
-    if stock.frontCard.value is Value(1):
-        print("Put the ace in the foundation pile")
-        return
     for pile in tableauPiles:
         if len(pile.cards) != 0:
             card = pile.frontCard 
-            if card.value is Value(1):
-                print("Put the ace of " + card.suit + "in the foundation pile")
-                return
             if card.value.value <= lowestNeededCard.value:
                 for foundPile in foundationPiles:
-                    if card.suit is foundPile.suit and card.value is foundPile.nextCard:
-                        print("Put the " + card.value.name + card.suit.name + " in the foundation pile")
+                    if card.suit == foundPile.suit and card.value == foundPile.nextCard:
+                        print("Put the " + card.value.name + " " + suit_verbose(card.suit) + " in the foundation pile")
                         
 
     #See if other cards can be put in the foundation piles
@@ -58,25 +61,15 @@ def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
 
 def give_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
-    #See if there's any Aces that can be added to the foundations
-    if stock.frontCard.value is Value(1):
-        print("Put the ace in the foundation pile")
-        return
     for pile in tableauPiles:
         if len(pile.cards) != 0:
             card = pile.frontCard
-            if card.value is Value(1):
-                print("Put the ace in the foundation pile.")
-                choice = input("If you wish to do so enter 1.")
-                if choice is '1':
-                    start_add_to_goal(card, pile,foundationPiles)
-                return
             if card.value.value <= lowestNeededCard.value:
                 for foundPile in foundationPiles:
-                    if card.suit is foundPile.suit and card.value is foundPile.nextCard:
-                        print("Put the " + card.value.name + card.suit.name + " in the foundation pile")
-                        choice = input("If you wish to do so enter 1.")
-                        if choice is '1':
+                    if card.suit == foundPile.suit and card.value == foundPile.nextCard:
+                        print("Put the " + card.value.name + " of " + suit_verbose(card) + " in the foundation pile")
+                        choice = input("If you wish to do so enter 1: ")
+                        if choice == '1':
                             start_add_to_goal(card, pile, foundPile)
                             return
     
