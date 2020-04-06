@@ -58,6 +58,16 @@ class Suit(Enum):
         if self == Suit.S:
             return Color.BLACK
 
+    def to_string(self):
+        if self == Suit.H:
+            return "HEARTS"
+        elif self == Suit.C:
+            return "CLUBS"
+        elif self == Suit.D:
+            return "DIAMONDS"
+        elif self == Suit.S:
+            return "SPADES"
+
 class Color(Enum):
     RED = 0
     BLACK = 1
