@@ -30,4 +30,31 @@
 #   Variables: camelCase
 #   Objects: camelCase                        
 #   Constants: SCREAMING_SNAKE_CASE    
+from testing import *
+from classes import *
 
+def give_advice(tableauPiles, stock, foundationPiles):
+    #Give an advice what to do
+    #See if there's any Aces that can be added to the foundations
+    if stock.frontCard.value is Value(1):
+        print("Put the ace in the foundation pile")
+        return
+    for pile in tableauPiles:
+        if pile.frontCard.value is Value(1):
+            print("Put the ace in the foundation pile")
+            return
+    #See if other cards can be put in the foundation piles
+    
+
+def give_advice_and_do(tableauPiles, stock, foundationPiles):
+    #Give an advice what to do
+    #See if there's any Aces that can be added to the foundations
+    for pile in tableauPiles:
+        if pile.frontCard.value is Value(1):
+            print("Put the ace in the foundation pile.")
+            choice = input("If you wish to do so enter 1.")
+            if choice is '1':
+                start_add_to_goal(pile.frontCard, pile,foundationPiles)
+            return
+    
+    

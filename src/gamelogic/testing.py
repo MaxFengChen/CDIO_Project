@@ -85,6 +85,7 @@ def setup_table():
     for suit in Suit:
         newFoundationPile = FoundationPile(suit)
         newFoundationPile.nextCard = Value.ACE
+        foundationsPiles.append(newFoundationPile)
 
 def win_check():
     # Check if all cards are visible and thus you game can be won
@@ -108,11 +109,11 @@ def remove_from_tableau_pile(card, tableauPile):
 def add_to_goal(card, goalPile, fromPile):
     # Don't call this call start_add_to_goal(), but this adds the card to the foundation pile
     goalPile.frontCard = card
-    goalPile.nextCard = goalPile.nextCard.value.value + 1
+    goalPile.nextCard = goalPile.nextCard.value + 1
     remove_from_tableau_pile(card, fromPile)
     goalPile.cards.append(card)
 
-def start_add_to_goal(card, fromPile):
+def start_add_to_goal(card, fromPile, foundationPiles):
     # The one to call, this checks if the move is legal
     for foundationPile in foundationsPiles:
         if foundationPile.nextCard == card.value and foundationPile.suit == card.suit:

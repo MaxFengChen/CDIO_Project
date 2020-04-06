@@ -32,6 +32,8 @@
 #   Constants: SCREAMING_SNAKE_CASE             
 
 from testing import *
+from prediction import *
+from classes import *
 
 # Code runs here 
 setup_table()
@@ -45,20 +47,12 @@ setup_table()
 # tableauPiles[3].frontCard.color = Color.BLACK
 # insert_card(Value(8), Suit(3), Pile.TABLEAU, Color.BLACK, tableauPiles[1])
 # insert_card(Value(7), Suit(0), Pile.TABLEAU, Color.RED, tableauPiles[1])
-print_table()
+# print_table()
 #print_cards()
 #start_add_to_tableau([tableauPiles[1].cards[LAST_INDEX]], tableauPiles[1], tableauPiles[3])
-
-for i in range(5):
-    draw_from_stock() #Run 25 times to test the waste2Stock function
-
-    waste_to_tableau(tableauPiles[0])
-    waste_to_tableau(tableauPiles[1])
-    waste_to_tableau(tableauPiles[2])
-    waste_to_tableau(tableauPiles[3])
-    waste_to_tableau(tableauPiles[4])
-    waste_to_tableau(tableauPiles[5])
-    waste_to_tableau(tableauPiles[6])
-
-print_table()
-win_check()
+again = 0
+while again != '1':
+    print_table()
+    give_advice_and_do(tableauPiles, stock, foundationsPiles)
+    win_check()
+    again = input("If you want to stop press 1")
