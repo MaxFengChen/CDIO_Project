@@ -1,3 +1,4 @@
+# coding=utf-8
 #          .x+=:.                     ..    .         s                   .                        
 #     z`    ^%              x .d88"    @88>      :8                  @88>                          
 #        .   <k        u.    5888R     %8P      .88                  %8P      .u    .              
@@ -183,7 +184,7 @@ def win_check():
         if card.visible == Visible.FALSE:
             check = 1
     if check == 0:
-        print("Congrats you have won!", end="\n")
+        print("Congrats you have won!")
 
 def remove_from_tableau_pile(card, tableauPile):
     # Removes a card from the Tableau piles
@@ -209,7 +210,7 @@ def start_add_to_goal(card, fromPile):
             add_to_goal(card, foundationPile, fromPile)
             break
     else:
-        print("Illegal move", end=" ")
+        print("Illegal move")
 
 def add_to_tableau(cardList, toPile, fromPile):
     # Move a card from one tableau pile to another
@@ -300,7 +301,7 @@ def print_table():
             str = str + "0," + foundationsPiles[i].suit.name + "  "
         else:
             str = str + foundationsPiles[i].frontCard.to_string() + " "
-    print(str,"\n")
+    print(str, "\n")
     str = ""
 
     # Print Tableau piles

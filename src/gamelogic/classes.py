@@ -62,7 +62,7 @@ class Playing_Card:
             else:
                 return str(self.value.value) + "," + str(self.suit.name)
         else:
-            return "###" 
+            return "####" 
 
 class tableauPile:
     def __init__(self, number):
@@ -157,19 +157,20 @@ def printTable():
         else:
             str = str + foundations_piles[i].frontCard.getCardString() + " "
             
-    print(str,"\n")
+    print(str + "\n")
+
     str = ""
 
     # Print Tableau piles
     for j in range(len(tableau_piles)):
         for pile in tableau_piles:
             if len(pile.Cards) > j :
-               str = str + pile.Cards[j].getCardString() + "  "
+               str = str + pile.Cards[j].getCardString() + "   "
             else:
-                str = str + "     "
-        print(str,)
+                str = str + "       "
+        print(str)
         str = ""
-    print()
+
     
 setupTable()
 #printCards()
