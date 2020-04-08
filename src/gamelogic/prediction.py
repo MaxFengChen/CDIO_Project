@@ -64,15 +64,30 @@ def give_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
     return
     
     
-def free_king_advice():
-    biggest_len = 0 
-    target_card = None
+def free_king_advice(tableauPiles):
+    biggestLen = 0 
+    targetCard = None
     for pile in tableauPiles:
         if pile.frontCard == None:
             emptyPile = pile
-        elif pile.frontCard.value == 13 and len(pile.cards) > biggest_len :
-            biggest_len = len(pile.cards) 
-            target_card = pile.frontCard.value
-    if target_card != None:
-        print("Put the " + target_card.name + " of " + target_card.suit.to_string() + "on the empty tableau pile nr." + emptyPile.number.to_sting())
+        elif pile.frontCard.value == 13 and len(pile.cards) > biggestLen :
+            biggestLen = len(pile.cards) 
+            targetCard = pile.frontCard.value
+    if targetCard != None:
+        print("Put the " + targetCard.name + " of " + targetCard.suit.to_string() + "on the empty tableau pile nr." + emptyPile.number.to_sting())
+    return
+
+def look_through_stockPile(stockPile):
+    print("Please go through the stock pile, the program will learn the contents, and give best advice.")
+    
+    return
+
+def twin_is_found(tableauPiles, stockPile):
+    for targetCard in stockPile:
+        for pile in tableauPiles:
+            if targetCard.value == pile.frontCard.value and targetCard.color == pile.frontCard.color:
+                for pile in tableauPiles:
+                    if pile.frontCard.value == targetCard.value + 1 and pile.frontCard.color != targetCard.color:
+                         print("Put the " + targetCard.name + " of " + targetCard.suit.to_string() + " on " + pile.frontCard.name + " of " + pile.frontCard.suit.to_string())
+    
     return

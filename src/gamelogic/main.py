@@ -55,5 +55,6 @@ while again != '1':
     #print_cards()
     print_table()
     give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
+    free_king_advice(tableauPiles)
     win_check()
     again = input("If you want to stop press 1: ")
