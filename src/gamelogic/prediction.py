@@ -91,9 +91,6 @@ def advise_tableau_to_tableau(tableauPiles, stock, foundationPiles, lowestNeeded
             if bigestPile.frontCard.value.value - lfPile.frontCard.value.value == -1:
                 print("Move " + bigestPile.frontCard.value.name + " of " + bigestPile.frontCard.to_string() + " to " + lfPile.frontCard.value.name + " of " + lfPile.frontCard.to_string())
 
-
-
-
                 
     print("Biggest pile: ", bigestPile.number)
         #if len(pile.cards) != 0:
