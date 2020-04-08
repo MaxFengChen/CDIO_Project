@@ -1,12 +1,42 @@
+#          .x+=:.                     ..    .         s                   .                        
+#     z`    ^%              x .d88"    @88>      :8                  @88>                          
+#        .   <k        u.    5888R     %8P      .88                  %8P      .u    .              
+#      .@8Ned8"  ...ue888b   '888R      .      :888ooo       u        .     .d88B :@8c       .u    
+#    .@^%8888"   888R Y888r   888R    .@88u  -*8888888    us888u.   .@88u  ="8888f8888r   ud8888.  
+#   x88:  `)8b.  888R I888>   888R   ''888E`   8888    .@88 "8888" ''888E`   4888>'88"  :888'8888. 
+#   8888N=*8888  888R I888>   888R     888E    8888    9888  9888    888E    4888> '    d888 '88%" 
+#    %8"    R88  888R I888>   888R     888E    8888    9888  9888    888E    4888>      8888.+"    
+#     @8Wou 9%  u8888cJ888    888R     888E   .8888Lu= 9888  9888    888E   .d888L .+   8888L      
+#   .888888P`    "*888*P"    .888B .   888&   ^%888*   9888  9888    888&   ^"8888*"    '8888c. .+ 
+#   `   ^"F        'Y"       ^*888%    R888"    'Y"    "888*""888"   R888"     "Y"       "88888%   
+#                              "%       ""              ^Y"   ^Y'     ""                   "YP'    
+#    
+#   62410 CDIO-Projekt F20 - Solitaire solver
+#   https://github.com/MaxTheScrub/CDIO_Project 
+#
+#   Group 7:                                    
+#   Henrik Peter Warncke s184801                
+#   Max Feng Chen Bjørnsen s184811              
+#   Jeppe Møller Bak s164871                    
+#   Adam Aron Edelsten s173057                  
+#   Tobias Lauge Borgstrøm s184810              
+#   Tobias Ladefoged Jensen s184815             
+#   Markus Repnak Jacobsen s184808              
+#   Ajs Ritsmer Stormholt s174517               
+#
+#   Naming convention: https://www.python.org/dev/peps/pep-0008/                       
+#   Class names: PascalCase                         
+#   Function names: snake_case                       
+#   Variables: camelCase
+#   Objects: camelCase                        
+#   Constants: SCREAMING_SNAKE_CASE    
+
 from enum import Enum 
-import random
 
-NOCARDS = 52
-NOCARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
-
-cards = []
-tableau_piles = []
-foundations_piles = []
+NO_CARDS = 52
+NO_SUITS = 4
+NO_CARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
+LAST_INDEX = -1
 
 class Suit(Enum):
     # HEARTS = 0
@@ -17,6 +47,26 @@ class Suit(Enum):
     C = 1
     D = 2
     S = 3
+
+    def get_color(self):
+        if self == Suit.H:
+            return Color.RED
+        if self == Suit.C:
+            return Color.BLACK
+        if self == Suit.D:
+            return Color.RED
+        if self == Suit.S:
+            return Color.BLACK
+
+    def to_string(self):
+        if self == Suit.H:
+            return "HEARTS"
+        elif self == Suit.C:
+            return "CLUBS"
+        elif self == Suit.D:
+            return "DIAMONDS"
+        elif self == Suit.S:
+            return "SPADES"
 
 class Color(Enum):
     RED = 0
@@ -47,7 +97,7 @@ class Visible(Enum):
     FALSE = 0
     TRUE = 1
 
-class Playing_Card:
+class PlayingCard:
     def __init__(self, suit, color, pile, value, visible):
         self.suit = suit
         self.color = color
@@ -55,123 +105,38 @@ class Playing_Card:
         self.value = value
         self.visible = visible
     
-    def getCardString(self):
-        if self.visible == 1:
+    def to_string(self):
+        if self.visible == Visible.TRUE:
             if self.value.value < 10:
                 return str(0) + str(self.value.value) + "," + str(self.suit.name)
             else:
                 return str(self.value.value) + "," + str(self.suit.name)
         else:
-            return "####" 
+            return "####"
 
-class tableauPile:
+    def to_string_verbose(self):
+        return str(self.suit.name) + " " + str(self.color.name) + " " + str(self.pile.name) + " " + str(self.value.value) + " " + str(self.visible.name)
+
+class TableauPile:
     def __init__(self, number):
-        self.Cards = []
+        self.cards = []
         self.frontCard = None
         self.number = number
 
-class stockPile:
+class StockPile:
     def __init__(self):
-        self.Cards = []
+        self.cards = []
         self.frontCard = None
 
-class foundationPile:
+class WastePile:
+    def __init__(self):
+        self.cards = []
+        self.frontCard = None
+
+class FoundationPile:
     def __init__(self, suit):
-        self.Cards = []
+        self.cards = []
         self.frontCard = None
+        self.nextCard = None
         self.suit = suit
-
-stock = stockPile()
-
-def setupTable():
-    # Setup a simple deck for testing
-    colorSelect = 0
-
-    # Generate a complete deck.
-    for suitSelect in range(4):
-        for valueSelect in range(1, 14):
-            cards.append(Playing_Card(Suit(suitSelect), Color(colorSelect), Pile.STOCK, Value(valueSelect), Visible.FALSE))
-
-        # Toggle the color.
-        colorSelect+=1
-        if colorSelect == 2:
-            colorSelect = 0
-
-    # Shuffle the deck.
-    random.shuffle(cards)
-
-    # Make first 28 cards the playing cards in the plateau and organize into piles.
-    print("Each pile looks like:")
-    card = 0
-    for pile in range(1, 8):
-        newPile = tableauPile(pile)
-        for cardnr in range (1, pile+1):
-            currentCard = cards[card]
-            currentCard.pile = Pile.TABLEAU 
-            print("pile", pile, "card", cardnr) 
-            # Make the top card in the pile visible.
-            if cardnr == pile:
-                currentCard.visible = Visible.TRUE 
-            newPile.Cards.append(cards[card])
-            newPile.frontCard = cards[card]
-            card+=1
-            print(newPile.Cards[-1].value, newPile.Cards[-1].suit, newPile.Cards[-1].visible)
-        tableau_piles.append(newPile)
-        newPile.frontCard.visible = 1
-        print("Size of the pile:", len(tableau_piles),"\n")
-    # Make the rest of the cards the playing cards in the stockpile.
-    #stock = stockPile()
-    
-    for card in range(NOCARDS_PLATEAU, NOCARDS):
-        cards[card].pile = Pile.STOCK
-        stock.Cards.append(cards[card])
-        cards[card].visible = 1
-        stock.frontCard =  cards[card]
-
-    #Initialize the Foundation piles
-    for suit in Suit:
-        newFoundationPile = foundationPile(suit)
-        foundations_piles.append(newFoundationPile)
-
-def printCards():
-    # Print the current state of the deck in the terminal.
-    print("The entire deck looks like:")
-    printCounter = 0
-    for card in cards:
-        print("Card number:", printCounter, card.suit, card.color, card.pile, card.value, card.visible)
-        printCounter+=1
-
-# Code runs here
-def printTable():
-    # Print first line with Stock pile and the Foundation piles
-    print("The playing table looks like:\n")
-    str = ""
-    if stock.frontCard == None:
-        str = "0,X     "
-    else:
-        str = stock.frontCard.getCardString() + "     "
-
-    for i in range(len(foundations_piles)):
-        if foundations_piles[i].frontCard == None:
-            str = str + "0," + foundations_piles[i].suit.name + "  "
-        else:
-            str = str + foundations_piles[i].frontCard.getCardString() + " "
-            
-    print(str + "\n")
-
-    str = ""
-
-    # Print Tableau piles
-    for j in range(len(tableau_piles)):
-        for pile in tableau_piles:
-            if len(pile.Cards) > j :
-               str = str + pile.Cards[j].getCardString() + "   "
-            else:
-                str = str + "       "
-        print(str)
-        str = ""
-
-    
-setupTable()
-#printCards()
-printTable()
+        
