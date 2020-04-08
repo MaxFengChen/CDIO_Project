@@ -58,8 +58,8 @@ def give_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
                         print("Put the " + card.value.name + " of " + card.suit.to_string()+ " in the foundation pile")
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
-                            start_add_to_goal(card, pile, foundPile)
-                            return
+                           start_add_to_goal(card, pile, foundPile)
+    return
     
 def advise_tableau_to_tableau(tableauPiles, stock, foundationPiles, lowestNeededCard):
     bigestPile = tableauPiles[0]
