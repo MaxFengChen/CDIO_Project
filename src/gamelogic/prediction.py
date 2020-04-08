@@ -37,7 +37,7 @@ def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
     for pile in tableauPiles:
         if len(pile.cards) != 0:
-            card = pile.frontCard 
+            card = pile.frontCard
             if card.value.value <= lowestNeededCard.value:
                 for foundPile in foundationPiles:
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
@@ -45,8 +45,6 @@ def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
                         
 
     #See if other cards can be put in the foundation piles
-    
-    
     
 
 def give_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
@@ -91,3 +89,24 @@ def twin_is_found(tableauPiles, stockPile):
                          print("Put the " + targetCard.name + " of " + targetCard.suit.to_string() + " on " + pile.frontCard.name + " of " + pile.frontCard.suit.to_string())
     
     return
+def advise_tableau_to_tableau(tableauPiles, stock, foundationPiles, lowestNeededCard):
+    bigestPile = tableauPiles[0]
+    nonVisualCount = 0
+    for pile in tableauPiles:
+        if len(pile.cards) != 0:
+            for cardsInPile in pile.cards:
+                if cardsInPile.visible == Visible.FALSE:
+                    nonVisualCount = nonVisualCount+1
+            if nonVisualCount >= len(bigestPile.cards)-1: 
+                bigestPile = pile
+            nonVisualCount = 0
+
+    for lfPile in tableauPiles:
+        if bigestPile.frontCard.color != lfPile.frontCard.color:
+            if bigestPile.frontCard.value.value - lfPile.frontCard.value.value == -1:
+                print("Move " + bigestPile.frontCard.value.name + " of " + bigestPile.frontCard.to_string() + " to " + lfPile.frontCard.value.name + " of " + lfPile.frontCard.to_string())
+
+                
+    print("Biggest pile: ", bigestPile.number)
+        #if len(pile.cards) != 0:
+            #card = pile.frontCard

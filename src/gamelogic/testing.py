@@ -259,4 +259,4 @@ def print_table():
         str = ""
     # Remove all coloring
     print(f"{Style.RESET_ALL}")
-
+    
