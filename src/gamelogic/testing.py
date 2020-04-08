@@ -61,7 +61,7 @@ def setup_table():
     # Make 7 piles
     for pileNumber in range(1, 8):
         currentPile = TableauPile(pileNumber)
-        # Make the pile corresponding to the current pilenumber
+        # Make the pile corresponding to the current pile
         for cardNumber in range (1, pileNumber+1):
             currentCard = playingCards[card]
             currentCard.pile = Pile.TABLEAU 
