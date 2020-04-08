@@ -60,7 +60,20 @@ def give_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
                         if choice == '1':
                            start_add_to_goal(card, pile, foundPile)
     return
-    
+
+def free_king_advice():
+    biggest_len = 0 
+    target_card = None
+    for pile in tableauPiles:
+        if pile.frontCard == None:
+            emptyPile = pile
+        elif pile.frontCard.value == 13 and len(pile.cards) > biggest_len :
+            biggest_len = len(pile.cards) 
+            target_card = pile.frontCard.value
+    if target_card != None:
+        print("Put the " + target_card.name + " of " + target_card.suit.to_string() + "on the empty tableau pile nr." + emptyPile.number.to_sting())
+    return
+
 def advise_tableau_to_tableau(tableauPiles, stock, foundationPiles, lowestNeededCard):
     bigestPile = tableauPiles[0]
     nonVisualCount = 0

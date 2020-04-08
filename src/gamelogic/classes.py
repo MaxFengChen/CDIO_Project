@@ -139,4 +139,3 @@ class FoundationPile:
         self.frontCard = None
         self.nextCard = None
         self.suit = suit
-        

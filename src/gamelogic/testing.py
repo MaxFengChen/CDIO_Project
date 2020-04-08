@@ -61,7 +61,7 @@ def setup_table():
     # Make 7 piles
     for pileNumber in range(1, 8):
         currentPile = TableauPile(pileNumber)
-        # Make the pile corresponding to the current pile
+        # Make the pile corresponding to the current pilenumber
         for cardNumber in range (1, pileNumber+1):
             currentCard = playingCards[card]
             currentCard.pile = Pile.TABLEAU 
@@ -259,4 +259,4 @@ def print_table():
         str = ""
     # Remove all coloring
     print(f"{Style.RESET_ALL}")
-
+    
