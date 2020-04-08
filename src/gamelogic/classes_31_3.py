@@ -264,7 +264,7 @@ def draw_from_stock ():
     # Draw card from stock and add it to waste
     if len(stock.cards) == 0:
         print("No more cards in stock pile.\n Adding waste pile to stock pile\n")   
-        waste2stock()
+        waste_to_stock()
     else:
         buffer = stock.frontCard
         stock.cards.remove(stock.frontCard)
