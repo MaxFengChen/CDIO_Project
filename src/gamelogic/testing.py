@@ -208,7 +208,7 @@ def print_cards():
         printCounter+=1
 
 def print_table():
-    print(f"{Back.LIGHTWHITE_EX}") # Add a background color to the 
+    print(f"{Back.GREEN}{Style.BRIGHT}") # Add a background color to the 
     # Print first line with Stock pile and the Foundation piles
     str = ""
     if stock.frontCard == None:
@@ -249,7 +249,7 @@ def print_table():
                     elif pile.cards[j].suit.get_color() == Color.RED:
                         stringColor = f"{Fore.RED}"
                 else:
-                    stringColor = f"{Fore.GREEN}"
+                    stringColor = f"{Fore.LIGHTWHITE_EX}"
                 str = str + stringColor
 
                 str = str + pile.cards[j].to_string() + " "
