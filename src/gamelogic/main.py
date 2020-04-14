@@ -25,7 +25,8 @@
 #   Ajs Ritsmer Stormholt s174517               
 #
 #   Naming convention: https://www.python.org/dev/peps/pep-0008/                       
-#   Class names: PascalCase                         
+#   Class names: PascalCase                       
+#   
 #   Function names: snake_case                       
 #   Variables: camelCase
 #   Objects: camelCase                        
@@ -39,24 +40,37 @@ from classes import *
 setup_table()
 # print_cards()
 # print_table()
-tableauPiles[1].frontCard.value = Value(1)
-tableauPiles[1].frontCard.suit = Suit(3)
-tableauPiles[1].frontCard.color = Color.BLACK
-tableauPiles[3].frontCard.value = Value(2)
-tableauPiles[3].frontCard.suit = Suit(3)
-tableauPiles[3].frontCard.color = Color.BLACK
-insert_card(Value(8), Suit(3), Pile.TABLEAU, Color.BLACK, tableauPiles[6])
-insert_card(Value(7), Suit(0), Pile.TABLEAU, Color.RED, tableauPiles[4])
-#insert_card(Value(6), Suit(0), Pile.TABLEAU, Color.RED, tableauPiles[4])
+
+tableauPiles[0].frontCard.value = Value(1)
+tableauPiles[0].frontCard.suit = Suit(2)
+tableauPiles[0].frontCard.color = Color.RED
+#tableauPiles[3].frontCard.value = Value(2)
+#tableauPiles[3].frontCard.suit = Suit(3)
+#tableauPiles[3].frontCard.color = Color.BLACK
+
+tableauPiles[4].frontCard.value = Value(6)
+tableauPiles[4].frontCard.suit = Suit(2)
+tableauPiles[4].frontCard.color = Color.RED
+tableauPiles[2].frontCard.value = Value(7)
+tableauPiles[2].frontCard.suit = Suit(3)
+tableauPiles[2].frontCard.color = Color.BLACK
+tableauPiles[1].frontCard.value = Value(8)
+tableauPiles[1].frontCard.suit = Suit(2)
+tableauPiles[1].frontCard.color = Color.RED
+
+#insert_card(Value(5), Suit(1), Pile.TABLEAU, Color.BLACK, tableauPiles[4])
+
 print_table()
 #print_cards()
 #start_add_to_tableau([tableauPiles[1].cards[LAST_INDEX]], tableauPiles[1], tableauPiles[3])
 again = 0
 while again != '1':
     #print_cards()
+    #print_table()
+    #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
     print_table()
-    give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-    print_table()
-    advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard)
+    for i in range(5):
+        find_biggest_tableau_advise(tableauPiles)
+        print_table()
     win_check()
     again = input("If you want to stop press 1: ")
