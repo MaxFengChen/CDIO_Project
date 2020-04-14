@@ -80,9 +80,7 @@ def look_through_stockPile(stockPile):
     
     return
 
-<<<<<<< HEAD
-def find_biggest_tableau_advise(tableauPiles):
-=======
+
 def twin_is_found(tableauPiles, stockPile):
     for targetCard in stockPile:
         for pile in tableauPiles:
@@ -92,8 +90,8 @@ def twin_is_found(tableauPiles, stockPile):
                          print("Put the " + targetCard.name + " of " + targetCard.suit.to_string() + " on " + pile.frontCard.name + " of " + pile.frontCard.suit.to_string())
     
     return
-def advise_tableau_to_tableau(tableauPiles, stock, foundationPiles, lowestNeededCard):
->>>>>>> d171f6f1ab68c3b39b1ac2cafff075947cf364e0
+
+def find_biggest_tableau_advise(tableauPiles):
     bigestPile = tableauPiles[0]
     fromPile = tableauPiles[0]
     nonVisualCount = 0
@@ -125,12 +123,15 @@ def advise_tableau_to_tableau(tableauPiles, stock, foundationPiles, lowestNeeded
 
     cardMoved = 0
     for toPile in tableauPiles:
-        if movePile.cards[0].color != toPile.frontCard.color and movePile.cards[0].value.value - toPile.frontCard.value.value == -1:
-            if cardMoved == 0:
-                print("Move " + movePile.frontCard.to_string() + " to " + toPile.frontCard.to_string())
-                choice = input("If you want make this move, press: 1\n")
-                if choice == '1':
-                    start_add_to_tableau(movePile, fromPile, toPile)
-                    cardMoved = 1
+        if len(movePile.cards) == 0:
+            print("No more cards to move")
+        else:
+            if movePile.cards[0].color != toPile.frontCard.color and movePile.cards[0].value.value - toPile.frontCard.value.value == -1:
+                if cardMoved == 0:
+                    print("Move " + movePile.frontCard.to_string() + " to " + toPile.frontCard.to_string())
+                    choice = input("If you want make this move, press: 1\n")
+                    if choice == '1':
+                        start_add_to_tableau(movePile, fromPile, toPile)
+                        cardMoved = 1
             
     return 

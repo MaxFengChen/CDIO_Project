@@ -69,15 +69,12 @@ while again != '1':
     #print_table()
     #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
     print_table()
-<<<<<<< HEAD
     for i in range(5):
         find_biggest_tableau_advise(tableauPiles)
         print_table()
-=======
-    give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-    free_king_advice(tableauPiles)
-    print_table()
-    advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard)
->>>>>>> d171f6f1ab68c3b39b1ac2cafff075947cf364e0
+    #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
+    #free_king_advice(tableauPiles)
+    #print_table()
+    #advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard)
     win_check()
     again = input("If you want to stop press 1: ")
