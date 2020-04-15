@@ -33,7 +33,7 @@
 from testing import *
 from classes import *
 
-def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
+def move_to_foundation_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
     for pile in tableauPiles:
         if len(pile.cards) != 0:
@@ -47,7 +47,7 @@ def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #See if other cards can be put in the foundation piles
     
 
-def give_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
+def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
     for pile in tableauPiles:
         if len(pile.cards) != 0:
@@ -141,3 +141,27 @@ def find_biggest_tableau_advise(tableauPiles):
                         cardMoved = 1
             
     return 
+
+# step 8
+def wastepile_to_tableau(wastePile, tableauPiles):
+    for tableauPile in tableauPiles:
+        # If card matches
+        if wastePile.frontCard.value.value - tableauPile.frontCard.value.value == -1 and tableauPile.frontCard.color !=  wastePile.frontCard.color: 
+            print("Put the " + wastePile.frontCard.value.name + " of " + wastePile.frontCard.suit.to_string()+ " in the tableau pile containing: " + tableauPile.frontCard.value.name + " of " + tableauPile.frontCard.suit.to_string())
+            choice = input("If you want make this move, press: 1\n")
+            if choice == '1':
+                tableauPile.cards.append(wastePile.frontCard) # Move to tableauPile
+                wastePile.cards.pop(len(wastePile.cards) -1) # Remove from wastePile
+                if len(wastePile.cards) == 0:
+                    wastePile.frontCard = None
+                else:
+                    wastePile.frontCard = wastePile.cards[LAST_INDEX]
+
+# Step 9
+def reshuffle_to_stockpile(wastePile, stockPile):
+    # Only use when stockPile is empty
+    random.shuffle(wastePile.cards)
+    stockPile.cards = wastePile.cards.copy()
+    stockPile.frontCard = stockPile.cards[LAST_INDEX]
+    wastePile.cards.clear()
+    wastePile.frontCard = None
