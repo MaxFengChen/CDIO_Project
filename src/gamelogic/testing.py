@@ -130,7 +130,6 @@ def add_to_tableau(cardList, toPile, fromPile):
         remove_from_tableau_pile(card, fromPile)
     toPile.cards.extend(cardList.cards)    
     toPile.frontCard = cardList.frontCard
-    print("\n")
 
 def start_add_to_tableau(cardList, fromPile, toPile):
     # The one to call, this checks if the move is legal
