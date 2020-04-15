@@ -37,44 +37,5 @@ from prediction import *
 from classes import *
 
 # Code runs here 
-# setup_table()
-# print_cards()
-# print_table()
-
-# tableauPiles[0].frontCard.value = Value(1)
-# tableauPiles[0].frontCard.suit = Suit(2)
-# tableauPiles[0].frontCard.color = Color.RED
-# #tableauPiles[3].frontCard.value = Value(2)
-# #tableauPiles[3].frontCard.suit = Suit(3)
-# #tableauPiles[3].frontCard.color = Color.BLACK
-
-# tableauPiles[4].frontCard.value = Value(6)
-# tableauPiles[4].frontCard.suit = Suit(2)
-# tableauPiles[4].frontCard.color = Color.RED
-# tableauPiles[2].frontCard.value = Value(7)
-# tableauPiles[2].frontCard.suit = Suit(3)
-# tableauPiles[2].frontCard.color = Color.BLACK
-# tableauPiles[1].frontCard.value = Value(8)
-# tableauPiles[1].frontCard.suit = Suit(2)
-# tableauPiles[1].frontCard.color = Color.RED
-
-#insert_card(Value(5), Suit(1), Pile.TABLEAU, Color.BLACK, tableauPiles[4])
-
-print_table()
-#print_cards()
-#start_add_to_tableau([tableauPiles[1].cards[LAST_INDEX]], tableauPiles[1], tableauPiles[3])
-# again = 0
-# while again != '1':
-#     #print_cards()
-#     #print_table()
-#     #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-#     print_table()
-#     for i in range(5):
-#         find_biggest_tableau_advise(tableauPiles)
-#         print_table()
-#     #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-#     #free_king_advice(tableauPiles)
-#     #print_table()
-#     #advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-#     win_check()
-#     again = input("If you want to stop press 1: ")
+test_case_solveable_deck()
+print_table();
