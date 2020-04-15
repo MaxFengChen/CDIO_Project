@@ -33,7 +33,7 @@
 from testing import *
 from classes import *
 
-def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
+def move_to_foundation_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
     for pile in tableauPiles:
         if len(pile.cards) != 0:
@@ -47,7 +47,7 @@ def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #See if other cards can be put in the foundation piles
     
 
-def give_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
+def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
     for pile in tableauPiles:
         if len(pile.cards) != 0:
