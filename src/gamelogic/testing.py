@@ -126,19 +126,18 @@ def start_add_to_goal(card, fromPile, foundationPiles):
 
 def add_to_tableau(cardList, toPile, fromPile):
     # Move a card from one tableau pile to another
-    for card in cardList.cards:
+    for card in cardList:
         remove_from_tableau_pile(card, fromPile)
-    toPile.cards.extend(cardList.cards)    
-    toPile.frontCard = cardList.frontCard
+    toPile.cards.extend(cardList)
+    toPile.frontCard = cardList[LAST_INDEX]    
     print("\n")
 
 def start_add_to_tableau(cardList, fromPile, toPile):
     # The one to call, this checks if the move is legal
-    topCard = cardList.cards[0]
+    topCard = cardList[0]
     if topCard.color != toPile.frontCard.color:
-        if topCard.value.value - toPile.frontCard.value.value == -1:
+        if (topCard.value.value - toPile.frontCard.value.value == -1):
             add_to_tableau(cardList, toPile, fromPile)
-
         else:
             print("Wrong value on card")
     else:

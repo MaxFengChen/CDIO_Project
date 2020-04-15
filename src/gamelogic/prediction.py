@@ -94,6 +94,8 @@ def twin_is_found(tableauPiles, stockPile):
 def find_biggest_tableau_advise(tableauPiles):
     bigestPile = tableauPiles[0]
     fromPile = tableauPiles[0]
+    movePile = []  #Number of cards to move from the bigest pile
+
     nonVisualCount = 0
     #for pile in tableauPiles:
     for searchBiggest in tableauPiles:
@@ -103,32 +105,36 @@ def find_biggest_tableau_advise(tableauPiles):
                     for cardsInPile in searchBiggest.cards:
                         if cardsInPile.visible == Visible.FALSE:
                             nonVisualCount = nonVisualCount+1
-                        
-
                     if nonVisualCount >= len(bigestPile.cards)-1: 
-                        bigestPile = searchBiggest  # The bigest pile
-                        fromPile = searchBiggest               
+                        bigestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
+                        fromPile = searchBiggest  
+                        nonVisualCount = 0  
+                
+                elif len(searchBiggest.cards) > 1:
+                    for cardInPile in searchBiggest.cards:
+                        if cardInPile.visible == Visible.TRUE:
+                            if cardInPile != searchBiggest.frontCard:
+                                if cardInPile.color != pile.frontCard.color and cardInPile.value.value - pile.frontCard.value.value == -1:
+                                    bigestPile = searchBiggest
+                                    #movePile.append(cardInPile)
+                                    fromPile = searchBiggest
+
+                           
     print("Pile with most nonvisible cards: ", bigestPile.number)
-
-    movePile = tableauPiles[0]  #Number of cards to move from the bigest pile
-
-    for card in movePile.cards:     # empty the movepile
-        movePile.cards.remove(card)
 
     for cards in bigestPile.cards: 
         if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
             #if topCard.value.value - cards.value.value == -1 and topCard.color != cards.color:
-            movePile.cards.append(cards)
-            movePile.frontCard = cards
+            movePile.append(cards)
 
     cardMoved = 0
     for toPile in tableauPiles:
-        if len(movePile.cards) == 0:
+        if len(movePile) == 0:
             print("No more cards to move")
         else:
-            if movePile.cards[0].color != toPile.frontCard.color and movePile.cards[0].value.value - toPile.frontCard.value.value == -1:
+            if movePile[0].color != toPile.frontCard.color and movePile[0].value.value - toPile.frontCard.value.value == -1:
                 if cardMoved == 0:
-                    print("Move " + movePile.frontCard.to_string() + " to " + toPile.frontCard.to_string())
+                    print("Move " + movePile[0].to_string() + " to " + toPile.frontCard.to_string())
                     choice = input("If you want make this move, press: 1\n")
                     if choice == '1':
                         start_add_to_tableau(movePile, fromPile, toPile)
