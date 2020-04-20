@@ -33,6 +33,19 @@
 from testing import *
 from classes import *
 
+def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePile):
+    foundAdvice = 0
+    #Step 1 and 2:
+    foundAdvice = move_to_foundation_advice(tableauPiles, stock, foundationPiles, lowestNeededCard)
+    #Step 3
+    if foundAdvice == 0:
+        foundAdvice = free_king_advice
+    #Step #4
+    # if foundAdvice == 0:
+    #Step 5 is already imnplemented as program knows stock
+    #Step 6 
+
+#Step 1 and 2
 def move_to_foundation_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
     for pile in tableauPiles:
@@ -42,11 +55,10 @@ def move_to_foundation_advice(tableauPiles, stock, foundationPiles, lowestNeeded
                 for foundPile in foundationPiles:
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
                         print("Put the " + card.value.name + " " + card.suit.to_string() + " in the foundation pile")
-                        
-
-    #See if other cards can be put in the foundation piles
+                        return '1'
+    return '0'                        
     
-
+#Step 1 and 2 with testing
 def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard):
     #Give an advice what to do
     for pile in tableauPiles:
@@ -59,9 +71,10 @@ def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowes
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
                            start_add_to_goal(card, pile, foundPile)
-    return
+                        return '1'
+    return '0'
     
-    
+#Step 3 
 def free_king_advice(tableauPiles):
     biggestLen = 0 
     targetCard = None
@@ -73,25 +86,26 @@ def free_king_advice(tableauPiles):
             targetCard = pile.frontCard.value
     if targetCard != None:
         print("Put the " + targetCard.name + " of " + targetCard.suit.to_string() + "on the empty tableau pile nr." + emptyPile.number.to_sting())
-    return
+        return '1'
+    return'0'
 
+#Step 5
 def look_through_stockPile(stockPile):
     print("Please go through the stock pile, the program will learn the contents, and give best advice.")
-    
     return
 
-
+#Step 6
 def twin_is_found(tableauPiles, stockPile):
     for targetCard in stockPile:
         for pile in tableauPiles:
             if targetCard.value == pile.frontCard.value and targetCard.color == pile.frontCard.color:
                 for pile in tableauPiles:
                     if pile.frontCard.value == targetCard.value + 1 and pile.frontCard.color != targetCard.color:
-                         print("Put the " + targetCard.name + " of " + targetCard.suit.to_string() + " on " + pile.frontCard.name + " of " + pile.frontCard.suit.to_string())
-    
-    return
+                        print("Put the " + targetCard.name + " of " + targetCard.suit.to_string() + " on " + pile.frontCard.name + " of " + pile.frontCard.suit.to_string()) 
+                        return '1'
+    return '0'
 
-#step 4
+#step 4 and 7
 def find_biggest_tableau_advise(tableauPiles):
     bigestPile = tableauPiles[0]
     fromPile = tableauPiles[0]
@@ -140,8 +154,9 @@ def find_biggest_tableau_advise(tableauPiles):
                     if choice == '1':
                         start_add_to_tableau(movePile, fromPile, toPile)
                         cardMoved = 1
+                    return '1'
             
-    return 
+    return '0'
 
 # step 8
 def wastepile_to_tableau(wastePile, tableauPiles):
@@ -157,6 +172,8 @@ def wastepile_to_tableau(wastePile, tableauPiles):
                     wastePile.frontCard = None
                 else:
                     wastePile.frontCard = wastePile.cards[LAST_INDEX]
+            return '1'
+    return '0'
 
 # Step 9
 def reshuffle_to_stockpile(wastePile, stockPile):

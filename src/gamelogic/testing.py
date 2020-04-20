@@ -199,6 +199,11 @@ def insert_card(cardValue, cardSuit, cardPile, cardColor, inPile):
     # For adding certain cards in testing
     inPile.cards.append(PlayingCard(Suit(cardSuit), Color(cardColor), Pile.TABLEAU, Value(cardValue), Visible.TRUE))
 
+def create_card(cardValue, cardSuit, cardPile, cardColor, inPile):
+    # For adding certain cards in testing
+    (PlayingCard(Suit(cardSuit), Color(cardColor), Pile.TABLEAU, Value(cardValue), Visible.TRUE))
+
+
 def print_cards():
     # Print the current state of the deck in the terminal.
     print("The entire deck looks like:")
@@ -259,3 +264,50 @@ def print_table():
         str = ""
     # Remove all coloring
     print(f"{Style.RESET_ALL}")
+
+def test_case_solveable_deck():
+    #Will setup a solveable deck
+    testCards = []
+    # Setup a simple deck for testing
+    colorSelect = 0
+    # Generate a complete deck.
+    i = 0
+    for suitSelect in range(NO_SUITS):
+        for valueSelect in range(1, 14):
+            playingCards.append(PlayingCard(Suit(suitSelect), Color(colorSelect), Pile.STOCK, Value(valueSelect), Visible.FALSE))
+            i += 1
+        # Toggle the color.
+        colorSelect+=1
+        if colorSelect == 2:
+            colorSelect = 0
+    #The deck for the game
+    #               Cardnr:0,  1   2,  3  4   5  6,  7   8  9, 10  11  12  13  14, 15  16  17  18  19  20, 21, 22 23  24  25 26 27, 28  29  30  31  32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51                                        
+    intForTestCards = [13, 35, 6, 32, 50, 7, 42, 16, 4, 9, 20, 25, 33, 14, 44, 37, 21, 23, 15, 40, 24, 34, 8, 28, 49, 1, 3, 5,  10, 29, 51, 18, 41, 46, 12, 45, 17, 27, 2,  48, 43, 19, 38, 47, 26, 31, 22, 30, 11, 0,  39, 36]
+    for i in intForTestCards:
+        testCards.append(playingCards[i])
+    # Make first 28 cards the playing cards in the plateau and organize into piles.
+    card = 0
+    # Make 7 piles
+    for pileNumber in range(1, 8):
+        currentPile = TableauPile(pileNumber)
+        # Make the pile corresponding to the current pilenumber
+        for cardNumber in range (1, pileNumber+1):
+            currentCard = testCards[card]
+            currentCard.pile = Pile.TABLEAU 
+            # Make the top card in the pile visible.
+            if cardNumber == pileNumber:
+                currentCard.visible = Visible.TRUE            
+            # Add current card to the current tableau pile and make it the front card ()
+            currentPile.cards.append(testCards[card])
+            currentPile.frontCard = testCards[card]
+            card+=1
+        # Add the newly created pile to the tableauPiles array 
+        tableauPiles.append(currentPile)
+        currentPile.frontCard.visible = Visible.TRUE
+
+    # Make the rest of the cards the playing cards in the Stockpile.
+    for card in range(NO_CARDS_PLATEAU, NO_CARDS):
+        testCards[card].pile = Pile.STOCK
+        stock.cards.append(testCards[card])
+        testCards[card].visible = Visible.TRUE
+        stock.frontCard =  testCards[card]
