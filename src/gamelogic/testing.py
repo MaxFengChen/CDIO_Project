@@ -152,20 +152,28 @@ def waste_to_stock():
     stock.cards.extend(reversed(buffer)) # Need to reverse the array, so that it is in the same order as it started
     stock.frontCard = buffer[0]
 
-def waste_to_tableau(toPile):
-    if len(wastePile.cards) == 0:
-        print("Wastepile is empty\n")
+def stock_to_tableau(stockPile, toPile): #waste_to_tableau(toPile):
+    #if len(wastePile.cards) == 0:
+    if len(stockPile.cards) == 0:
+        print("Stock is empty\n")
         
     else:
-        buffer = wastePile.frontCard
+        #buffer = wastePile.frontCard
+        buffer = stockPile.frontCard
         if buffer.color != toPile.frontCard.color:
             if buffer.value.value - toPile.frontCard.value.value == -1:
-                wastePile.cards.remove(wastePile.frontCard)
-                if len(wastePile.cards) != 0:
-                    wastePile.frontCard = wastePile.cards[LAST_INDEX]
-                    wastePile.frontCard.visible = Visible.TRUE
+                #wastePile.cards.remove(wastePile.frontCard)
+                stockPile.cards.remove(stockPile.frontCard)
+                
+                #if len(wastePile.cards) != 0:
+                if len(stock.cards) != 0:
+                    #wastePile.frontCard = wastePile.cards[LAST_INDEX]
+                    #wastePile.frontCard.visible = Visible.TRUE
+                    stockPile.frontCard = stockPile.cards[LAST_INDEX]
+                    stockPile.frontCard.visible = Visible.TRUE
                 else:
-                    wastePile.frontCard = None
+                    #wastePile.frontCard = None
+                    stockPile.frontCard = None
             
                 toPile.cards.append(buffer)
                 toPile.frontCard = buffer

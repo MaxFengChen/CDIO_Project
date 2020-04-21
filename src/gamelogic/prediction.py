@@ -105,7 +105,7 @@ def twin_is_found(tableauPiles, stockPile):
                         return '1'
     return '0'
 
-#step 4 and 7
+#step 4
 def find_biggest_tableau_advise(tableauPiles):
     bigestPile = tableauPiles[0]
     fromPile = tableauPiles[0]
@@ -139,7 +139,6 @@ def find_biggest_tableau_advise(tableauPiles):
 
     for cards in bigestPile.cards: 
         if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
-            #if topCard.value.value - cards.value.value == -1 and topCard.color != cards.color:
             movePile.append(cards)
 
     cardMoved = 0
@@ -157,6 +156,25 @@ def find_biggest_tableau_advise(tableauPiles):
                     return '1'
             
     return '0'
+    
+#step 7
+def move_from_stock7(tableauPile, stockPile):
+    for i in tableauPile: #Look through tableauPiles and see if they match with card in stock
+        for h in i.cards:
+            for j in stockPile.cards:
+                if h.color != j.color and h.value.value - j.value.value == -1: #If they do check if the card from stock matches with a card from tableau
+                    for tableau in tableauPile:
+                        if len(stock.cards) != 0:
+                        #if cards.color != tableau.frontCard.color and cards.value.value - tableau.frontCard.value.value == -1:
+                            if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:
+                                print("Move " + j.to_string() + " to " + tableau.frontCard.to_string())
+                                choice = input("Press 1 if you want to make this move\n")
+                                if choice == '1':
+                                    stockPile.frontCard = j
+                                    stock_to_tableau(stockPile,tableau)
+                                return '1'
+    return '0'
+
 
 # step 8
 def wastepile_to_tableau(wastePile, tableauPiles):
