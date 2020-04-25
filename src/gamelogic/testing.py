@@ -274,7 +274,7 @@ def print_table():
     print(f"{Style.RESET_ALL}")
 
 def test_case_solveable_deck():
-    #Will setup a solveable deck
+    #Will setup a solveable deck.
     testCards = []
     # Setup a simple deck for testing
     colorSelect = 0
