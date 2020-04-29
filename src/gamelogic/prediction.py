@@ -208,10 +208,9 @@ def move_from_stock7(tableauPile, stockPile):
         for h in i.cards:
             if len(stock.cards) != 0 and h.visible == Visible.TRUE:
                 for j in stockPile.cards:
-                    if h.color != j.color and h.value.value - j.value.value == -1: #If they do check if the card from stock matches with a card from tableau
+                    if h.color != j.color and h.value.value - j.value.value == -1: #If they do check, check if the card from stock matches with a card from tableau
                         for tableau in tableauPile:
                             if len(tableau.cards) != 0:
-                                #if cards.color != tableau.frontCard.color and cards.value.value - tableau.frontCard.value.value == -1:
                                 if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:
                                     print("Move " + j.to_string() + " to " + tableau.frontCard.to_string())
                                     print("Funktion 7")
@@ -220,6 +219,22 @@ def move_from_stock7(tableauPile, stockPile):
                                         stockPile.frontCard = j
                                         stock_to_tableau(stockPile,tableau)
                                     return '1'
+                            elif len(tableau.cards) == 0 and j.value.value == 13:
+                                print("Move " + j.to_string())
+                                choice = input("Press 1 if you want to make this move\n")
+                                if choice == '1':
+                                    stockPile.frontCard = j
+                                    stockPile.cards.remove(stockPile.frontCard)
+                                    if len(stock.cards) != 0:
+                                        stockPile.frontCard = stockPile.cards[LAST_INDEX]
+                                        stockPile.frontCard.visible = Visible.TRUE
+                                    else:
+                                        stockPile.frontCard = None
+                                    
+                                    tableau.cards.append(j)
+                                    tableau.frontCard = j
+                                return '1'
+
     return '0'
 
 
