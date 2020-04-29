@@ -38,23 +38,14 @@ from classes import *
 
 #Code runs here 
 test_case_solveable_deck()
-#print_table()
-again = 0
-while again != '1':
-  while 1:
-      print_cards()
-      print_table()
-      move_to_foundation_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-      print_table()
-      give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
-      print_table()
-      move_from_stock7(tableauPiles,stock)
-      find_biggest_tableau_advise(tableauPiles)
-      free_king_advice(tableauPiles)
-      print_table()
-      advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-      #win_check()
+print_table()
+#again = 0
+#while again != '1':
+while 1:
+  give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
+  print_table()
+  win_check()
       #again = input("If you want to stop press 1: ")
-  print("Done")
+  #print("Done")
 
 
