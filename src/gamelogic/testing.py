@@ -327,3 +327,4 @@ def test_case_solveable_deck():
         newFoundationPile = FoundationPile(suit)
         newFoundationPile.nextCard = Value.ACE
         foundationsPiles.append(newFoundationPile)
+
