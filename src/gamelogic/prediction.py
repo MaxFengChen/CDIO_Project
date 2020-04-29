@@ -89,6 +89,7 @@ def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowes
                 for foundPiles in foundationPiles:
                     if cards.suit == foundPiles.suit and cards.value == foundPiles.nextCard:
                         print("Put the " + cards.value.name + " of " + cards.suit.to_string()+ " in the foundation pile")
+                        print("Test funktion 1 og 2")
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
                            start_add_to_goal(cards, stock, foundPiles)
@@ -141,8 +142,7 @@ def find_biggest_tableau_advise(tableauPiles):
                                         fromPile = searchBiggest
 
                            
-    print("Pile with most nonvisible cards: ", bigestPile.number)
-
+    #print("Pile with most nonvisible cards: ", bigestPile.number)
     for cards in bigestPile.cards: 
         if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
             movePile.append(cards)
@@ -157,6 +157,7 @@ def find_biggest_tableau_advise(tableauPiles):
                 if movePile[0].color != toPile.frontCard.color and movePile[0].value.value - toPile.frontCard.value.value == -1:
                     if cardMoved == 0:
                         print("Move " + movePile[0].to_string() + " to " + toPile.frontCard.to_string())
+                        print("Funktion 4")
                         choice = input("If you want make this move, press: 1\n")
                         if choice == '1':
                             start_add_to_tableau(movePile, fromPile, toPile)
@@ -179,6 +180,7 @@ def twin_is_found(tableauPiles, stockPile):
                     for pile in tableauPiles:
                         if pile.frontCard != None:
                             if pile.frontCard.value.value == targetCard.value.value + 1 and pile.frontCard.color != targetCard.color:
+                                print("Funktion 6")
                                 print("Put the " + targetCard.value.name + " of " + targetCard.suit.to_string() + " on " + pile.frontCard.value.name + " of " + pile.frontCard.suit.to_string()) 
                                 stockPile.frontCard = targetCard
                                 stock_to_tableau(stockPile, pile)
@@ -189,7 +191,7 @@ def twin_is_found(tableauPiles, stockPile):
 def move_from_stock7(tableauPile, stockPile):
     for i in tableauPile: #Look through tableauPiles and see if they match with card in stock
         for h in i.cards:
-            if len(stock.cards) != 0:
+            if len(stock.cards) != 0 and h.visible == Visible.TRUE:
                 for j in stockPile.cards:
                     if h.color != j.color and h.value.value - j.value.value == -1: #If they do check if the card from stock matches with a card from tableau
                         for tableau in tableauPile:
@@ -197,6 +199,7 @@ def move_from_stock7(tableauPile, stockPile):
                                 #if cards.color != tableau.frontCard.color and cards.value.value - tableau.frontCard.value.value == -1:
                                 if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:
                                     print("Move " + j.to_string() + " to " + tableau.frontCard.to_string())
+                                    print("Funktion 7")
                                     choice = input("Press 1 if you want to make this move\n")
                                     if choice == '1':
                                         stockPile.frontCard = j
@@ -213,8 +216,10 @@ def stockpile_to_tableau(stockPile, tableauPiles):
             # If card matches
                 if card.value.value - tableauPile.frontCard.value.value == -1 and tableauPile.frontCard.color !=  card.color: 
                     print("Put the " + card.value.name + " of " + card.suit.to_string()+ " in the tableau pile containing: " + tableauPile.frontCard.value.name + " of " + tableauPile.frontCard.suit.to_string())
+                    print("Funktion 8")
                     choice = input("If you want make this move, press: 1\n")
                     if choice == '1':
+                        stock.frontCard = card
                         stock_to_tableau(stockPile, tableauPile) # Move to tableauPile
                     return '1'
     return '0'

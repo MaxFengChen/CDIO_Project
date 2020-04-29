@@ -36,40 +36,14 @@ from testing import *
 from prediction import *
 from classes import *
 
-<<<<<<< HEAD
-#Code runs here 
-=======
 # Code runs here 
->>>>>>> 1935cfbc56fc00ef65e11b89bcbb6f695f5b9a1c
 test_case_solveable_deck()
 print_table()
 again = 0
 while again != '1':
-<<<<<<< HEAD
-  while 1:
-      print_cards()
-      print_table()
-      give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-      print_table()
-      give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
-      print_table()
-      move_from_stock7(tableauPiles,stock)
-      find_biggest_tableau_advise(tableauPiles)
-
-      give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-      free_king_advice(tableauPiles)
-      print_table()
-      advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-      #win_check()
-      #again = input("If you want to stop press 1: ")
-  print("Done")
-
-
-=======
     give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
     print_table() 
     for i in range(5):
         find_biggest_tableau_advise(tableauPiles)
         print_table()
     again = input("If you want to stop press 1: ")
->>>>>>> 1935cfbc56fc00ef65e11b89bcbb6f695f5b9a1c
