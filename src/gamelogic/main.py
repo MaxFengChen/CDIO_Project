@@ -52,7 +52,7 @@ while 1:
 #     #print_table()
 #     #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
 #     print_table()
-#     for i in range(5):
+#     for i in range(5):1
 #         find_biggest_tableau_advise(tableauPiles)
 #         print_table()
 #     #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)

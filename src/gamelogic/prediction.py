@@ -99,24 +99,31 @@ def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowes
 def free_king_advice(tableauPiles):
     biggestLen = 0 
     emptyPile = None
+    targetCard = None
     targetPile = None
+    choice = None
     for pile in tableauPiles:
         if pile.frontCard == None:
             emptyPile = pile
         else:
             for card in pile.cards:
-                if card.value == 13 and len(pile.cards) > biggestLen :
-                    biggestLen = len(pile.cards) 
-                    targetPile = pile
-    if targetCard != None and emptyPile != None:
+                if card.visible == True and card.value == 13: 
+                    if len(pile.cards) > biggestLen :
+                        biggestLen = len(pile.cards) 
+                        targetPile = pile
+                        targetCard = card
+    if targetPile != None and emptyPile != None:
         print("Put the " + targetCard.value.name + " of " + targetCard.suit.to_string() + "on the empty tableau pile nr." + emptyPile.number.to_sting())
-        movePile = []
-        for card in targetPile.cards:
-            if card.visible == 1:
-                movePile.append(card)
-        start_add_to_tableau(movePile,targetPile,emptyPile)
-        return '1'
-    return'0'
+        choice = input("If you want make this move, press: 1 \n")
+        if choice == '1':
+            movePile = []
+            for card in targetPile.cards:
+                if card.visible == True:
+                    movePile.append(card)
+            start_add_to_tableau(movePile,targetPile,emptyPile)
+        return '1' 
+    else:
+        return '0'
 
 #step 4
 def find_biggest_tableau_advise(tableauPiles):
@@ -158,7 +165,7 @@ def find_biggest_tableau_advise(tableauPiles):
     cardMoved = 0
     if len(movePile) == 0:
         print("No more cards to move in tableau")
-        return '0' len(tableauPiles)
+        return '0' 
     else:
         for toPile in tableauPiles:
             if toPile.frontCard != None:
