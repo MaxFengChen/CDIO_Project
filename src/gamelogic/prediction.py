@@ -38,8 +38,8 @@ def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePil
     #Step 1 and 2:
     foundAdvice = move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard)
     #Step 3
-   # if foundAdvice == '0':
-    #    foundAdvice = free_king_advice(tableauPiles)
+    if foundAdvice == '0':
+       foundAdvice = free_king_advice(tableauPiles)
     #Step #4
     if foundAdvice == '0':
         foundAdvice = find_biggest_tableau_advise(tableauPiles)
@@ -108,18 +108,18 @@ def free_king_advice(tableauPiles):
             emptyPile = pile
         else:
             for card in pile.cards:
-                if card.visible == True and card.value == 13: 
+                if card.visible == Visible.TRUE and card.value.value == 13: 
                     if len(pile.cards) > biggestLen :
                         biggestLen = len(pile.cards) 
                         targetPile = pile
                         targetCard = card
     if targetPile != None and emptyPile != None:
-        print("Put the " + targetCard.value.name + " of " + targetCard.suit.to_string() + "on the empty tableau pile nr." + emptyPile.number.to_sting())
+        print("Put the " + targetCard.to_string() + " on the empty tableau pile nr. " + str(emptyPile.number))
         choice = input("If you want make this move, press: 1 \n")
         if choice == '1':
             movePile = []
             for card in targetPile.cards:
-                if card.visible == True:
+                if card.visible == Visible.TRUE:
                     movePile.append(card)
             start_add_to_tableau(movePile,targetPile,emptyPile)
         return '1' 

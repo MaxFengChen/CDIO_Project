@@ -135,13 +135,19 @@ def add_to_tableau(cardList, toPile, fromPile):
 def start_add_to_tableau(cardList, fromPile, toPile):
     # The one to call, this checks if the move is legal
     topCard = cardList[0]
-    if topCard.color != toPile.frontCard.color:
-        if (topCard.value.value - toPile.frontCard.value.value == -1):
-            add_to_tableau(cardList, toPile, fromPile)
+    if toPile.frontCard != None:
+        if topCard.color != toPile.frontCard.color:
+            if (topCard.value.value - toPile.frontCard.value.value == -1):
+                add_to_tableau(cardList, toPile, fromPile)
+            else:
+                print("Wrong value on card")
         else:
-            print("Wrong value on card")
+            print("Wrong color card")
+    if cardList[0].value.value == 13:
+        add_to_tableau(cardList, toPile, fromPile)
     else:
-        print("Wrong color card")
+        print("You can only move af king to an empty pile")
+
 
 def waste_to_stock():
     # Add entire waste pile to stock pile
@@ -252,7 +258,10 @@ def print_table():
     str = ""
 
     # Print Tableau piles
-    l = 20
+    l = 0
+    for pile in tableauPiles: 
+        if len(pile.cards) > l:
+            l = len(pile.cards) 
     for j in range(l):
         for pile in tableauPiles:
             if len(pile.cards)> l :
