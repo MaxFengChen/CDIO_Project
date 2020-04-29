@@ -252,10 +252,10 @@ def print_table():
     str = ""
 
     # Print Tableau piles
-    l = len(tableauPiles)
+    l = 20
     for j in range(l):
         for pile in tableauPiles:
-            if( len(pile.cards)> l ):
+            if len(pile.cards)> l :
                 l = len(pile.cards)
             if len(pile.cards) > j:
                 # Add coloring to the plateau cards
