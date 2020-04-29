@@ -38,8 +38,8 @@ def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePil
     #Step 1 and 2:
     foundAdvice = move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard)
     #Step 3
-    if foundAdvice == '0':
-        foundAdvice = free_king_advice(tableauPiles)
+   # if foundAdvice == '0':
+    #    foundAdvice = free_king_advice(tableauPiles)
     #Step #4
     if foundAdvice == '0':
         foundAdvice = find_biggest_tableau_advise(tableauPiles)
@@ -99,15 +99,23 @@ def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowes
 #Step 3 
 def free_king_advice(tableauPiles):
     biggestLen = 0 
-    targetCard = None
+    emptyPile = None
+    targetPile = None
     for pile in tableauPiles:
         if pile.frontCard == None:
             emptyPile = pile
-        elif pile.frontCard.value == 13 and len(pile.cards) > biggestLen :
-            biggestLen = len(pile.cards) 
-            targetCard = pile.frontCard.value
-    if targetCard != None:
+        else:
+            for card in pile.cards:
+                if card.value == 13 and len(pile.cards) > biggestLen :
+                    biggestLen = len(pile.cards) 
+                    targetPile = pile
+    if targetCard != None and emptyPile != None:
         print("Put the " + targetCard.value.name + " of " + targetCard.suit.to_string() + "on the empty tableau pile nr." + emptyPile.number.to_sting())
+        movePile = []
+        for card in targetPile.cards:
+            if card.visible == 1:
+                movePile.append(card)
+        start_add_to_tableau(movePile,targetPile,emptyPile)
         return '1'
     return'0'
 
@@ -150,7 +158,7 @@ def find_biggest_tableau_advise(tableauPiles):
     cardMoved = 0
     if len(movePile) == 0:
         print("No more cards to move in tableau")
-        return '0'
+        return '0' 
     else:
         for toPile in tableauPiles:
             if toPile.frontCard != None:
