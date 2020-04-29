@@ -252,8 +252,11 @@ def print_table():
     str = ""
 
     # Print Tableau piles
-    for j in range(len(tableauPiles)):
+    l = len(tableauPiles)
+    for j in range(l):
         for pile in tableauPiles:
+            if( len(pile.cards)> l ):
+                l = len(pile.cards)
             if len(pile.cards) > j:
                 # Add coloring to the plateau cards
                 if pile.cards[j].visible == Visible.TRUE:
@@ -264,7 +267,6 @@ def print_table():
                 else:
                     stringColor = f"{Fore.LIGHTWHITE_EX}"
                 str = str + stringColor
-
                 str = str + pile.cards[j].to_string() + " "
             else:
                 str = str + "     "

@@ -36,24 +36,27 @@ from testing import *
 from prediction import *
 from classes import *
 
-# Code runs here 
-#test_case_solveable_deck()
-#print_table()
-#again = 0
-#while again != '1':
-#while 1:
-    #print_cards()
-    #print_table()
-    #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-    #print_table()
- #   give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
-  #  print_table()
-    #move_from_stock7(tableauPiles,stock)
-    #find_biggest_tableau_advise(tableauPiles)
+#Code runs here 
+test_case_solveable_deck()
+print_table()
+again = 0
+while again != '1':
+  while 1:
+      print_cards()
+      print_table()
+      give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
+      print_table()
+      give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
+      print_table()
+      move_from_stock7(tableauPiles,stock)
+      find_biggest_tableau_advise(tableauPiles)
 
-    #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
-    #free_king_advice(tableauPiles)
-    #print_table()
-    #advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard
-   # win_check()
-    #again = input("If you want to stop press 1: ")
+      give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
+      free_king_advice(tableauPiles)
+      print_table()
+      advise_tableau_to_tableau(tableauPiles, stock, foundationsPiles, lowestNeededCard)
+      #win_check()
+      #again = input("If you want to stop press 1: ")
+  print("Done")
+
+
