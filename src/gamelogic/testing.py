@@ -319,3 +319,9 @@ def test_case_solveable_deck():
         stock.cards.append(testCards[card])
         testCards[card].visible = Visible.TRUE
         stock.frontCard =  testCards[card]
+    
+    #Initialize the Foundation piles
+    for suit in Suit:
+        newFoundationPile = FoundationPile(suit)
+        newFoundationPile.nextCard = Value.ACE
+        foundationsPiles.append(newFoundationPile)
