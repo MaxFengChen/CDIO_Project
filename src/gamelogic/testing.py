@@ -115,14 +115,28 @@ def add_to_goal(card, goalPile, fromPile):
     remove_from_tableau_pile(card, fromPile)
     goalPile.cards.append(card)
 
-def start_add_to_goal(card, fromPile, foundationPiles):
+def start_add_to_goal(card, fromPile, foundationPiles, lowestCardNeeded):
     # The one to call, this checks if the move is legal
     for foundationPile in foundationsPiles:
         if foundationPile.nextCard == card.value and foundationPile.suit == card.suit:
             add_to_goal(card, foundationPile, fromPile)
+            newLowestNeededCard(lowestNeededCard, foundationPiles)
             break
     else:
         print("Illegal move", end=" ")
+
+def newLowestNeededCard(lowestNeededCard, foundationPiles):
+    #checks the foundation piles and will maybe set a new lowestCardNeeded
+    if (foundationPiles[0].frontCard != None) and (foundationPiles[1].frontCard != None) and (foundationPiles[2].frontCard != None) and (foundationPiles[3].frontCard != None):
+        smallestVal = foundationPiles[0].frontCard.value.value
+        for pile in foundationPiles:
+            if pile.frontCard.value.value < smallestVal:
+                smallestVal = pile.frontCard.value.value
+    else:
+        smallestVal = 0
+    
+    lowestNeededCard = Value(smallestVal+2)
+    print("lnc: " + str(lowestNeededCard.value) + " smallest: " + str(smallestVal) + " Calc: " + str(Value(smallestVal+2)))
 
 def add_to_tableau(cardList, toPile, fromPile):
     # Move a card from one tableau pile to another

@@ -79,7 +79,7 @@ def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowes
                         print("Put the " + card.value.name + " of " + card.suit.to_string()+ " in the foundation pile")
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
-                           start_add_to_goal(card, pile, foundPile)
+                           start_add_to_goal(card, pile, foundationPiles, lowestNeededCard)
                         return '1'
 
 
@@ -92,7 +92,7 @@ def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowes
                         print("Test funktion 1 og 2")
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
-                           start_add_to_goal(cards, stock, foundPiles)
+                           start_add_to_goal(cards, stock, foundationPiles, lowestNeededCard)
                         return '1'
     return '0'
     

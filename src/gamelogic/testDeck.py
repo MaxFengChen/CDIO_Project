@@ -39,13 +39,12 @@ from classes import *
 #Code runs here 
 test_case_solveable_deck()
 print_table()
-#again = 0
-#while again != '1':
-while 1:
+again = 0
+while again != '2':
+# while 1:
   give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
   print_table()
-  win_check()
-      #again = input("If you want to stop press 1: ")
+  again = input("If you want to stop press 2: ")
   #print("Done")
 
 
