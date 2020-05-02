@@ -15,7 +15,9 @@
 #   https://github.com/MaxTheScrub/CDIO_Project 
 #
 #   Group 7:                                    
-#   Henrik Peter Warncke s184801                
+#   Henrik Peter Warncke s184801 
+# 
+#                
 #   Max Feng Chen Bjørnsen s184811              
 #   Jeppe Møller Bak s164871                    
 #   Adam Aron Edelsten s173057                  
