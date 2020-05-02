@@ -38,16 +38,16 @@ from classes import *
 
 # Code runs here 
 
-#setup_table()
-#print_table()
+setup_table()
+print_table()
 #print_cards()
 #start_add_to_tableau([tableauPiles[1].cards[LAST_INDEX]], tableauPiles[1], tableauPiles[3])
 # again = 0
 # while again != '1':
-#while 1:
- #   give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
- #   print_table()
- #   win_check()
+while 1:
+    give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
+    print_table()
+    win_check()
 #     #print_cards()
 #     #print_table()
 #     #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)

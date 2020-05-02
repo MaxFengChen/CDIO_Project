@@ -76,6 +76,7 @@ def move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowes
             if card.value.value <= lowestNeededCard.value:
                 for foundPile in foundationPiles:
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
+                        print("Funktion 1 og 2")
                         print("Put the " + card.value.name + " of " + card.suit.to_string()+ " in the foundation pile")
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
@@ -114,6 +115,7 @@ def free_king_advice(tableauPiles):
                         targetPile = pile
                         targetCard = card
     if targetPile != None and emptyPile != None:
+        print("Funktion 3")
         print("Put the " + targetCard.to_string() + " on the empty tableau pile nr. " + str(emptyPile.number))
         choice = input("If you want make this move, press: 1 \n")
         if choice == '1':
@@ -133,6 +135,7 @@ def find_biggest_tableau_advise(tableauPiles):
     movePile = []  #Number of cards to move from the bigest pile
 
     nonVisualCount = 0
+    nVCPrevious = 0
     #for pile in tableauPiles:
     for searchBiggest in tableauPiles:
         if searchBiggest.frontCard != None:
@@ -142,7 +145,11 @@ def find_biggest_tableau_advise(tableauPiles):
                         for cardsInPile in searchBiggest.cards:
                             if cardsInPile.visible == Visible.FALSE:
                                 nonVisualCount = nonVisualCount+1
-                        if nonVisualCount >= len(bigestPile.cards)-1: 
+                        if len(bigestPile.cards) != 0:
+                            for cards in bigestPile.cards:
+                                if cards.visible == Visible.FALSE:
+                                    nVCPrevious = nVCPrevious+1
+                        if nonVisualCount >= nVCPrevious: 
                             bigestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
                             fromPile = searchBiggest  
                             nonVisualCount = 0  
@@ -150,11 +157,11 @@ def find_biggest_tableau_advise(tableauPiles):
                     elif len(searchBiggest.cards) > 1:
                         for cardInPile in searchBiggest.cards:
                             if cardInPile.visible == Visible.TRUE:
-                                if cardInPile != searchBiggest.frontCard:
-                                    if cardInPile.color != pile.frontCard.color and cardInPile.value.value - pile.frontCard.value.value == -1:
-                                        bigestPile = searchBiggest
-                                        #movePile.append(cardInPile)
-                                        fromPile = searchBiggest
+                                #if cardInPile != searchBiggest.frontCard:
+                                if cardInPile.color != pile.frontCard.color and cardInPile.value.value - pile.frontCard.value.value == -1:
+                                    bigestPile = searchBiggest
+                                    #movePile.append(cardInPile)
+                                    fromPile = searchBiggest
 
                            
     #print("Pile with most nonvisible cards: ", bigestPile.number)
@@ -171,8 +178,8 @@ def find_biggest_tableau_advise(tableauPiles):
             if toPile.frontCard != None:
                 if movePile[0].color != toPile.frontCard.color and movePile[0].value.value - toPile.frontCard.value.value == -1:
                     if cardMoved == 0:
-                        print("Move " + movePile[0].to_string() + " to " + toPile.frontCard.to_string())
                         print("Funktion 4")
+                        print("Move " + movePile[0].to_string() + " to " + toPile.frontCard.to_string())
                         choice = input("If you want make this move, press: 1\n")
                         if choice == '1':
                             start_add_to_tableau(movePile, fromPile, toPile)
@@ -212,8 +219,8 @@ def move_from_stock7(tableauPile, stockPile):
                         for tableau in tableauPile:
                             if len(tableau.cards) != 0:
                                 if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:
-                                    print("Move " + j.to_string() + " to " + tableau.frontCard.to_string())
                                     print("Funktion 7")
+                                    print("Move " + j.to_string() + " to " + tableau.frontCard.to_string())
                                     choice = input("Press 1 if you want to make this move\n")
                                     if choice == '1':
                                         stockPile.frontCard = j
@@ -245,8 +252,8 @@ def stockpile_to_tableau(stockPile, tableauPiles):
             if tableauPile.frontCard != None:
             # If card matches
                 if card.value.value - tableauPile.frontCard.value.value == -1 and tableauPile.frontCard.color !=  card.color: 
-                    print("Put the " + card.value.name + " of " + card.suit.to_string()+ " in the tableau pile containing: " + tableauPile.frontCard.value.name + " of " + tableauPile.frontCard.suit.to_string())
                     print("Funktion 8")
+                    print("Put the " + card.value.name + " of " + card.suit.to_string()+ " in the tableau pile containing: " + tableauPile.frontCard.value.name + " of " + tableauPile.frontCard.suit.to_string())
                     choice = input("If you want make this move, press: 1\n")
                     if choice == '1':
                         stock.frontCard = card

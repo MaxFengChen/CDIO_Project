@@ -15,9 +15,7 @@
 #   https://github.com/MaxTheScrub/CDIO_Project 
 #
 #   Group 7:                                    
-#   Henrik Peter Warncke s184801 
-# 
-#                
+#   Henrik Peter Warncke s184801   
 #   Max Feng Chen Bjørnsen s184811              
 #   Jeppe Møller Bak s164871                    
 #   Adam Aron Edelsten s173057                  
@@ -42,7 +40,7 @@ tableauPiles = []
 foundationsPiles = []
 stock = StockPile()
 wastePile = WastePile()
-lowestNeededCard = Value.TWO
+lowestNeededCard = Value.FIVE
 
 def setup_table():
     # Setup a simple deck for testing
