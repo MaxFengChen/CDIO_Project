@@ -139,3 +139,12 @@ class FoundationPile:
         self.frontCard = None
         self.nextCard = None
         self.suit = suit
+
+class Game:
+    def __init__(self):
+        self.playingCards = []
+        self.tableauPiles = []
+        self.foundationPiles = []
+        self.stock = StockPile()
+        self.wastePile = WastePile()
+        self.lowestNeededCard = Value(2)
