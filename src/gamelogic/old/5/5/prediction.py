@@ -29,8 +29,7 @@
 #   Function names: snake_case                       
 #   Variables: camelCase
 #   Objects: camelCase                        
-#   Constants: SCREAMING_SNAKE_CASE   
-# 
+#   Constants: SCREAMING_SNAKE_CASE    
 from testing import *
 from classes import *
 
@@ -38,8 +37,7 @@ def give_advice(game):
     foundAdvice = '0'
     funcCount = 0
     #Step 1 and 2:
-    if foundAdvice == '0':
-        foundAdvice = move_to_foundation_advice_and_do(game)
+    foundAdvice = move_to_foundation_advice_and_do(game)
     #Step 3
     if foundAdvice == '0':
         funcCount = funcCount + 1
@@ -227,18 +225,12 @@ def twin_is_found(game):
     
 #step 7
 def move_from_stock7(game):
-    cards = []
-    for i in game.tableauPiles: #Look through tableauPiles and see if they match with card in stock
-        if i.frontCard != None:
-            for h in reversed(i.cards):
-                if h.visible == Visible.TRUE:
-                    cards.append(h)
-                    card = cards[-1]
-            if len(game.stock.cards) != 0: #and h.visible == Visible.TRUE:
-            #if h == i.frontCard or h == i.cards[0]:
+    for i in game.tableauPile: #Look through tableauPiles and see if they match with card in stock
+        for h in i.cards:
+            if len(game.stock.cards) != 0 and h.visible == Visible.TRUE:
                 for j in game.stock.cards:
-                    if card.color != j.color and card.value.value - j.value.value == -1: #If they do check, check if the card from stock matches with a card from tableau
-                        for tableau in game.tableauPiles:
+                    if h.color != j.color and h.value.value - j.value.value == -1: #If they do check, check if the card from stock matches with a card from tableau
+                        for tableau in game.tableauPile:
                             if len(tableau.cards) != 0:
                                 if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:
                                     print("Funktion 7")
@@ -247,7 +239,7 @@ def move_from_stock7(game):
                                     if choice == '1':
                                         game.stock.frontCard = j
                                         stock_to_tableau(game.stock,tableau)
-                                        return '1'
+                                    return '1'
                             elif len(tableau.cards) == 0 and j.value.value == 13:
                                 print("Move " + j.to_string())
                                 choice = input("Press 1 if you want to make this move\n")
@@ -259,10 +251,10 @@ def move_from_stock7(game):
                                         game.stock.frontCard.visible = Visible.TRUE
                                     else:
                                         game.stock.frontCard = None
-                                
+                                    
                                     tableau.cards.append(j)
                                     tableau.frontCard = j
-                                    return '1'
+                                return '1'
 
     return '0'
 
