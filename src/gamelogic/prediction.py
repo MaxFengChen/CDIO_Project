@@ -35,24 +35,36 @@ from classes import *
 
 def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePile):
     foundAdvice = '0'
+    funcCount = 0
     #Step 1 and 2:
     foundAdvice = move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard)
     #Step 3
     if foundAdvice == '0':
-       foundAdvice = free_king_advice(tableauPiles)
+        funcCount = funcCount + 1
+        foundAdvice = free_king_advice(tableauPiles)
     #Step #4
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = find_biggest_tableau_advise(tableauPiles)
     #Step 5 is already imnplemented as program knows stock
     #Step 6 
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = twin_is_found(tableauPiles, stock)
     #Step 7
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = move_from_stock7(tableauPiles, stock)
     #Step 8
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(stock, tableauPiles)
+    if foundAdvice == '0':
+        funcCount = funcCount + 1
+    if funcCount == 6:
+        print("No moves possible, game unsolvable.")
+        return 0
+
 
 #Step 1 and 2
 def move_to_foundation_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
@@ -108,12 +120,13 @@ def free_king_advice(tableauPiles):
         if pile.frontCard == None:
             emptyPile = pile
         else:
-            for card in pile.cards:
-                if card.visible == Visible.TRUE and card.value.value == 13: 
-                    if len(pile.cards) > biggestLen :
-                        biggestLen = len(pile.cards) 
-                        targetPile = pile
-                        targetCard = card
+            if pile.cards[0].visible == Visible.FALSE :
+                for card in pile.cards:
+                    if card.visible == Visible.TRUE and card.value.value == 13:   
+                        if len(pile.cards) > biggestLen :
+                            biggestLen = len(pile.cards) 
+                            targetPile = pile
+                            targetCard = card
     if targetPile != None and emptyPile != None:
         print("Funktion 3")
         print("Put the " + targetCard.to_string() + " on the empty tableau pile nr. " + str(emptyPile.number))
