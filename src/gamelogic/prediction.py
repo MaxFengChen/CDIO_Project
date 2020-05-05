@@ -33,28 +33,39 @@
 from testing import *
 from classes import *
 
-def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePile, dontMoveKing):
+def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePile):
     foundAdvice = '0'
-    
+    funcCount = 0
     #Step 1 and 2:
     if foundAdvice == '0':
         foundAdvice = move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard)
     #Step 3
     if foundAdvice == '0':
-            foundAdvice = free_king_advice(tableauPiles)
+        funcCount = funcCount + 1
+        foundAdvice = free_king_advice(tableauPiles)
     #Step #4
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = find_biggest_tableau_advise(tableauPiles)
     #Step 5 is already imnplemented as program knows stock
     #Step 6 
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = twin_is_found(tableauPiles, stock)
     #Step 7
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = move_from_stock7(tableauPiles, stock)
     #Step 8
     if foundAdvice == '0':
+        funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(stock, tableauPiles)
+    if foundAdvice == '0':
+        funcCount = funcCount + 1
+    if funcCount == 6:
+        print("No moves possible, game unsolvable.")
+        return 0
+
 
 #Step 1 and 2
 def move_to_foundation_advice(tableauPiles, stock, foundationPiles, lowestNeededCard):
@@ -110,12 +121,13 @@ def free_king_advice(tableauPiles):
         if pile.frontCard == None:
             emptyPile = pile
         else:
-            for card in pile.cards:
-                if card.visible == Visible.TRUE and card.value.value == 13: 
-                    if len(pile.cards) > biggestLen :
-                        biggestLen = len(pile.cards) 
-                        targetPile = pile
-                        targetCard = card
+            if pile.cards[0].visible == Visible.FALSE :
+                for card in pile.cards:
+                    if card.visible == Visible.TRUE and card.value.value == 13:   
+                        if len(pile.cards) > biggestLen :
+                            biggestLen = len(pile.cards) 
+                            targetPile = pile
+                            targetCard = card
     if targetPile != None and emptyPile != None:
         print("Funktion 3")
         print("Put the " + targetCard.to_string() + " on the empty tableau pile nr. " + str(emptyPile.number))
@@ -213,11 +225,17 @@ def twin_is_found(tableauPiles, stockPile):
     
 #step 7
 def move_from_stock7(tableauPile, stockPile):
+    cards = []
     for i in tableauPile: #Look through tableauPiles and see if they match with card in stock
-        for h in i.cards:
-            if len(stock.cards) != 0 and h.visible == Visible.TRUE:
+        if i.frontCard != None:
+            for h in reversed(i.cards):
+                if h.visible == Visible.TRUE:
+                    cards.append(h)
+                    card = cards[-1]
+            if len(stock.cards) != 0: #and h.visible == Visible.TRUE:
+            #if h == i.frontCard or h == i.cards[0]:
                 for j in stockPile.cards:
-                    if h.color != j.color and h.value.value - j.value.value == -1: #If they do check, check if the card from stock matches with a card from tableau
+                    if card.color != j.color and card.value.value - j.value.value == -1: #If they do check, check if the card from stock matches with a card from tableau
                         for tableau in tableauPile:
                             if len(tableau.cards) != 0:
                                 if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:
@@ -227,7 +245,7 @@ def move_from_stock7(tableauPile, stockPile):
                                     if choice == '1':
                                         stockPile.frontCard = j
                                         stock_to_tableau(stockPile,tableau)
-                                    return '1'
+                                        return '1'
                             elif len(tableau.cards) == 0 and j.value.value == 13:
                                 print("Move " + j.to_string())
                                 choice = input("Press 1 if you want to make this move\n")
@@ -239,10 +257,10 @@ def move_from_stock7(tableauPile, stockPile):
                                         stockPile.frontCard.visible = Visible.TRUE
                                     else:
                                         stockPile.frontCard = None
-                                    
+                                
                                     tableau.cards.append(j)
                                     tableau.frontCard = j
-                                return '1'
+                                    return '1'
 
     return '0'
 

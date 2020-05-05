@@ -45,7 +45,8 @@ print_table()
 # again = 0
 # while again != '1':
 while 1:
-    give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
+    if give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile) == 0:
+        break
     print_table()
     win_check()
 #     #print_cards()

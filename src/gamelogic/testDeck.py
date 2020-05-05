@@ -43,9 +43,10 @@ again = 0
 #while again != '2':
 
 while 1:
-  print_table()
-  give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile, dontMoveKing)
- 
+    if give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile) == 0:
+        break
+    print_table()
+    win_check() 
   #again = input()
   #print("Done")
 
