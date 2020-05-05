@@ -41,10 +41,11 @@ test_case_solveable_deck()
 again = 0
 #print("If you want to stop press 2: ")
 #while again != '2':
-print_cards()
+
 while 1:
   print_table()
-  give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile)
+  give_advice(tableauPiles, stock, foundationsPiles, lowestNeededCard, wastePile, dontMoveKing)
+ 
   #again = input()
   #print("Done")
 

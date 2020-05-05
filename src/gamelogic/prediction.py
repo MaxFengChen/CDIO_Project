@@ -33,13 +33,15 @@
 from testing import *
 from classes import *
 
-def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePile):
+def give_advice(tableauPiles, stock, foundationPiles, lowestNeededCard, wastePile, dontMoveKing):
     foundAdvice = '0'
+    
     #Step 1 and 2:
-    foundAdvice = move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard)
+    if foundAdvice == '0':
+        foundAdvice = move_to_foundation_advice_and_do(tableauPiles, stock, foundationPiles, lowestNeededCard)
     #Step 3
     if foundAdvice == '0':
-       foundAdvice = free_king_advice(tableauPiles)
+            foundAdvice = free_king_advice(tableauPiles)
     #Step #4
     if foundAdvice == '0':
         foundAdvice = find_biggest_tableau_advise(tableauPiles)

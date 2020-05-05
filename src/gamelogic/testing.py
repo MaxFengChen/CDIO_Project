@@ -40,7 +40,7 @@ tableauPiles = []
 foundationsPiles = []
 stock = StockPile()
 wastePile = WastePile()
-lowestNeededCard = Value.FIVE
+lowestNeededCard = Value.TWO
 
 def setup_table():
     # Setup a simple deck for testing
