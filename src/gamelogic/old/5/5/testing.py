@@ -174,26 +174,26 @@ def waste_to_stock(game):
 
 def stock_to_tableau(game, toPile): #waste_to_tableau(toPile):
     #if len(wastePile.cards) == 0:
-    if len(game.stock.cards) == 0:
+    if len(game.stockPile.cards) == 0:
         print("Stock is empty\n")
         
     else:
         #buffer = wastePile.frontCard
-        buffer = game.stock.frontCard
+        buffer = game.stockPile.frontCard
         if buffer.color != toPile.frontCard.color:
             if buffer.value.value - toPile.frontCard.value.value == -1:
                 #wastePile.cards.remove(wastePile.frontCard)
-                game.stock.cards.remove(game.stock.frontCard)
+                game.stockPile.cards.remove(game.stockPile.frontCard)
                 
                 #if len(wastePile.cards) != 0:
                 if len(game.stock.cards) != 0:
                     #wastePile.frontCard = wastePile.cards[LAST_INDEX]
                     #wastePile.frontCard.visible = Visible.TRUE
-                    game.stock.frontCard = game.stock.cards[LAST_INDEX]
-                    game.stock.frontCard.visible = Visible.TRUE
+                    game.stockPile.frontCard = game.stockPile.cards[LAST_INDEX]
+                    game.stockPile.frontCard.visible = Visible.TRUE
                 else:
                     #wastePile.frontCard = None
-                    game.stock.frontCard = None
+                    game.stockPile.frontCard = None
             
                 toPile.cards.append(buffer)
                 toPile.frontCard = buffer

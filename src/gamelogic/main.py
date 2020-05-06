@@ -37,19 +37,18 @@ from prediction import *
 from classes import *
 
 # Code runs here 
-
-setup_table()
-print_table()
+game = Game()
+setup_table(game)
+print_table(game)
 #print_cards()
 #start_add_to_tableau([tableauPiles[1].cards[LAST_INDEX]], tableauPiles[1], tableauPiles[3])
 # again = 0
 # while again != '1':
 while 1:
-    lowCard = newLowestNeededCard(lowestNeededCard, foundationsPiles)
-    if give_advice(tableauPiles, stock, foundationsPiles, lowCard, wastePile) == 0:
+    if give_advice(game) == 0:
         break
-    print_table()
-    win_check()
+    print_table(game)
+    win_check(game)
 #     #print_cards()
 #     #print_table()
 #     #give_advice_and_do(tableauPiles, stock, foundationsPiles, lowestNeededCard)
