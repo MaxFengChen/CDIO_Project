@@ -228,12 +228,11 @@ def move_from_stock7(tableauPile, stockPile):
     cards = []
     for i in tableauPile: #Look through tableauPiles and see if they match with card in stock
         if i.frontCard != None:
-            for h in reversed(i.cards):
+            for h in reversed(i.cards): #Find the last visible card in the pile
                 if h.visible == Visible.TRUE:
                     cards.append(h)
                     card = cards[-1]
-            if len(stock.cards) != 0: #and h.visible == Visible.TRUE:
-            #if h == i.frontCard or h == i.cards[0]:
+            if len(stock.cards) != 0: 
                 for j in stockPile.cards:
                     if card.color != j.color and card.value.value - j.value.value == -1: #If they do check, check if the card from stock matches with a card from tableau
                         for tableau in tableauPile:
