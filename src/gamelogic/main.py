@@ -37,7 +37,7 @@ from prediction import *
 from classes import *
 
 # Code runs here 
-game = Game
+game = Game()
 setup_table(game)
 print_table(game)
 #print_cards()

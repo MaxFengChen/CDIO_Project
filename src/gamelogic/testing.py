@@ -143,8 +143,7 @@ def add_to_tableau(cardList, toPile, fromPile):
     for card in cardList:        
         remove_from_tableau_pile(card, fromPile)
     toPile.cards.extend(cardList)
-    toPile.frontCard = cardList[LAST_INDEX]    
-    print("\n")
+    toPile.frontCard = cardList[LAST_INDEX]
 
 def start_add_to_tableau(cardList, fromPile, toPile):
     # The one to call, this checks if the move is legal
@@ -157,7 +156,7 @@ def start_add_to_tableau(cardList, fromPile, toPile):
                 print("Wrong value on card")
         else:
             print("Wrong color card")
-    if cardList[0].value.value == 13:
+    elif cardList[0].value.value == 13:
         add_to_tableau(cardList, toPile, fromPile)
     else:
         print("You can only move af king to an empty pile")
@@ -168,32 +167,31 @@ def waste_to_stock(game):
     buffer = game.wastePile.cards
     game.wastePile.cards = []
     game.wastePile.frontCard = None
-    
     game.stock.cards.extend(reversed(buffer)) # Need to reverse the array, so that it is in the same order as it started
     game.stock.frontCard = buffer[0]
 
 def stock_to_tableau(game, toPile): #waste_to_tableau(toPile):
     #if len(wastePile.cards) == 0:
-    if len(game.stockPile.cards) == 0:
+    if len(game.stock.cards) == 0:
         print("Stock is empty\n")
         
     else:
         #buffer = wastePile.frontCard
-        buffer = game.stockPile.frontCard
+        buffer = game.stock.frontCard
         if buffer.color != toPile.frontCard.color:
             if buffer.value.value - toPile.frontCard.value.value == -1:
                 #wastePile.cards.remove(wastePile.frontCard)
-                game.stockPile.cards.remove(game.stockPile.frontCard)
+                game.stock.cards.remove(game.stock.frontCard)
                 
                 #if len(wastePile.cards) != 0:
                 if len(game.stock.cards) != 0:
                     #wastePile.frontCard = wastePile.cards[LAST_INDEX]
                     #wastePile.frontCard.visible = Visible.TRUE
-                    game.stockPile.frontCard = game.stockPile.cards[LAST_INDEX]
-                    game.stockPile.frontCard.visible = Visible.TRUE
+                    game.stock.frontCard = game.stock.cards[LAST_INDEX]
+                    game.stock.frontCard.visible = Visible.TRUE
                 else:
                     #wastePile.frontCard = None
-                    game.stockPile.frontCard = None
+                    game.stock.frontCard = None
             
                 toPile.cards.append(buffer)
                 toPile.frontCard = buffer
