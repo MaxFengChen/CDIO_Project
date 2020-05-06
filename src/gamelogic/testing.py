@@ -34,6 +34,7 @@
 from classes import *
 import random
 from colorama import Fore, Back, Style
+from playsound import playsound
 
 
 def setup_table(game):
@@ -96,6 +97,7 @@ def win_check(game):
         if card.visible == Visible.FALSE:
             check = 1
     if check == 0:
+        print("")
         print("  / ____|                           | |     | | \ \   / /        ( )                               | | | | | | | | |\n" 
         + " | |  __  ___  _ __   __ _ _ __ __ _| |_ ___| |  \ \_/ /__  _   _|/__   _____  __      _____  _ __ | | | | | | | | |\n" 
         + " | | |_ |/ _ \| '_ \ / _` | '__/ _` | __/ __| |   \   / _ \| | | | \ \ / / _ \ \ \ /\ / / _ \| '_ \| | | | | | | | |\n" 
@@ -103,6 +105,8 @@ def win_check(game):
         + "  \_____|\___/|_| |_|\__, |_|  \__,_|\__|___(_)    |_|\___/ \__,_|   \_/ \___|   \_/\_/ \___/|_| |_(_|_|_|_|_|_|_|_)\n"
         + "                      __/ |                                                                                         \n"
         + "                     |___/                                                                                          ", end="\n")
+        playsound('./fanfare.mp3') #https://www.youtube.com/watch?v=4PIjjmq5cqg
+        exit()
         #return 0
 
 def remove_from_tableau_pile(card, tableauPile):

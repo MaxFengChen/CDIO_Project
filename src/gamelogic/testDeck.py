@@ -40,6 +40,7 @@ from classes import *
 game = Game()
 test_case_solveable_deck(game)
 again = 0
+print_table(game)
 while 1:
     if give_advice(game) == 0:
         break
