@@ -97,6 +97,7 @@ def win_check(game):
             check = 1
     if check == 0:
         print("Congrats you have won!", end="\n")
+        #return 0
 
 def remove_from_tableau_pile(card, tableauPile):
     # Removes a card from the Tableau piles
@@ -111,7 +112,10 @@ def remove_from_tableau_pile(card, tableauPile):
 def add_to_goal(card, goalPile, fromPile, game):
     # Don't call this call start_add_to_goal(), but this adds the card to the foundation pile
     goalPile.frontCard = card
-    goalPile.nextCard = Value(goalPile.nextCard.value + 1)
+    if goalPile.nextCard == Value(13):
+        goalPile.nextCard = Value(13)
+    else:
+        goalPile.nextCard = Value(goalPile.nextCard.value + 1)
     remove_from_tableau_pile(card, fromPile)
     goalPile.cards.append(card)
 
@@ -135,16 +139,19 @@ def newLowestNeededCard(game):
     else:
         smallestVal = 0
     
-    game.lowestNeededCard = Value(smallestVal+2)
-    print("lnc: " + str(game.lowestNeededCard.value) + " smallest: " + str(smallestVal) + " Calc: " + str(Value(smallestVal+2)))
+    if smallestVal+3 > 13:
+        game.lowestNeededCard = Value(13)
+    else:
+        game.lowestNeededCard = Value(smallestVal+3)
+    
+    #print("lnc: " + str(game.lowestNeededCard.value) + " smallest: " + str(smallestVal) + " Calc: " + str(Value(smallestVal+3)))
 
 def add_to_tableau(cardList, toPile, fromPile):
     # Move a card from one tableau pile to another
     for card in cardList:        
         remove_from_tableau_pile(card, fromPile)
     toPile.cards.extend(cardList)
-    toPile.frontCard = cardList[LAST_INDEX]    
-    print("\n")
+    toPile.frontCard = cardList[LAST_INDEX]
 
 def start_add_to_tableau(cardList, fromPile, toPile):
     # The one to call, this checks if the move is legal
@@ -157,7 +164,7 @@ def start_add_to_tableau(cardList, fromPile, toPile):
                 print("Wrong value on card")
         else:
             print("Wrong color card")
-    if cardList[0].value.value == 13:
+    elif cardList[0].value.value == 13:
         add_to_tableau(cardList, toPile, fromPile)
     else:
         print("You can only move af king to an empty pile")
@@ -168,7 +175,6 @@ def waste_to_stock(game):
     buffer = game.wastePile.cards
     game.wastePile.cards = []
     game.wastePile.frontCard = None
-    
     game.stock.cards.extend(reversed(buffer)) # Need to reverse the array, so that it is in the same order as it started
     game.stock.frontCard = buffer[0]
 

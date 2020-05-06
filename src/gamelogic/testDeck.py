@@ -41,16 +41,14 @@ game = Game()
 test_case_solveable_deck(game)
 again = 0
 #print("If you want to stop press 2: ")
-#while again != '2':
 while 1:
-    #lowCard = newLowestNeededCard(game)
     if give_advice(game) == 0:
         break
     print_table(game)
     win_check(game)
-
-
-  #again = input()
+    #if win_check(game) == 0:
+     #   break
+  #again = input("If you want to stop press 2: ")
   #print("Done")
 
 

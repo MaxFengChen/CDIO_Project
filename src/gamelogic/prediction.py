@@ -221,7 +221,7 @@ def twin_is_found(game):
                                 print("Funktion 6")
                                 print("Put the " + targetCard.value.name + " of " + targetCard.suit.to_string() + " on " + pile.frontCard.value.name + " of " + pile.frontCard.suit.to_string()) 
                                 game.stock.frontCard = targetCard
-                                stock_to_tableau(game.stock, pile)
+                                stock_to_tableau(game, pile)
                                 return '1'
     return '0'
     
@@ -245,7 +245,7 @@ def move_from_stock7(game):
                                     choice = input("Press 1 if you want to make this move\n")
                                     if choice == '1':
                                         game.stock.frontCard = j
-                                        stock_to_tableau(game.stock,tableau)
+                                        stock_to_tableau(game,tableau)
                                         return '1'
                             elif len(tableau.cards) == 0 and j.value.value == 13:
                                 print("Move " + j.to_string())
@@ -278,15 +278,16 @@ def stockpile_to_tableau(game):
                     choice = input("If you want make this move, press: 1\n")
                     if choice == '1':
                         game.stock.frontCard = card
-                        stock_to_tableau(game.stock, tableauPile) # Move to tableauPile
+                        stock_to_tableau(game, tableauPile) # Move to tableauPile
                     return '1'
     return '0'
 
 # Step 9
-def reshuffle_to_stockpile(wastePile, stockPile):
+def reshuffle_to_stockpile(game):
     # Only use when stockPile is empty
-    random.shuffle(wastePile.cards)
-    stockPile.cards = wastePile.cards.copy()
-    stockPile.frontCard = stockPile.cards[LAST_INDEX]
-    wastePile.cards.clear()
-    wastePile.frontCard = None
+    print("reshuffle stockpile")
+    # random.shuffle(game.wastePile.cards)
+    # game.stock.cards = game.wastePile.cards.copy()
+    # game.stock.frontCard = game.stock.cards[LAST_INDEX]
+    # game.wastePile.cards.clear()
+    # game.wastePile.frontCard = None
