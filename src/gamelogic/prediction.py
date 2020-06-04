@@ -33,6 +33,7 @@
 # 
 from testing import *
 from classes import *
+from SavingGames import *
 
 def give_advice(game):
     foundAdvice = '0'
@@ -65,6 +66,8 @@ def give_advice(game):
         funcCount = funcCount + 1
     if funcCount == 6:
         print("No moves possible, game unsolvable.")
+        saveFailedGames(game)
+
         return 0
 
 
