@@ -71,7 +71,7 @@ def give_advice(game):
         foundAdvice = move_to_foundation_advice_without_limit_and_do(game)
     if foundAdvice == '0':
         funcCount = funcCount + 1
-    if funcCount == 6:
+    if funcCount == 7:
         print("No moves possible, game unsolvable.")
         saveFailedGames(game)
 
