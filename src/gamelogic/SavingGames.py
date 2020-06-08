@@ -36,7 +36,7 @@ from testing import *
 from classes import *
    
 def saveFailedGames(game):
-    numVariablePath = "src/gamelogic/FailedGames/numberVariable"
+    numVariablePath = "src/gamelogic/FailedGames/numberVariable.txt"
     failedGamePath = "src/gamelogic/FailedGames/failedGame"
 
     num = open(numVariablePath, "rt")
