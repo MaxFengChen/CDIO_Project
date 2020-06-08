@@ -149,10 +149,10 @@ def newLowestNeededCard(game):
     else:
         smallestVal = 0
     
-    if smallestVal+3 > 13:
+    if smallestVal+2 > 13:
         game.lowestNeededCard = Value(13)
     else:
-        game.lowestNeededCard = Value(smallestVal+3)
+        game.lowestNeededCard = Value(smallestVal+2)
     
     #print("lnc: " + str(game.lowestNeededCard.value) + " smallest: " + str(smallestVal) + " Calc: " + str(Value(smallestVal+3)))
 
@@ -368,6 +368,7 @@ def test_case_solveable_deck(game):
         newFoundationPile.nextCard = Value.ACE
         game.foundationPiles.append(newFoundationPile)
 
-    #Initialize lowestNeededCard    
+    #Initialize lowestNeededCard  
+    game.playingCards = testCards  
     newLowestNeededCard(game)
-    
+ 

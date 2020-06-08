@@ -30,17 +30,16 @@
 #   Function names: snake_case                       
 #   Variables: camelCase
 #   Objects: camelCase                        
-#   Constants: SCREAMING_SNAKE_CASE             
+#   Constants: SCREAMING_SNAKE_CASE    
 
 from testing import *
 from prediction import *
 from classes import *
 from SavingGames import *
 
-#Code runs here 
 
 game = Game()
-test_case_solveable_deck(game)
+reloadFailedGame(game)
 again = 0
 print_table(game)
 
@@ -49,5 +48,3 @@ while 1:
         break
     print_table(game)
     win_check(game)
-
-
