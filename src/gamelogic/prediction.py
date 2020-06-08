@@ -36,6 +36,9 @@ from classes import *
 from SavingGames import *
 
 def give_advice(game):
+    round = 0
+    print("Round " + str(round) + ". ")
+    round = round +1 
     foundAdvice = '0'
     funcCount = 0
     #Step 1 and 2:
@@ -62,6 +65,10 @@ def give_advice(game):
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(game)
+    #Step 9
+    if foundAdvice == '0':
+        funcCount = funcCount + 1
+        foundAdvice = move_to_foundation_advice_without_limit_and_do(game)
     if foundAdvice == '0':
         funcCount = funcCount + 1
     if funcCount == 6:
@@ -294,3 +301,32 @@ def reshuffle_to_stockpile(game):
     # game.stock.frontCard = game.stock.cards[LAST_INDEX]
     # game.wastePile.cards.clear()
     # game.wastePile.frontCard = None
+
+def move_to_foundation_advice_without_limit_and_do(game):
+    #Give an advice what to do
+    
+    for pile in game.tableauPiles:
+        if len(pile.cards) != 0:
+            card = pile.frontCard
+            for foundPile in game.foundationPiles:
+                if card.suit == foundPile.suit and card.value == foundPile.nextCard:
+                    print("Funktion 1 og 2")
+                    print("Put the " + card.value.name + " of " + card.suit.to_string()+ " in the foundation pile")
+                    choice = input("If you wish to do so enter 1: ")
+                    if choice == '1':
+                        start_add_to_goal(card, pile, game)
+                    return '1'
+
+
+    if len(game.stock.cards) != 0:
+        pile = game.stock
+        for cards in game.stock.cards:
+            if cards.value.value <= game.lowestNeededCard.value:
+                if cards.suit == game.foundPile.suit and cards.value == game.foundationPiles.nextCard:
+                    print("Put the " + cards.value.name + " of " + cards.suit.to_string()+ " in the foundation pile")
+                    print("Test funktion 1 og 2")
+                    choice = input("If you wish to do so enter 1: ")
+                    if choice == '1':
+                        start_add_to_goal(cards, pile, game)
+                    return '1'
+    return '0'
