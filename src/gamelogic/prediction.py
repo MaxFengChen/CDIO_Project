@@ -36,9 +36,6 @@ from classes import *
 from SavingGames import *
 
 def give_advice(game):
-    round = 0
-    print("Round " + str(round) + ". ")
-    round = round +1 
     foundAdvice = '0'
     funcCount = 0
     #Step 1 and 2:
