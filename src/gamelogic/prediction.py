@@ -36,32 +36,41 @@ from classes import *
 from SavingGames import *
 
 def give_advice(game):
+    #This is "main" for running the AI
     foundAdvice = '0'
     funcCount = 0
+
     #Step 1 and 2:
     if foundAdvice == '0':
         foundAdvice = move_to_foundation_advice_and_do(game)
+    
     #Step 3
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = free_king_advice(game)
+    
     #Step #4
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = find_biggest_tableau_advise(game)
+    
     #Step 5 is already imnplemented as program knows stock
+    
     #Step 6 
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = twin_is_found(game)
+    
     #Step 7
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = move_from_stock7(game)
+    
     #Step 8
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(game)
+    
     #Step 9
     if foundAdvice == '0':
         funcCount = funcCount + 1
@@ -152,55 +161,50 @@ def free_king_advice(game):
         return '0'
 
 #step 4
-def find_biggest_tableau_advise(game):
-    biggestPile = game.tableauPiles[0] 
+def find_biggest_tableau_advise(game):  #Find moveable pile with most nonvisual cards
+    bigestPile = game.tableauPiles[0]   #Variable that saves the pile with most nonevisual cards
     fromPile = game.tableauPiles[0]
-    movePile = []  #Number of cards to move from the biggest pile
-    bufferTest = []
+    movePile = []  #Number of cards to move from the bigest pile
+    bufferTest = [] #Buffer used to save all visible cards in the current pile
+
     nonVisualCount = 0
     nVCPrevious = 0
-    #for pile in tableauPiles:
-    for searchBiggest in game.tableauPiles:
+
+    for searchBiggest in game.tableauPiles: #Current pile
         if searchBiggest.frontCard != None:
-            for pile in game.tableauPiles:
+            for pile in game.tableauPiles:  #All tableau piles
                 if pile.frontCard != None:
                     bufferTest = []
-                    if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1:
-                        if biggestPile == None:
-                            biggestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
-                            fromPile = searchBiggest  
-                            nonVisualCount = 0
-                        for cardsInPile in searchBiggest.cards:
-                            if cardsInPile.visible == Visible.FALSE:
+                    if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1: #Compare tableau piles frontcard
+                        for cardsInPile in searchBiggest.cards: #Cards in current pile
+                            if cardsInPile.visible == Visible.FALSE:    
                                 nonVisualCount = nonVisualCount+1   #Nonvisual cards in current pile
-                        if len(biggestPile.cards) != 0:
-                            for cards in biggestPile.cards:
+                        if len(bigestPile.cards) != 0:  
+                            for cards in bigestPile.cards:      #Cards in current pile with most nonevisual cards
                                 if cards.visible == Visible.FALSE:  #Nonvisual cards in biggest pile
                                     nVCPrevious = nVCPrevious+1
                         if nonVisualCount >= nVCPrevious: #COmpare current pile with current biggest pile
-                            biggestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
+                            bigestPile = searchBiggest  # Update the pile with most nonvisual cards
                             fromPile = searchBiggest  
                             nonVisualCount = 0  
-                    elif len(searchBiggest.cards) > 1:
-                        for cardInPile in searchBiggest.cards:
+                
+                    elif len(searchBiggest.cards) > 1:  #If there are more than 1 card in pile
+                        for cardInPile in searchBiggest.cards:  
                             if cardInPile.visible == Visible.TRUE:
-                                bufferTest.append(cardInPile)
-                        #if cardInPile != searchBiggest.frontCard:
-                        if bufferTest[0].color != pile.frontCard.color and bufferTest[0].value.value - pile.frontCard.value.value == -1:    #Moves entire pile
-                            biggestPile = searchBiggest
+                                bufferTest.append(cardInPile)   #Buffer used to save all visual cards. Can't move nonvisual cards
+
+                        if bufferTest[0].color != pile.frontCard.color and bufferTest[0].value.value - pile.frontCard.value.value == -1:    #If first cards in pile can be moved
+                            bigestPile = searchBiggest
                             fromPile = searchBiggest
                             bufferTest = []
 
-                           
-    #print("Pile with most nonvisible cards: ", biggestPile.number)
-    if biggestPile != None:
-        for cards in biggestPile.cards: 
-            if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
-                movePile.append(cards)
+    for cards in bigestPile.cards: 
+        if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
+            movePile.append(cards)          #We only move cards that are visual
 
     cardMoved = 0
     if len(movePile) == 0:
-        print("No more cards to move in tableau\n")
+        print("No more cards to move in tableau\n") #If there are no more cards to move in tableau
         return '0' 
     else:
         for toPile in game.tableauPiles:
@@ -211,7 +215,7 @@ def find_biggest_tableau_advise(game):
                         print("Move the " + movePile[0].value.name + " of " + movePile[0].suit.to_string()+ " to " + toPile.frontCard.value.name + " of " + toPile.frontCard.suit.to_string())
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
-                            start_add_to_tableau(movePile, fromPile, toPile)
+                            start_add_to_tableau(movePile, fromPile, toPile)    #Move tableau pile to other tableau pile
                             cardMoved = 1
                         return '1'
             
@@ -247,43 +251,46 @@ def twin_is_found(game):
     return '0'
     
 #step 7
-def move_from_stock7(game):
+def move_from_stock7(game): #Move from stock to tableau if next move is number 4
     cards = []
     for i in game.tableauPiles: #Look through tableauPiles and see if they match with card in stock
         if i.frontCard != None:
             for h in reversed(i.cards): #Find the last visible card in the pile
                 if h.visible == Visible.TRUE:
                     cards.append(h)
-                    card = cards[-1]
+                    card = cards[-1]    #Last element - last visible card
             if len(game.stock.cards) != 0:
                 for j in game.stock.cards:
-                    if card.color != j.color and card.value.value - j.value.value == -1: #If they do check, check if the card from stock matches with a card from tableau
+                    if card.color != j.color and card.value.value - j.value.value == -1: #If they do match, check if the card from stock matches with a card from tableau
                         for tableau in game.tableauPiles:
                             if len(tableau.cards) != 0:
-                                if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:
+                                if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:  #If it does move stock card to tableau
                                     print("Function 7")
                                     print("Move the " + j.value.name + " of " + j.suit.to_string() + " to " + tableau.frontCard.value.name + " of " + tableau.frontCard.suit.to_string())
 
                                     choice = input("If you wish to do so enter 1: ")
                                     if choice == '1':
                                         game.stock.frontCard = j
-                                        stock_to_tableau(game,tableau)
+                                        stock_to_tableau(game,tableau)  #Remove from stock and add to tableau
                                         return '1'
-                            elif len(tableau.cards) == 0 and j.value.value == 13:
+
+                            elif len(tableau.cards) == 0 and j.value.value == 13:   #If there is an empty tableau pile, move out king from stock
                                 print("Function 7")
                                 print("Move the " + j.value.name + " of " + j.suit.to_string() + "from stock to the empty tableau pile nr. " + str(tableau.number))
                                 choice = input("If you wish to do so enter 1: ")
+                                
                                 if choice == '1':
                                     game.stock.frontCard = j
-                                    game.stock.cards.remove(game.stock.frontCard)
+                                    game.stock.cards.remove(game.stock.frontCard)   #Remove king from stock
                                     if len(game.stock.cards) != 0:
-                                        game.stock.frontCard = game.stock.cards[LAST_INDEX]
+                                        game.stock.frontCard = game.stock.cards[LAST_INDEX] #New frontcard
                                         game.stock.frontCard.visible = Visible.TRUE
+                                
                                     else:
                                         game.stock.frontCard = None
                                 
-                                    tableau.cards.append(j)
-                                    tableau.frontCard = j
+                                    tableau.cards.append(j) #Add king to tableau pile
+                                    tableau.frontCard = j   #King is the new frontcard
                                     return '1'
 
     return '0'
