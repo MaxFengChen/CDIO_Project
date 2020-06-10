@@ -1,9 +1,1 @@
-<<<<<<< HEAD
 0
-=======
-<<<<<<< HEAD
-18
-=======
-12
->>>>>>> a6de618ad2aadfdd05945f8e5668c316596c0923
->>>>>>> refs/remotes/origin/master
