@@ -112,7 +112,7 @@ def move_to_foundation_advice_and_do(game):
                 for foundPiles in game.foundationPiles:
                     if cards.suit == foundPiles.suit and cards.value == foundPiles.nextCard:
                         print("Function 1 og 2")
-                        print("Move the " + cards.value.name + " of " + cards.suit.to_string()+ " to the foundation pile")
+                        print("Move the " + cards.value.name + " of " + cards.suit.to_string()+ " from stock pile to the foundation pile")
                         choice = input("If you wish to do so enter 1: ")
                         if choice == '1':
                            start_add_to_goal(cards, pile, game)
@@ -156,7 +156,7 @@ def find_biggest_tableau_advise(game):
     bigestPile = game.tableauPiles[0]
     fromPile = game.tableauPiles[0]
     movePile = []  #Number of cards to move from the bigest pile
-
+    bufferTest = []
     nonVisualCount = 0
     nVCPrevious = 0
     #for pile in tableauPiles:
@@ -164,6 +164,7 @@ def find_biggest_tableau_advise(game):
         if searchBiggest.frontCard != None:
             for pile in game.tableauPiles:
                 if pile.frontCard != None:
+                    bufferTest = []
                     if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1:
                         for cardsInPile in searchBiggest.cards:
                             if cardsInPile.visible == Visible.FALSE:
@@ -180,11 +181,13 @@ def find_biggest_tableau_advise(game):
                     elif len(searchBiggest.cards) > 1:
                         for cardInPile in searchBiggest.cards:
                             if cardInPile.visible == Visible.TRUE:
-                                #if cardInPile != searchBiggest.frontCard:
-                                if cardInPile.color != pile.frontCard.color and cardInPile.value.value - pile.frontCard.value.value == -1:
-                                    bigestPile = searchBiggest
-                                    #movePile.append(cardInPile)
-                                    fromPile = searchBiggest
+                                bufferTest.append(cardInPile)
+                        #if cardInPile != searchBiggest.frontCard:
+                        if bufferTest[0].color != pile.frontCard.color and bufferTest[0].value.value - pile.frontCard.value.value == -1:
+                            bigestPile = searchBiggest
+                            #movePile.append(cardInPile)
+                            fromPile = searchBiggest
+                            bufferTest = []
 
                            
     #print("Pile with most nonvisible cards: ", bigestPile.number)

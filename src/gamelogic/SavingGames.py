@@ -73,7 +73,7 @@ def reloadFailedGame(game):
         lineArr = line.split(", ")
         suit = int(lineArr[0])
         value = int(lineArr[1].replace('\n', ""))
-        if suit == 0 or suit == 1:
+        if suit == 0 or suit == 2:
             color = 0
         else:
             color = 1
