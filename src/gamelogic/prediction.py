@@ -156,27 +156,27 @@ def free_king_advice(game):
 
 #step 4
 def find_biggest_tableau_advise(game):
-    bigestPile = game.tableauPiles[0]
-    fromPile = game.tableauPiles[0]
+    bigestPile = game.tableauPiles[0]   #currently biggest pile
+    fromPile = game.tableauPiles[0]     #the pile to be moved from
     movePile = []  #Number of cards to move from the bigest pile
 
     nonVisualCount = 0
     nVCPrevious = 0
     #for pile in tableauPiles:
-    for searchBiggest in game.tableauPiles:
+    for searchBiggest in game.tableauPiles:             #currently pile
         if searchBiggest.frontCard != None:
             for pile in game.tableauPiles:
                 if pile.frontCard != None:
                     if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1:
-                        for cardsInPile in searchBiggest.cards:
-                            if cardsInPile.visible == Visible.FALSE:
-                                nonVisualCount = nonVisualCount+1
-                        if len(bigestPile.cards) != 0:
-                            for cards in bigestPile.cards:
+                        for cardsInPile in searchBiggest.cards:         #Find number of nonvisual cards
+                            if cardsInPile.visible == Visible.FALSE:       
+                                nonVisualCount = nonVisualCount+1       
+                        if len(bigestPile.cards) != 0:                  #
+                            for cards in bigestPile.cards:              #fIND NUMBER OF NONVISUAL CARDS IN THE CURRENTLY BIGGEST pile 
                                 if cards.visible == Visible.FALSE:
                                     nVCPrevious = nVCPrevious+1
-                        if nonVisualCount >= nVCPrevious: 
-                            bigestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
+                        if nonVisualCount >= nVCPrevious:               #if there's more nonvisual cards in currently pile, update this to be the biggest pile 
+                            bigestPile = searchBiggest                  # The pile with biggest amount of nonVisual cards
                             fromPile = searchBiggest  
                             nonVisualCount = 0  
                 
