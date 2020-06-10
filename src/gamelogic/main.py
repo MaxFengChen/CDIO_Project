@@ -40,8 +40,11 @@ from classes import *
 game = Game()
 setup_table(game)
 print_table(game)
-
+round = 0
+    
 while 1:
+    print("Round " + str(round) + ". ")
+    round = round +1 
     if give_advice(game) == 0:
         break
     print_table(game)
