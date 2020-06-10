@@ -41,6 +41,7 @@ from SavingGames import *
 game = Game()
 reloadFailedGame(game)
 again = 0
+
 print_table(game)
 
 while 1:
