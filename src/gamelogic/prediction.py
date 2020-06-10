@@ -36,32 +36,41 @@ from classes import *
 from SavingGames import *
 
 def give_advice(game):
+    #This is "main" for running the AI
     foundAdvice = '0'
     funcCount = 0
+
     #Step 1 and 2:
     if foundAdvice == '0':
         foundAdvice = move_to_foundation_advice_and_do(game)
+    
     #Step 3
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = free_king_advice(game)
+    
     #Step #4
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = find_biggest_tableau_advise(game)
+    
     #Step 5 is already imnplemented as program knows stock
+    
     #Step 6 
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = twin_is_found(game)
+    
     #Step 7
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = move_from_stock7(game)
+    
     #Step 8
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(game)
+    
     #Step 9
     if foundAdvice == '0':
         funcCount = funcCount + 1

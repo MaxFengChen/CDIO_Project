@@ -183,8 +183,7 @@ def start_add_to_tableau(cardList, fromPile, toPile):
             print("You can only move a king to an empty pile")
 
 
-def waste_to_stock(game):
-    # Add entire waste pile to stock pile
+def waste_to_stock(game):   #Reshuffle waste pile to stock pile
     buffer = game.wastePile.cards
     game.wastePile.cards = []
     game.wastePile.frontCard = None
@@ -214,7 +213,7 @@ def stock_to_tableau(game, toPile): #waste_to_tableau(toPile):
                     #wastePile.frontCard = None
                     game.stock.frontCard = None
             
-                toPile.cards.append(buffer)
+                toPile.cards.append(buffer) #Add to tableau
                 toPile.frontCard = buffer
             else:
                 print("Wrong value on card")
@@ -225,18 +224,18 @@ def draw_from_stock (game):
     # Draw card from stock and add it to waste
     if len(game.stock.cards) == 0:
         print("No more cards in stock pile.\n Adding waste pile to stock pile\n")   
-        waste_to_stock(game)
+        waste_to_stock(game)    #Reshuffle wate pile to stock pile
     else:
         buffer = game.stock.frontCard
-        game.stock.cards.remove(game.stock.frontCard)
+        game.stock.cards.remove(game.stock.frontCard)  #Remove frontcard
         if len(game.stock.cards) != 0:
-            game.stock.frontCard = game.stock.cards[LAST_INDEX]
+            game.stock.frontCard = game.stock.cards[LAST_INDEX] #New frontcard for stockpile
             game.stock.frontCard.visible = Visible.TRUE
         else:
             game.stock.frontCard = None
 
-        game.wastePile.cards.append(buffer)
-        game.wastePile.frontCard = buffer
+        game.wastePile.cards.append(buffer) #Add stock frontcard to wastepile
+        game.wastePile.frontCard = buffer   
         game.wastePile.frontCard.visible = Visible.TRUE
 
         print(game.wastePile.frontCard.to_string(), " has been added to waste pile\n")
