@@ -99,9 +99,9 @@ def win_check(game):
     if check == 0:
         print("")
         print("  / ____|                           | |     | | \ \   / /        ( )                               | | | | | | | | |\n" 
-        + " | |  __  ___  _ __   __ _ _ __ __ _| |_ ___| |  \ \_/ /__  _   _|/__   _____  __      _____  _ __ | | | | | | | | |\n" 
-        + " | | |_ |/ _ \| '_ \ / _` | '__/ _` | __/ __| |   \   / _ \| | | | \ \ / / _ \ \ \ /\ / / _ \| '_ \| | | | | | | | |\n" 
-        + " | |__| | (_) | | | | (_| | | | (_| | |_\__ \_|    | | (_) | |_| |  \ V /  __/  \ V  V / (_) | | | |_|_|_|_|_|_|_|_|\n" 
+        + " | |      ___  _ __   __ _ _ __ __ _| |_ ___| |  \ \_/ /__  _   _|/__   _____  __      _____  _ __ | | | | | | | | |\n" 
+        + " | |     / _ \| '_ \ / _` | '__/ _` | __/ __| |   \   / _ \| | | | \ \ / / _ \ \ \ /\ / / _ \| '_ \| | | | | | | | |\n" 
+        + " | |____| (_) | | | | (_| | | | (_| | |_\__ \_|    | | (_) | |_| |  \ V /  __/  \ V  V / (_) | | | |_|_|_|_|_|_|_|_|\n" 
         + "  \_____|\___/|_| |_|\__, |_|  \__,_|\__|___(_)    |_|\___/ \__,_|   \_/ \___|   \_/\_/ \___/|_| |_(_|_|_|_|_|_|_|_)\n"
         + "                      __/ |                                                                                         \n"
         + "                     |___/                                                                                          ", end="\n")
@@ -177,7 +177,10 @@ def start_add_to_tableau(cardList, fromPile, toPile):
     elif cardList[0].value.value == 13:
         add_to_tableau(cardList, toPile, fromPile)
     else:
-        print("You can only move af king to an empty pile")
+        if cardList[0].value.value == 13:
+            add_to_tableau(cardList, toPile, fromPile)
+        else:
+            print("You can only move a king to an empty pile")
 
 
 def waste_to_stock(game):

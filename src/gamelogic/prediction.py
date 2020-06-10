@@ -156,7 +156,7 @@ def free_king_advice(game):
 
 #step 4
 def find_biggest_tableau_advise(game):
-    bigestPile = game.tableauPiles[0]
+    biggestPile = game.tableauPiles[0]
     fromPile = game.tableauPiles[0]
     movePile = []  #Number of cards to move from the bigest pile
 
@@ -168,32 +168,36 @@ def find_biggest_tableau_advise(game):
             for pile in game.tableauPiles:
                 if pile.frontCard != None:
                     if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1:
+                        if biggestPile == None:
+                            biggestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
+                            fromPile = searchBiggest  
+                            nonVisualCount = 0
                         for cardsInPile in searchBiggest.cards:
                             if cardsInPile.visible == Visible.FALSE:
                                 nonVisualCount = nonVisualCount+1
-                        if len(bigestPile.cards) != 0:
-                            for cards in bigestPile.cards:
+                        if len(biggestPile.cards) != 0:
+                            for cards in biggestPile.cards:
                                 if cards.visible == Visible.FALSE:
                                     nVCPrevious = nVCPrevious+1
                         if nonVisualCount >= nVCPrevious: 
-                            bigestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
+                            biggestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
                             fromPile = searchBiggest  
                             nonVisualCount = 0  
-                
                     elif len(searchBiggest.cards) > 1:
                         for cardInPile in searchBiggest.cards:
                             if cardInPile.visible == Visible.TRUE:
                                 #if cardInPile != searchBiggest.frontCard:
                                 if cardInPile.color != pile.frontCard.color and cardInPile.value.value - pile.frontCard.value.value == -1:
-                                    bigestPile = searchBiggest
+                                    biggestPile = searchBiggest
                                     #movePile.append(cardInPile)
                                     fromPile = searchBiggest
 
                            
-    #print("Pile with most nonvisible cards: ", bigestPile.number)
-    for cards in bigestPile.cards: 
-        if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
-            movePile.append(cards)
+    #print("Pile with most nonvisible cards: ", biggestPile.number)
+    if biggestPile != None:
+        for cards in biggestPile.cards: 
+            if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
+                movePile.append(cards)
 
     cardMoved = 0
     if len(movePile) == 0:
