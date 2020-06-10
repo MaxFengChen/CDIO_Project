@@ -155,7 +155,7 @@ def free_king_advice(game):
 def find_biggest_tableau_advise(game):
     biggestPile = game.tableauPiles[0]
     fromPile = game.tableauPiles[0]
-    movePile = []  #Number of cards to move from the bigest pile
+    movePile = []  #Number of cards to move from the biggest pile
     bufferTest = []
     nonVisualCount = 0
     nVCPrevious = 0
@@ -173,12 +173,12 @@ def find_biggest_tableau_advise(game):
                         for cardsInPile in searchBiggest.cards:
                             if cardsInPile.visible == Visible.FALSE:
                                 nonVisualCount = nonVisualCount+1   #Nonvisual cards in current pile
-                        if len(bigestPile.cards) != 0:
-                            for cards in bigestPile.cards:
+                        if len(biggestPile.cards) != 0:
+                            for cards in biggestPile.cards:
                                 if cards.visible == Visible.FALSE:  #Nonvisual cards in biggest pile
                                     nVCPrevious = nVCPrevious+1
                         if nonVisualCount >= nVCPrevious: #COmpare current pile with current biggest pile
-                            bigestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
+                            biggestPile = searchBiggest  # The pile with biggest amount of nonVisual cards
                             fromPile = searchBiggest  
                             nonVisualCount = 0  
                     elif len(searchBiggest.cards) > 1:
@@ -187,7 +187,7 @@ def find_biggest_tableau_advise(game):
                                 bufferTest.append(cardInPile)
                         #if cardInPile != searchBiggest.frontCard:
                         if bufferTest[0].color != pile.frontCard.color and bufferTest[0].value.value - pile.frontCard.value.value == -1:    #Moves entire pile
-                            bigestPile = searchBiggest
+                            biggestPile = searchBiggest
                             fromPile = searchBiggest
                             bufferTest = []
 
