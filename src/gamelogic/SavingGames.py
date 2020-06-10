@@ -36,8 +36,8 @@ from testing import *
 from classes import *
    
 def saveFailedGames(game):
-    numVariablePath = "gamelogic/FailedGames/numberVariable.txt"
-    failedGamePath = "gamelogic/FailedGames/failedGame"
+    numVariablePath = "src/gamelogic/FailedGames/numberVariable.txt"
+    failedGamePath = "src/gamelogic/FailedGames/failedGame"
 
     num = open(numVariablePath, "rt")
     currentNumber = str(int(num.read()) +1)
@@ -54,7 +54,7 @@ def saveFailedGames(game):
     print("Game saved as " + failedGamePath)
 
 def reloadFailedGame(game):
-    failedGamePath = "gamelogic/FailedGames/failedGame"
+    failedGamePath = "src/gamelogic/FailedGames/failedGame"
 
     gamenumber = input("Enter the save number you want to reload.")
     failedGamePath = failedGamePath + gamenumber + ".txt"
