@@ -35,25 +35,25 @@
 from testing import *
 from classes import *
    
-def saveFailedGames(game):
-    numVariablePath = "src/gamelogic/FailedGames/numberVariable.txt"
-    failedGamePath = "src/gamelogic/FailedGames/failedGame"
+def saveFailedGames(game):                                                  # Save a game
+    numVariablePath = "src/gamelogic/FailedGames/numberVariable.txt"        # The path to the numberVariable.txt file
+    failedGamePath = "src/gamelogic/FailedGames/failedGame"                 # The path to the FailedGames folder where a new failedGames file
 
-    num = open(numVariablePath, "rt")
+    num = open(numVariablePath, "rt")                                       # Read the current save game number from the numberVariable file 
     currentNumber = str(int(num.read()) +1)
-    num.close()
-    num = open(numVariablePath, "wt")
+    num.close()                                                             # Close file
+    num = open(numVariablePath, "wt")                                       # Write currentNumber + 1 to the file
     num.write(currentNumber)
-    num.close()
-    failedGamePath = failedGamePath + currentNumber + ".txt"
-    Savegame = open(failedGamePath, "wt")
-    for card in game.playingCards:
+    num.close()                                                             # Close file
+    failedGamePath = failedGamePath + currentNumber + ".txt"                # create new file called failedGame with the current number
+    Savegame = open(failedGamePath, "wt")                                   
+    for card in game.playingCards:                                          # Write all card's suit and value into failedGame file 
         cardString = str(card.suit.value) + ", " + str(card.value.value )
         Savegame.write(cardString + "\n")
-    Savegame.close()
+    Savegame.close()                                                        # Close File
     print("Game saved as " + failedGamePath)
 
-def reloadFailedGame(game):
+def reloadFailedGame(game):                                                 
     failedGamePath = "src/gamelogic/FailedGames/failedGame"
 
     gamenumber = input("Enter the save number you want to reload.")
