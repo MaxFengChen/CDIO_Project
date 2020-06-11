@@ -53,23 +53,23 @@ def saveFailedGames(game):                                                  # Sa
     Savegame.close()                                                        # Close File
     print("Game saved as " + failedGamePath)
 
-def reloadFailedGame(game):                                                 
-    failedGamePath = "src/gamelogic/FailedGames/failedGame"
+def reloadFailedGame(game):                                                 # Reload a failed game
+    failedGamePath = "src/gamelogic/FailedGames/failedGame"                 # path to the failed games 
 
-    gamenumber = input("Enter the save number you want to reload.")
-    failedGamePath = failedGamePath + gamenumber + ".txt"
+    gamenumber = input("Enter the save number you want to reload.")         # Save game file number
+    failedGamePath = failedGamePath + gamenumber + ".txt"                   # Create the filename
 
-    fGame = open(failedGamePath, "r")
+    fGame = open(failedGamePath, "r")                                       # open file for reading
     try:
         fGame = open(failedGamePath, "r")
-    except FileNotFoundError:
+    except FileNotFoundError:                                               # Quit if file cannot be found
         print('File does not exist.')
         exit()
-    fGameLines = fGame.readlines()
-    fGame.close()
-    cardArray = []
+    fGameLines = fGame.readlines()                                          # Read File into Array   
+    fGame.close()                                                           # Close file
+    cardArray = []                                                          # Create new array for the cards
 
-    for line in fGameLines:
+    for line in fGameLines:                                                 # Create Cards and add them to card array 
         lineArr = line.split(", ")
         suit = int(lineArr[0])
         value = int(lineArr[1].replace('\n', ""))
@@ -78,7 +78,7 @@ def reloadFailedGame(game):
         else:
             color = 1
         cardArray.append(PlayingCard(Suit(suit), Color(color), Pile.STOCK, Value(value), Visible.FALSE))
-    game.playingCards = cardArray
+    game.playingCards = cardArray                                           # Give the cards to the game 
     
     # Make first 28 cards the playing cards in the plateau and organize into piles.
     card = 0
