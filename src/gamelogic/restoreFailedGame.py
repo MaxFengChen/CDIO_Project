@@ -38,9 +38,8 @@ from classes import *
 from SavingGames import *
 
 
-game = Game()
-reloadFailedGame(game)
-again = 0
+game = Game()                       # Create a game object
+reloadFailedGame(game)              # Setup after a previous game
 
 print_table(game)
 
