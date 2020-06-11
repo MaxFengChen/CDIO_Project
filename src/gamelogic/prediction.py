@@ -85,20 +85,29 @@ def give_advice(game):
 
 
 #Step 1 and 2
-def move_to_foundation_advice(game):
+def move_to_foundation_advice(game):                                        #move a card to the foundation pile
     #Give an advice what to do
-    for pile in game.tableauPiles:
-        if len(pile.cards) != 0:
-            card = pile.frontCard
-            if card.value.value <= game.lowestNeededCard.value:
-                for foundPile in game.foundationPiles:
+    for pile in game.tableauPiles:                                          #Go through  the tableau piles 
+        if len(pile.cards) != 0:                                            # If the pile is not emty
+            card = pile.frontCard                                            
+            if card.value.value <= game.lowestNeededCard.value:             #If the frontcard is not larger than the lowes needed value
+                for foundPile in game.foundationPiles:                      # go through the foundation piles and see if theres a card that can be added to the foundation piles 
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
                         print("Move the " + card.value.name + " " + card.suit.to_string() + " to the foundation pile")
+                        return '1'
+    if len(game.stock.cards) != 0:                                          # If theres cards in the stockpile 
+        pile = game.stock                                               
+        for cards in game.stock.cards:                                      # Go through all cards and see if any can be added to the foundations piles
+            if cards.value.value <= game.lowestNeededCard.value:
+                for foundPiles in game.foundationPiles:
+                    if cards.suit == foundPiles.suit and cards.value == foundPiles.nextCard:
+                        print("Function 1 og 2")
+                        print("Move the " + cards.value.name + " of " + cards.suit.to_string()+ " from stock pile to the foundation pile")
                         return '1'
     return '0'                        
     
 #Step 1 and 2 with testing
-def move_to_foundation_advice_and_do(game):
+def move_to_foundation_advice_and_do(game):                                 #move a card to the foundation pile but do it in the game logic so comments in function above
     #Give an advice what to do
     for pile in game.tableauPiles:
         if len(pile.cards) != 0:
@@ -108,9 +117,9 @@ def move_to_foundation_advice_and_do(game):
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
                         print("Function 1 og 2")
                         print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to the foundation pile")
-                        choice = input("If you wish to do so enter 1: ")
-                        if choice == '1':
-                           start_add_to_goal(card, pile, game)
+                        choice = input("If you wish to do so enter 1: ")    #If the Use wants to do this  
+                        if choice == '1':   
+                           start_add_to_goal(card, pile, game)              #run this function
                         return '1'
 
 
@@ -122,9 +131,9 @@ def move_to_foundation_advice_and_do(game):
                     if cards.suit == foundPiles.suit and cards.value == foundPiles.nextCard:
                         print("Function 1 og 2")
                         print("Move the " + cards.value.name + " of " + cards.suit.to_string()+ " from stock pile to the foundation pile")
-                        choice = input("If you wish to do so enter 1: ")
+                        choice = input("If you wish to do so enter 1: ")    #If the Use wants to do this 
                         if choice == '1':
-                           start_add_to_goal(cards, pile, game)
+                           start_add_to_goal(cards, pile, game)             #run this function
                         return '1'
     return '0'
     
@@ -322,13 +331,13 @@ def reshuffle_to_stockpile(game):
     # game.wastePile.cards.clear()
     # game.wastePile.frontCard = None
 
-def move_to_foundation_advice_without_limit_and_do(game):
-    #Give an advice what to do
+def move_to_foundation_advice_without_limit_and_do(game):                           # Move any card that can to the foundation piles
+    #Give an advice what to do                                               
     
-    for pile in game.tableauPiles:
-        if len(pile.cards) != 0:
+    for pile in game.tableauPiles:                                                  # Go through  the tableau piles 
+        if len(pile.cards) != 0:                                                    # If the pile is not empty
             card = pile.frontCard
-            for foundPile in game.foundationPiles:
+            for foundPile in game.foundationPiles:                                  # go through the foundation piles and see if theres a card that can be added to the foundation piles 
                 if card.suit == foundPile.suit and card.value == foundPile.nextCard:
                     print("Function 1 og 2")
                     print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to the foundation pile")
@@ -338,9 +347,9 @@ def move_to_foundation_advice_without_limit_and_do(game):
                     return '1'
 
 
-    if len(game.stock.cards) != 0:
-        pile = game.stock
-        for cards in game.stock.cards:
+    if len(game.stock.cards) != 0:                                                  # If theres cards in the stockpile 
+        pile = game.stock                                                            
+        for cards in game.stock.cards:                                              # Go through all cards and see if any can be added to the foundations piles
             if cards.value.value <= game.lowestNeededCard.value:
                 if cards.suit == game.foundPile.suit and cards.value == game.foundationPiles.nextCard:
                     print("Function 1 og 2")
