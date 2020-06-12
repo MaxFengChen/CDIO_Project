@@ -1,0 +1,4 @@
+src/gamelogic/__pycache__/
+src/CDIO_OPENCV-DNN/__pycache__/
+src/CDIO_OPENCV-DNN/yolocards_28000.weights
+src/gamelogic/SavingGames.py
