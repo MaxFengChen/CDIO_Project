@@ -57,6 +57,15 @@ args.model = findFile(args.model)
 args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
+# Card variables
+cardWidth = 280
+cardHeight = 150
+stockArray = []
+firstFoundation = []
+secondFoundation = []
+thirdFoundation = []
+fourthFoundation = []
+
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
 if 'model' in config:
@@ -86,6 +95,10 @@ outNames = net.getUnconnectedOutLayersNames()
 confThreshold = args.thr
 nmsThreshold = args.nms
 
+
+def IDToCard():
+    # Convert a cardID to a card object
+    print("hej")
 
 def postprocess(frame, outs):
     frameHeight = frame.shape[0]
@@ -189,7 +202,52 @@ def postprocess(frame, outs):
         height = box[3]
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
         
-        print(classes[classIds[i]] + " Found at " + str(left) + "," + str(top)) 
+        if confidences[i] > 0.95: # Filter out moving cards. Seems reliable.
+
+            if top < cardHeight: # The top cards
+
+                if left < cardWidth*2 and left > cardWidth*1: # Add the stockpile
+                        if classes[classIds[i]] not in stockArray:
+                            stockArray.append(classes[classIds[i]])
+                            print(str(classes[classIds[i]]) + " added to stock. Confidence " + str(confidences[i]))
+                            print(stockArray)
+                
+                if left > cardWidth*3: # Add the foundation piles
+                    if left < cardWidth*4 and left > cardWidth*3: # Add card to first foundation pile
+                        if classes[classIds[i]] not in firstFoundation:
+                            firstFoundation.append(classes[classIds[i]])
+                            print(str(classes[classIds[i]]) + " added to first pile. Confidence " + str(confidences[i]))
+                            print(firstFoundation)
+
+                    if left < cardWidth*5 and left > cardWidth*4: # Add card to second foundation pile
+                        if classes[classIds[i]] not in secondFoundation:
+                            secondFoundation.append(classes[classIds[i]])
+                            print(str(classes[classIds[i]]) + " added to second pile. Confidence " + str(confidences[i]))
+                            print(secondFoundation)
+
+                    if left < cardWidth*6 and left > cardWidth*5: # Add card to third foundation pile
+                        if classes[classIds[i]] not in thirdFoundation:
+                            thirdFoundation.append(classes[classIds[i]])
+                            print(str(classes[classIds[i]]) + " added to third pile. Confidence " + str(confidences[i]))
+                            print(thirdFoundation)
+
+                    if left < cardWidth*7 and left > cardWidth*6: # Add card to fourth foundation pile
+                        if classes[classIds[i]] not in fourthFoundation:
+                            fourthFoundation.append(classes[classIds[i]])
+                            print(str(classes[classIds[i]]) + " added to fourth pile. Confidence " + str(confidences[i]))
+                            print(fourthFoundation)
+            
+            if top > cardHeight: # The tableau piles
+                
+
+
+
+
+
+
+        #Add the foundation
+    
+        #print(classes[classIds[i]] + " Found at " + str(left) + "," + str(top)) 
 
 
     # INDEHOLDER ALLE DE DETEKTEREDE KORT (2X PER KORT, BEGGE HJØRNER)
@@ -329,6 +387,13 @@ while cv.waitKey(1) < 0:
 
             label = 'Skipped frames: %d' % (framesQueue.counter - predictionsQueue.counter)
             cv.putText(frame, label, (0, 45), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
+
+        #Top line
+        cv.line(frame,(0,325),(1920,325),(0,0,255),thickness=2)
+
+        for line in range(7):
+            cv.line(frame,(cardWidth*line,0),(cardWidth*line,1080),(0,0,255),thickness=2)
+
 
         cv.imshow(winName, frame)
 
