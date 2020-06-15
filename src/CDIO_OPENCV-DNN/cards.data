@@ -1,0 +1,6 @@
+classes=52
+train=cards_data/train.txt
+valid=cards_data/test.txt
+names=cards_data/cards.names
+backup=backup/
+
