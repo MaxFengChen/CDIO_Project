@@ -228,11 +228,6 @@ def postprocess(frame, outs):
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
         
         if confidences[i] > 0.95: # Filter out moving cards. Is not entirely reliable at 28k iterations
-            #print(str(top))
-            #print(indices)
-            #print(outs)
-            #print(classId)
-            #print(classIds)
             
             if top < cardHeight: # The top cards
 
@@ -245,48 +240,19 @@ def postprocess(frame, outs):
                                 print(str(classes[classIds[i]]) + " added to stock. Confidence " + str(confidences[i]))
                                 print(stockArray)
 
+                    foundationNumber = 0
+                    placementNumber = 3
+                    for foundationPile in foundationPiles:
+                        if classes[classIds[i]] not in foundationPile:
+                            if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): # Add card to first foundation pile
+                                foundationPile.append(classes[classIds[i]])
+                                print(str(classes[classIds[i]]) + " added to " + numberArray[foundationNumber] + " pile. Confidence " + str(confidences[i]))
+                                print(foundationPile)
+                        foundationNumber = foundationNumber + 1
+                        placementNumber = placementNumber + 1
 
-
-
-
-                                    # Add the foundation piles
-                    if left > cardWidth*3 and left < cardWidth*4: # Add card to first foundation pile
-                        if classes[classIds[i]] not in foundationPiles[0]:
-                            foundationPiles[0].append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to first pile. Confidence " + str(confidences[i]))
-                            print(foundationPiles[0])
-
-                    if left > cardWidth*4 and left < cardWidth*5: # Add card to second foundation pile
-                        if classes[classIds[i]] not in foundationPiles[1]:
-                                foundationPiles[1].append(classes[classIds[i]])
-                                print(str(classes[classIds[i]]) + " added to second pile. Confidence " + str(confidences[i]))
-                                print(foundationPiles[1])
-
-                    if left > cardWidth*5 and left < cardWidth*6: # Add card to third foundation pile
-                        if classes[classIds[i]] not in foundationPiles[2]:
-                            foundationPiles[2].append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to third pile. Confidence " + str(confidences[i]))
-                            print(foundationPiles[2])
-
-                    if left > cardWidth*6 and left < cardWidth*7 : # Add card to fourth foundation pile
-                        if classes[classIds[i]] not in foundationPiles[3]:
-                            foundationPiles[3].append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to fourth pile. Confidence " + str(confidences[i]))
-                            print(foundationPiles[3])  
-                    #foundationNumber = 0
-                    #placementNumber = 3
-                    #for foundationPile in foundationPiles:
-                     #   print("FN " + str(foundationNumber) + " PN " + str(placementNumber))
-                     #   print("Left " + str(left))
-                     #   if left > cardWidth*placementNumber and left < cardWidth*placementNumber+1: # Add card to first foundation pile
-                     #       foundationPile.append(classes[classIds[i]])
-                     #       print(str(classes[classIds[i]]) + " added to " + numberArray[foundationNumber] + " pile. Confidence " + str(confidences[i]))
-                     #       print(foundationPile)
-                     #   foundationNumber = foundationNumber + 1
-                     #   placementNumber = placementNumber + 1
-
-                
-                if top > cardHeight: # The tableau piles
+                 # The tableau piles
+                if top > cardHeight:
                     pileNumber = 0
                     for tableauPile in tableauPiles:
                         pileNumber += 1
@@ -294,35 +260,6 @@ def postprocess(frame, outs):
                             if classes[classIds[i]] not in tableauPile:
                                 tableauPile.append(classes[classIds[i]])
 
-
-
-
-
-
-
-        #if top > cardHeight: # The tableau piles
-            #print("luder i tableau" + str(top))
-
-
-
-
-
-
-        #Add the foundation
-    
-        #print(classes[classIds[i]] + " Found at " + str(left) + "," + str(top)) 
-
-
-    # INDEHOLDER ALLE DE DETEKTEREDE KORT (2X PER KORT, BEGGE HJØRNER)
-    #print(classIds)
-    #if len(boxes) == 4:
-      #  print("FØRSTE GUT")
-        #print(boxes[0])
-     ##   print(classIds[0])
-       # print("FØRSTE GUT 2")
-       # print(boxes[2])
-        #print(classIds[1])
-    #print(boxes)
 
 
 # Process inputs
