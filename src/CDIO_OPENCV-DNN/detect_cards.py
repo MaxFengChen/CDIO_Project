@@ -65,7 +65,7 @@ cardWidth = 274
 cardHeight = 350
 stockArray = []
 
-numberArray = ("FIRST", "SECOND", "THIRD", "FOURTH")
+numberArray = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "FOURTH", "FOURTH")
 
 f1 = []
 f2 = []
@@ -116,7 +116,7 @@ def checkDuplicate(element, list):
         if element == duplicate:
             count+=1
     if count == 2:
-        print("Duplicate found for: " + str(classes[element]))
+        #print("Duplicate found for: " + str(classes[element]))
         return True
     else:
         return False
