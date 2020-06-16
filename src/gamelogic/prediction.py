@@ -349,9 +349,9 @@ def move_to_foundation_advice_without_limit_and_do(game):                       
 
     if len(game.stock.cards) != 0:                                                  # If theres cards in the stockpile 
         pile = game.stock                                                            
-        for cards in game.stock.cards:                                              # Go through all cards and see if any can be added to the foundations piles
-            if cards.value.value <= game.lowestNeededCard.value:
-                if cards.suit == game.foundPile.suit and cards.value == game.foundationPiles.nextCard:
+        for cards in game.stock.cards:
+            for foundPile in game.foundationPiles: 
+                if cards.suit == foundPile.suit and cards.value == foundPile.nextCard:
                     print("Function 1 og 2")
                     print("Move the " + cards.value.name + " of " + cards.suit.to_string()+ " to the foundation pile")
                     choice = input("If you wish to do so enter 1: ")
