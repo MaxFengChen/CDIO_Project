@@ -3,6 +3,8 @@ import argparse
 import numpy as np
 import sys
 import time
+from classes import *
+from testing import *
 from threading import Thread
 if sys.version_info[0] == 2:
     import Queue as queue
@@ -112,9 +114,37 @@ confThreshold = args.thr
 nmsThreshold = args.nms
 
 
-def IDToCard():
+def ID_to_card(subject):
     # Convert a cardID to a card object
-    print("hej")
+  #  nomadCards = []
+    #for subject in classes:
+    #Attributes for a new card is init.
+    suit = None
+    color = None
+    pile = None
+    value = None
+    visible = Visible.TRUE
+    #Determine suit and color based on offset defined in cards.names.
+    if subject < 14:
+        suit = Suit.H
+        color = Color.RED
+        value = (subject - 14)*(-1)
+    elif subject > 13 and subject < 27:
+        suit = Suit.D
+        color = Color.RED
+        value = (subject - 27)*(-1)
+    elif subject > 26 and subject < 40:
+        suit = Suit.C
+        color = Color.BLACK
+        value = (subject - 40)*(-1)
+    elif subject > 39:
+        suit = Suit.S
+        color = Color.BLACK
+        value = (subject - 53)*(-1)
+    card = create_card(value, suit, pile, color)
+    return card
+       # nomadCards.append(card)
+    #return nomadCards
 
 
 def checkDuplicate(element, list):
@@ -224,6 +254,8 @@ def postprocess(frame, outs):
     else:
         indices = np.arange(0, len(classIds))
 
+
+    nomadCards = [] # card objects with no pile
     for i in indices:
         box = boxes[i]
         left = box[0]
@@ -231,11 +263,17 @@ def postprocess(frame, outs):
         width = box[2]
         height = box[3]
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
-        
+        card = None
         if confidences[i] > 0.95: # Filter out moving cards. Is not entirely reliable at 28k iterations (or 90k)
             
             if checkDuplicate(classIds[i], classIds): # Only add card if all of the tags are visible on one pile
             
+                #Create card objects
+                card = ID_to_card(classIds[i])
+                if card not in nomadCards:
+                    print(card.to_string_verbose() + "\n")
+                    nomadCards.append(card)
+
                 if top < cardHeight: # The top cards
               
                     # Add the stockpile
