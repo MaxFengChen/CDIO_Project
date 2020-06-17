@@ -61,19 +61,26 @@ args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
 # Card variables
-cardWidth = 274 
+cardWidth = 280
 cardHeight = 350
 stockArray = []
 
-numberArray = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "FOURTH", "FOURTH")
+numberArray = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
 f1 = []
 f2 = []
 f3 = []
 f4 = []
-foundationPiles = (f1,f2,f3,f4)
+foundationPiles = (f1, f2, f3, f4)
 
-tableauPiles = []
+t1 = []
+t2 = []
+t3 = []
+t4 = []
+t5 = []
+t6 = []
+t7 = []
+tableauPiles = (t1, t2, t3, t4, t5, t6, t7)
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
@@ -217,8 +224,6 @@ def postprocess(frame, outs):
     else:
         indices = np.arange(0, len(classIds))
 
-
-
     for i in indices:
         box = boxes[i]
         left = box[0]
@@ -227,38 +232,42 @@ def postprocess(frame, outs):
         height = box[3]
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
         
-        if confidences[i] > 0.95: # Filter out moving cards. Is not entirely reliable at 28k iterations
+        if confidences[i] > 0.95: # Filter out moving cards. Is not entirely reliable at 28k iterations (or 90k)
             
-            if top < cardHeight: # The top cards
+            if checkDuplicate(classIds[i], classIds): # Only add card if all of the tags are visible on one pile
+            
+                if top < cardHeight: # The top cards
 
-                if checkDuplicate(classIds[i], classIds): # Only add card if all of the tags are visible on one pile
-                        
+                            
                     # Add the stockpile
                     if left < cardWidth*2 and left > cardWidth*1: 
                             if classes[classIds[i]] not in stockArray:
                                 stockArray.append(classes[classIds[i]])
                                 print(str(classes[classIds[i]]) + " added to stock. Confidence " + str(confidences[i]))
                                 print(stockArray)
-
+                    
+                    # Add foundation pile
                     foundationNumber = 0
                     placementNumber = 3
                     for foundationPile in foundationPiles:
                         if classes[classIds[i]] not in foundationPile:
-                            if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): # Add card to first foundation pile
+                            if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): 
                                 foundationPile.append(classes[classIds[i]])
-                                print(str(classes[classIds[i]]) + " added to " + numberArray[foundationNumber] + " pile. Confidence " + str(confidences[i]))
+                                print(str(classes[classIds[i]]) + " added to " + numberArray[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
                                 print(foundationPile)
-                        foundationNumber = foundationNumber + 1
-                        placementNumber = placementNumber + 1
-
-                 # The tableau piles
+                        foundationNumber += 1
+                        placementNumber += 1
+                
                 if top > cardHeight:
-                    pileNumber = 0
+                    # The tableau piles
+                    tableauNumber = 0                
                     for tableauPile in tableauPiles:
-                        pileNumber += 1
-                        if left > cardWidth*pileNumber and left < cardWidth*pileNumber+1: # Add card to second foundation pile
+                        if left > cardWidth*tableauNumber and left < cardWidth*(tableauNumber+1): # Add card to second foundation pile
                             if classes[classIds[i]] not in tableauPile:
                                 tableauPile.append(classes[classIds[i]])
+                                print(str(classes[classIds[i]]) + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
+                                print(tableauPile)
+                        tableauNumber += 1
 
 
 
