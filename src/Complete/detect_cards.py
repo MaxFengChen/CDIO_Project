@@ -113,23 +113,23 @@ def ID_to_card(subject, leftPos, topPos):
     left = leftPos
     top = topPos
     #Determine suit and color based on offset defined in cards.names.
-    if subject < 14:
+    if subject < 13:
         suit = Suit.H
         color = Color.RED
-        value = (subject - 14)*(-1)
-    elif subject > 13 and subject < 27:
+        value = (subject - 13)*(-1)
+    elif subject > 12 and subject < 26:
         suit = Suit.D
         color = Color.RED
-        value = (subject - 27)*(-1)
-    elif subject > 26 and subject < 40:
+        value = (subject - 26)*(-1)
+    elif subject > 25 and subject < 39:
         suit = Suit.C
         color = Color.BLACK
-        value = (subject - 40)*(-1)
-    elif subject > 39:
+        value = (subject - 39)*(-1)
+    elif subject > 38:
         suit = Suit.S
         color = Color.BLACK
-        value = (subject - 53)*(-1)
-    card = create_card(value, suit, pile, color, leftPos, topPos)
+        value = (subject - 52)*(-1)
+    card = create_card(value, suit, pile, color, left, top)
     return card
        # nomadCards.append(card)
     #return nomadCards
