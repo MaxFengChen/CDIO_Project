@@ -139,13 +139,11 @@ def checkDuplicate(element, list, height):
     count = 0
     for duplicate in list:
         if element == duplicate:
-            if duplicate.top - element.top+height > 100  or  duplicate.top - element.top+height < (-100):
-                count+=1
-    if count == 2:
-        print("Duplicate found for: " + element.to_string_verbose + str(duplicate.top - element.top+height))
-        return True
-    else:
-        return False
+            if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
+            print("Duplicate found for: " + element.to_string_verbose + str(duplicate.top - element.top+height))
+            return True
+        else:
+            return False
         
 
 
@@ -259,7 +257,7 @@ def postprocess(frame, outs):
             #Create card objects
             card = ID_to_card(classIds[i], left, top)
             if card not in nomadCards:
-                print(card.to_string_verbose() + "\n")
+               # print(card.to_string_verbose() + "\n")
                 nomadCards.append(card)
 
             if checkDuplicate(card, nomadCards, height): # Only add card if all of the tags are visible on one pile
