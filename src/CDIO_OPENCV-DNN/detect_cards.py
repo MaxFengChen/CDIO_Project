@@ -14,6 +14,9 @@ from tf_text_graph_common import readTextMessage
 from tf_text_graph_ssd import createSSDGraph
 from tf_text_graph_faster_rcnn import createFasterRCNNGraph
 
+# for sorting cards in tableau
+from operator import attrgetter
+
 backends = (cv.dnn.DNN_BACKEND_DEFAULT, cv.dnn.DNN_BACKEND_HALIDE, cv.dnn.DNN_BACKEND_INFERENCE_ENGINE, cv.dnn.DNN_BACKEND_OPENCV)
 targets = (cv.dnn.DNN_TARGET_CPU, cv.dnn.DNN_TARGET_OPENCL, cv.dnn.DNN_TARGET_OPENCL_FP16, cv.dnn.DNN_TARGET_MYRIAD)
 
@@ -58,13 +61,19 @@ args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
 # Card variables
-cardWidth = 280
-cardHeight = 150
+cardWidth = 274 
+cardHeight = 350
 stockArray = []
-firstFoundation = []
-secondFoundation = []
-thirdFoundation = []
-fourthFoundation = []
+
+numberArray = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "FOURTH", "FOURTH")
+
+f1 = []
+f2 = []
+f3 = []
+f4 = []
+foundationPiles = (f1,f2,f3,f4)
+
+tableauPiles = []
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
@@ -99,6 +108,20 @@ nmsThreshold = args.nms
 def IDToCard():
     # Convert a cardID to a card object
     print("hej")
+
+
+def checkDuplicate(element, list):
+    count = 0
+    for duplicate in list:
+        if element == duplicate:
+            count+=1
+    if count == 2:
+        #print("Duplicate found for: " + str(classes[element]))
+        return True
+    else:
+        return False
+        
+
 
 def postprocess(frame, outs):
     frameHeight = frame.shape[0]
@@ -194,6 +217,8 @@ def postprocess(frame, outs):
     else:
         indices = np.arange(0, len(classIds))
 
+
+
     for i in indices:
         box = boxes[i]
         left = box[0]
@@ -202,64 +227,39 @@ def postprocess(frame, outs):
         height = box[3]
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
         
-        if confidences[i] > 0.95: # Filter out moving cards. Seems reliable.
-
+        if confidences[i] > 0.95: # Filter out moving cards. Is not entirely reliable at 28k iterations
+            
             if top < cardHeight: # The top cards
 
-                if left < cardWidth*2 and left > cardWidth*1: # Add the stockpile
-                        if classes[classIds[i]] not in stockArray:
-                            stockArray.append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to stock. Confidence " + str(confidences[i]))
-                            print(stockArray)
-                
-                if left > cardWidth*3: # Add the foundation piles
-                    if left < cardWidth*4 and left > cardWidth*3: # Add card to first foundation pile
-                        if classes[classIds[i]] not in firstFoundation:
-                            firstFoundation.append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to first pile. Confidence " + str(confidences[i]))
-                            print(firstFoundation)
+                if checkDuplicate(classIds[i], classIds): # Only add card if all of the tags are visible on one pile
+                        
+                    # Add the stockpile
+                    if left < cardWidth*2 and left > cardWidth*1: 
+                            if classes[classIds[i]] not in stockArray:
+                                stockArray.append(classes[classIds[i]])
+                                print(str(classes[classIds[i]]) + " added to stock. Confidence " + str(confidences[i]))
+                                print(stockArray)
 
-                    if left < cardWidth*5 and left > cardWidth*4: # Add card to second foundation pile
-                        if classes[classIds[i]] not in secondFoundation:
-                            secondFoundation.append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to second pile. Confidence " + str(confidences[i]))
-                            print(secondFoundation)
+                    foundationNumber = 0
+                    placementNumber = 3
+                    for foundationPile in foundationPiles:
+                        if classes[classIds[i]] not in foundationPile:
+                            if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): # Add card to first foundation pile
+                                foundationPile.append(classes[classIds[i]])
+                                print(str(classes[classIds[i]]) + " added to " + numberArray[foundationNumber] + " pile. Confidence " + str(confidences[i]))
+                                print(foundationPile)
+                        foundationNumber = foundationNumber + 1
+                        placementNumber = placementNumber + 1
 
-                    if left < cardWidth*6 and left > cardWidth*5: # Add card to third foundation pile
-                        if classes[classIds[i]] not in thirdFoundation:
-                            thirdFoundation.append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to third pile. Confidence " + str(confidences[i]))
-                            print(thirdFoundation)
+                 # The tableau piles
+                if top > cardHeight:
+                    pileNumber = 0
+                    for tableauPile in tableauPiles:
+                        pileNumber += 1
+                        if left > cardWidth*pileNumber and left < cardWidth*pileNumber+1: # Add card to second foundation pile
+                            if classes[classIds[i]] not in tableauPile:
+                                tableauPile.append(classes[classIds[i]])
 
-                    if left < cardWidth*7 and left > cardWidth*6: # Add card to fourth foundation pile
-                        if classes[classIds[i]] not in fourthFoundation:
-                            fourthFoundation.append(classes[classIds[i]])
-                            print(str(classes[classIds[i]]) + " added to fourth pile. Confidence " + str(confidences[i]))
-                            print(fourthFoundation)
-            
-            if top > cardHeight: # The tableau piles
-                
-
-
-
-
-
-
-        #Add the foundation
-    
-        #print(classes[classIds[i]] + " Found at " + str(left) + "," + str(top)) 
-
-
-    # INDEHOLDER ALLE DE DETEKTEREDE KORT (2X PER KORT, BEGGE HJØRNER)
-    #print(classIds)
-    #if len(boxes) == 4:
-      #  print("FØRSTE GUT")
-        #print(boxes[0])
-     ##   print(classIds[0])
-       # print("FØRSTE GUT 2")
-       # print(boxes[2])
-        #print(classIds[1])
-    #print(boxes)
 
 
 # Process inputs
@@ -389,7 +389,7 @@ while cv.waitKey(1) < 0:
             cv.putText(frame, label, (0, 45), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
 
         #Top line
-        cv.line(frame,(0,325),(1920,325),(0,0,255),thickness=2)
+        cv.line(frame,(0,cardHeight),(1920,cardHeight),(0,0,255),thickness=2)
 
         for line in range(7):
             cv.line(frame,(cardWidth*line,0),(cardWidth*line,1080),(0,0,255),thickness=2)
