@@ -98,12 +98,14 @@ class Visible(Enum):
     TRUE = 1
 
 class PlayingCard:
-    def __init__(self, suit, color, pile, value, visible):
+    def __init__(self, suit, color, pile, value, visible, left, top):
         self.suit = suit
         self.color = color
         self.pile = pile
         self.value = value
         self.visible = visible
+        self.left = left
+        self.top = top 
     
     def to_string(self):
         if self.visible == Visible.TRUE:

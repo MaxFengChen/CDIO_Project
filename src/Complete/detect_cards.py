@@ -100,7 +100,7 @@ confThreshold = args.thr
 nmsThreshold = args.nms
 
 
-def ID_to_card(subject):
+def ID_to_card(subject, leftPos, topPos):
     # Convert a cardID to a card object
   #  nomadCards = []
     #for subject in classes:
@@ -110,6 +110,8 @@ def ID_to_card(subject):
     pile = None
     value = None
     visible = Visible.TRUE
+    left = leftPos
+    top = topPos
     #Determine suit and color based on offset defined in cards.names.
     if subject < 14:
         suit = Suit.H
@@ -127,17 +129,18 @@ def ID_to_card(subject):
         suit = Suit.S
         color = Color.BLACK
         value = (subject - 53)*(-1)
-    card = create_card(value, suit, pile, color)
+    card = create_card(value, suit, pile, color, leftPos, topPos)
     return card
        # nomadCards.append(card)
     #return nomadCards
 
 
-def checkDuplicate(element, list):
+def checkDuplicate(element, list, height):
     count = 0
     for duplicate in list:
         if element == duplicate:
-            count+=1
+            if duplicate.top - element.top+height > 50  or  duplicate.top - element.top+height < (-50)
+                count+=1
     if count == 2:
         #print("Duplicate found for: " + str(classes[element]))
         return True
@@ -253,14 +256,14 @@ def postprocess(frame, outs):
 
         if confidences[i] > 0.95: # Filter out moving cards. Is not entirely reliable at 28k iterations (or 90k)
             
-            if checkDuplicate(classIds[i], classIds): # Only add card if all of the tags are visible on one pile
-            
-                #Create card objects
-                card = ID_to_card(classIds[i])
-                if card not in nomadCards:
-                    print(card.to_string_verbose() + "\n")
-                    nomadCards.append(card)
+            #Create card objects
+            card = ID_to_card(classIds[i], left, top)
+            if card not in nomadCards:
+                print(card.to_string_verbose() + "\n")
+                nomadCards.append(card)
 
+            if checkDuplicate(card, nomadCards, height): # Only add card if all of the tags are visible on one pile
+            
                 if top < cardHeight: # The top cards
               
                     # Add the stockpile
