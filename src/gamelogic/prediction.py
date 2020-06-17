@@ -358,4 +358,115 @@ def move_to_foundation_advice_without_limit_and_do(game):                       
                     if choice == '1':
                         start_add_to_goal(cards, pile, game)
                     return '1'
-    return '0'
+    return last_ditch_effort(game)
+
+def last_ditch_effort(game):
+
+    cardToBeMoved = None
+    for tabPile in game.tableauPiles:               #Go through tableau piles to find an non visible card
+        cardToBeMoved = find_first_visible_card(tabPile)
+        if cardToBeMoved != 0:
+            break             
+    print_table(game)
+    suitArray = search_for_suit(game, cardToBeMoved)
+    if suitArray == 0:
+        cardToBeMoved = find_twin(game, cardToBeMoved)
+        suitArray = search_for_suit(game, cardToBeMoved)
+    moveThisCard = None
+    counter = 0
+    if ( suitArray!= 0):
+        cardToBeMoved = suitArray[0]
+        for card in suitArray[0].pile.cards:
+            counter = counter + 1 
+            if card.value.value == suitArray[0].value.value and  card.suit.value == suitArray[0].suit.value:
+                moveThisCard = suitArray[0].pile.cards[counter]
+                moveThisCard.pile = suitArray[0].pile
+                break
+        if check_moveability(game, moveThisCard, suitArray, counter) == '1':
+            return '1'
+    # Now we need to find a suit of the opposite color and do the same with 
+    # We will use the found pile that is furthest along
+    cardToBeMoved = moveThisCard
+    counter = 0                     #Move the card after the former moveThisCard 
+    for card in cardToBeMoved.pile.cards:
+        counter = counter + 1 
+        if card.value.value == cardToBeMoved.value.value and  card.suit.value == cardToBeMoved.suit.value:
+            moveThisCard = suitArray[0].pile.cards[counter]
+            moveThisCard.pile = suitArray[0].pile
+            break
+    if check_moveability(game, moveThisCard, suitArray, counter) == '1':
+        return '1'
+        
+def find_twin(game, card):
+    twin = card
+    if card.color == Color.BLACK:
+        if card.suit == Suit.C:
+            twin.suit = Suit.S
+        else:
+            twin.suit = Suit.C
+    else:
+        if card.suit == Suit.H:
+            twin.suit = Suit.D
+        else:
+            twin.suit = Suit.H
+    for pile in game.tableauPiles:
+        if len(pile.cards) != 0:
+            for tabCard in pile.cards:
+                if tabCard.value == twin.value and tabCard.color == twin.color and tabCard.suit == twin.suit:
+                    tabCard.pile = pile
+                    return tabCard
+
+
+
+
+def check_moveability(game, moveThisCard, suitArray, counter):
+    for tabPile in game.tableauPiles:
+        if len(tabPile.cards) != 0:
+            if tabPile.frontCard.color != moveThisCard.color and tabPile.frontCard.value.value == moveThisCard.value.value+1:
+                movePile = []
+                for card in suitArray[0].pile.cards[counter:len(suitArray[0].pile.cards)]:
+                    movePile.append(card)
+                print("Function 9")
+                print("Move the " + moveThisCard.value.name + " of " + moveThisCard.suit.to_string()+ " to " + tabPile.frontCard.value.name + " of " + tabPile.frontCard.suit.to_string())
+                choice = input("If you wish to do so enter 1: ")
+                if choice == '1':
+                    start_add_to_tableau(movePile, suitArray[0].pile, tabPile)    #Move tableau pile to other tableau pile
+                    return '1'
+
+def find_first_visible_card(tabPile):
+    if len(tabPile.cards) != 0:
+        if tabPile.cards[0].visible == Visible.FALSE:
+            for card in tabPile.cards:          # Find first visible card
+                if card.visible.value == 1:
+                    return card # This card should be moved                        break
+        else:
+            return 0
+    else:
+        return 0
+
+
+def search_pile_for_card(card, pile):
+    if len(pile.cards) != 0:
+        for tabcard in pile.cards:
+            if tabcard.visible == Visible.TRUE:
+                if tabcard.value.value == card.value.value and tabcard.suit.value == card.suit.value:
+                    tabcard.pile = pile
+                    return tabcard
+        return 0        
+    else:
+        return 0
+
+def search_for_suit(game, card):
+    suit = card.suit
+    offset = len(game.foundationPiles[card.suit.value].cards)
+    suitArray = []
+    for cardNum in range (offset, card.value.value):                  #Find all cards untill the target card is found
+        curCard = PlayingCard( suit, None, None, Value(cardNum+1), None)
+        for tabPile in game.tableauPiles:
+            suitCard = search_pile_for_card(curCard, tabPile)
+            if suitCard != 0:
+                suitArray.append(suitCard)
+                break
+        if cardNum-offset+1 != len(suitArray):
+            return 0
+    return suitArray
