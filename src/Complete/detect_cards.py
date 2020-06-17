@@ -283,7 +283,7 @@ def postprocess(frame, outs):
                 # The tableau piles
                 if top > cardHeight:
                     tableauNumber = 0                
-                    for tableauPile in tableauPiles:
+                    for tableauPile in game.foundationPiles:
                         if left > cardWidth*tableauNumber and left < cardWidth*(tableauNumber+1): # Add card to second foundation pile
                             if card not in tableauPile:
                                 tableauPile.append(card)
