@@ -3,4 +3,5 @@ src/CDIO_OPENCV-DNN/__pycache__/
 src/CDIO_OPENCV-DNN/yolocards_28000.weights
 src/gamelogic/SavingGames.py
 src/CDIO_OPENCV-DNN/yolocards_90000.weights
+src/Complete/yolocards_90000.weights
 src/CDIO_OPENCV-DNN/run.sh
