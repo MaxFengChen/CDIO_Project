@@ -140,8 +140,8 @@ def checkDuplicate(element, list, height):
     for duplicate in list:
         if element == duplicate:
             if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
-            print("Duplicate found for: " + element.to_string_verbose + str(duplicate.top - element.top+height))
-            return True
+                print("Duplicate found for: " + element.to_string_verbose() + " Distance: " + str(duplicate.top - element.top+height))
+                return True
         else:
             return False
         
