@@ -105,7 +105,7 @@ class PlayingCard:
         self.value = value
         self.visible = visible
         self.left = left
-        self.top = top 
+        self.top = top
     
     def to_string(self):
         if self.visible == Visible.TRUE:

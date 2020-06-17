@@ -140,8 +140,8 @@ def checkDuplicate(element, list, height):
     for duplicate in list:
         if element == duplicate:
             if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
-            print("Duplicate found for: " + element.to_string_verbose + str(duplicate.top - element.top+height))
-            return True
+                print("Duplicate found for: " + element.to_string_verbose + str(duplicate.top - element.top+height))
+                return True
         else:
             return False
         
@@ -256,9 +256,6 @@ def postprocess(frame, outs):
             
             #Create card objects
             card = ID_to_card(classIds[i], left, top)
-            if card not in nomadCards:
-               # print(card.to_string_verbose() + "\n")
-                nomadCards.append(card)
 
             if checkDuplicate(card, nomadCards, height): # Only add card if all of the tags are visible on one pile
             
@@ -266,19 +263,19 @@ def postprocess(frame, outs):
               
                     # Add the stockpile
                     if left < cardWidth*2 and left > cardWidth*1: 
-                            if classes[classIds[i]] not in game.stock.cards:
-                                game.stock.cards.append(classes[classIds[i]])
-                                print(str(classes[classIds[i]]) + " added to stock. Confidence " + str(confidences[i]))
+                            if card not in game.stock.cards:
+                                game.stock.cards.append(card)
+                                print(card.to_string + " added to stock. Confidence " + str(confidences[i]))
                                 print(game.stock)
                     
                     # Add foundation pile
                     foundationNumber = 0
                     placementNumber = 3
                     for foundationPile in game.foundationPiles:
-                        if classes[classIds[i]] not in foundationPile:
+                        if card not in foundationPile:
                             if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): 
-                                foundationPile.append(classes[classIds[i]])
-                                print(str(classes[classIds[i]]) + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
+                                foundationPile.append(card)
+                                print(card.to_string + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
                                 print(foundationPile)
                         foundationNumber += 1
                         placementNumber += 1
@@ -288,9 +285,9 @@ def postprocess(frame, outs):
                     tableauNumber = 0                
                     for tableauPile in tableauPiles:
                         if left > cardWidth*tableauNumber and left < cardWidth*(tableauNumber+1): # Add card to second foundation pile
-                            if classes[classIds[i]] not in tableauPile:
-                                tableauPile.append(classes[classIds[i]])
-                                print(str(classes[classIds[i]]) + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
+                            if card not in tableauPile:
+                                tableauPile.append(card)
+                                print(card.to_string + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
                                 print(tableauPile)
                         tableauNumber += 1
 
