@@ -65,24 +65,10 @@ args.classes = findFile(args.classes)
 # Card variables
 cardWidth = 280
 cardHeight = 350
-stockArray = []
 
-numberArray = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
+NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
-f1 = []
-f2 = []
-f3 = []
-f4 = []
-foundationPiles = (f1, f2, f3, f4)
-
-t1 = []
-t2 = []
-t3 = []
-t4 = []
-t5 = []
-t6 = []
-t7 = []
-tableauPiles = (t1, t2, t3, t4, t5, t6, t7)
+game = Game()
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
@@ -264,6 +250,7 @@ def postprocess(frame, outs):
         height = box[3]
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
         card = None
+
         if confidences[i] > 0.95: # Filter out moving cards. Is not entirely reliable at 28k iterations (or 90k)
             
             if checkDuplicate(classIds[i], classIds): # Only add card if all of the tags are visible on one pile
@@ -278,19 +265,19 @@ def postprocess(frame, outs):
               
                     # Add the stockpile
                     if left < cardWidth*2 and left > cardWidth*1: 
-                            if classes[classIds[i]] not in stockArray:
-                                stockArray.append(classes[classIds[i]])
+                            if classes[classIds[i]] not in game.stock.cards:
+                                game.stock.cards.append(classes[classIds[i]])
                                 print(str(classes[classIds[i]]) + " added to stock. Confidence " + str(confidences[i]))
-                                print(stockArray)
+                                print(game.stock)
                     
                     # Add foundation pile
                     foundationNumber = 0
                     placementNumber = 3
-                    for foundationPile in foundationPiles:
+                    for foundationPile in game.foundationPiles:
                         if classes[classIds[i]] not in foundationPile:
                             if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): 
                                 foundationPile.append(classes[classIds[i]])
-                                print(str(classes[classIds[i]]) + " added to " + numberArray[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
+                                print(str(classes[classIds[i]]) + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
                                 print(foundationPile)
                         foundationNumber += 1
                         placementNumber += 1
@@ -305,8 +292,6 @@ def postprocess(frame, outs):
                                 print(str(classes[classIds[i]]) + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
                                 print(tableauPile)
                         tableauNumber += 1
-
-
 
 # Process inputs
 winName = 'Deep learning object detection in OpenCV'
@@ -351,7 +336,6 @@ def framesThreadBody():
         if not hasFrame:
             break
         framesQueue.put(frame)
-
 
 #
 # Frames processing thread
