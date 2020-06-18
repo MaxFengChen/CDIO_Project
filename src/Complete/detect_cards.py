@@ -265,6 +265,7 @@ def postprocess(frame, outs):
                     if left < cardWidth*2 and left > cardWidth*1: 
                             if card not in game.stock.cards:
                                 game.stock.cards.append(card)
+                                game.stock.frontCard = card
                                 print(card.to_string + " added to stock. Confidence " + str(confidences[i]))
                                 print(game.stock)
                     
@@ -275,6 +276,7 @@ def postprocess(frame, outs):
                         if card not in foundationPile:
                             if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): 
                                 foundationPile.append(card)
+                                foundationPile.frontCard = card
                                 print(card.to_string + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
                                 print(foundationPile)
                         foundationNumber += 1
@@ -287,10 +289,11 @@ def postprocess(frame, outs):
                         if left > cardWidth*tableauNumber and left < cardWidth*(tableauNumber+1): # Add card to second foundation pile
                             if card not in tableauPile:
                                 tableauPile.append(card)
+                                tableauPile.frontCard = card
                                 print(card.to_string + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
                                 print(tableauPile)
                         tableauNumber += 1
-
+                
 # Process inputs
 winName = 'Deep learning object detection in OpenCV'
 cv.namedWindow(winName, cv.WINDOW_NORMAL)
