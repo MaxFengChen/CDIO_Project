@@ -22,7 +22,7 @@ from operator import attrgetter
 backends = (cv.dnn.DNN_BACKEND_DEFAULT, cv.dnn.DNN_BACKEND_HALIDE, cv.dnn.DNN_BACKEND_INFERENCE_ENGINE, cv.dnn.DNN_BACKEND_OPENCV)
 targets = (cv.dnn.DNN_TARGET_CPU, cv.dnn.DNN_TARGET_OPENCL, cv.dnn.DNN_TARGET_OPENCL_FP16, cv.dnn.DNN_TARGET_MYRIAD)
 
-parser = argparse.ArgumentParser(add_help=False)nomadCards
+parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('--zoo', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models.yml'),
                     help='An optional path to file with preprocessing parameters.')
 parser.add_argument('--input', help='Path to input image or video file. Skip this argument to capture frames from a camera.')
@@ -98,7 +98,6 @@ outNames = net.getUnconnectedOutLayersNames()
 confThreshold = args.thr
 nmsThreshold = args.nms
 
-
 def ID_to_card(subject, leftPos, topPos):
     # Convert a cardID to a card object
     #Attributes for a new card is initialized.
@@ -112,7 +111,7 @@ def ID_to_card(subject, leftPos, topPos):
     #Determine suit and color based on offset defined in cards.names.
     if subject < 13:
         suit = Suit.H
-        color = Color.RED
+        color = Color.RED   
         value = (subject - 13)*(-1)
     elif subject > 12 and subject < 26:
         suit = Suit.D
@@ -130,18 +129,21 @@ def ID_to_card(subject, leftPos, topPos):
     card = create_card(value, suit, pile, color, left, top) 
     return card
 
-
-def checkDuplicate(element, list, height):
+def checkDuplicate(element, elements, height):
     count = 0
-    for duplicate in list:
+    for duplicate in elements:
         if element == duplicate:
-            if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
-                print("Duplicate found for: " + element.to_string_verbose + " distance between duplicate: " + str(duplicate.top - element.top+height))
-                return True
-        else:
-            return False
-        
+            count = count + 1
+            #print(str(len(elements)))
+            #print("Count: " + str(count) + str(duplicate.value) + str(duplicate.suit))
+            if count == 2:
+                print("")
+                if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
+                    print("Duplicate found for: " + element.to_string_verbose + " distance between duplicate: " + str(duplicate.top - element.top+height))
+                    return True
 
+    #print("den falske luder")
+    return False
 
 def postprocess(frame, outs):
     frameHeight = frame.shape[0]
@@ -239,6 +241,7 @@ def postprocess(frame, outs):
 
 
     detectedCards = [] # card objects with no pile
+    #print("Detected cards reset")
     for i in indices:
         box = boxes[i]
         left = box[0]
@@ -253,17 +256,21 @@ def postprocess(frame, outs):
             #Create card objects
             card = ID_to_card(classIds[i], left, top)
             detectedCards.append(card)
+            #print("Appended card: " + str(card.value) + " " + str(card.suit))
             if checkDuplicate(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
-            
-                if top < CARD_HEIGHT: # The top cards
-              
+                print("Kommer ind her 1")
+
+                if card.top < CARD_HEIGHT: # The top cards
+                    print("Kommer ind her 2")
+
                     # Add the stockpile
-                    if left < CARD_WIDTH*2 and left > CARD_WIDTH*1: 
-                            if card not in game.stock.cards:
-                                game.stock.cards.append(card)
-                                game.stock.frontCard = card
-                                print(card.to_string + " added to stock. Confidence " + str(confidences[i]))
-                                print(game.stock)
+                    if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
+                        print("Kommer ind her 3")
+                        if card not in game.stock.cards:
+                            game.stock.cards.append(card)
+                            game.stock.frontCard = card
+                            print(card.to_string + " added to stock. Confidence " + str(confidences[i]))
+                            print(game.stock)
                     
                     # Add foundation pile
                     foundationNumber = 0
@@ -285,12 +292,7 @@ def postprocess(frame, outs):
                         if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
                             if card not in tableauPile:
                                 tableauPile.append(card)
-<<<<<<< HEAD
                                 print(card.to_string + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
-=======
-                                tableauPile.frontCard = card
-                                print(card.to_string + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
->>>>>>> 777de6def4d61f42fcad21082a148538ada41e81
                                 print(tableauPile)
                         tableauNumber += 1
                 
