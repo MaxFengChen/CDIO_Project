@@ -129,17 +129,17 @@ def ID_to_card(subject, leftPos, topPos):
     card = create_card(value, suit, pile, color, left, top) 
     return card
 
-def checkDuplicate(element, elements, height):
+def check_duplicate(element, elements, height):
     count = 0
     for duplicate in elements:
-        if element == duplicate:
+        if element.value == duplicate.value and element.suit == duplicate.suit:
             count = count + 1
-            #print(str(len(elements)))
+            print(str(len(elements)))
             #print("Count: " + str(count) + str(duplicate.value) + str(duplicate.suit))
             if count == 2:
-                print("")
-                if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
-                    print("Duplicate found for: " + element.to_string_verbose + " distance between duplicate: " + str(duplicate.top - element.top+height))
+                print("count er 2")
+                if duplicate.top - element.top+height > 5  or  duplicate.top - element.top+height < (-5):
+                    print("Duplicate found for: " + str(element.suit) + " " + str(element.suit) + " distance between duplicate: " + str(duplicate.top - element.top+height))
                     return True
 
     #print("den falske luder")
@@ -257,7 +257,7 @@ def postprocess(frame, outs):
             card = ID_to_card(classIds[i], left, top)
             detectedCards.append(card)
             #print("Appended card: " + str(card.value) + " " + str(card.suit))
-            if checkDuplicate(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
+            if check_duplicate(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
                 print("Kommer ind her 1")
 
                 if card.top < CARD_HEIGHT: # The top cards
