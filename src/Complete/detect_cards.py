@@ -264,24 +264,23 @@ def postprocess(frame, outs):
             detectedCards.append(card)
             #print("Appended card: " + str(card.value) + " " + str(card.suit))
             if check_duplicate(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
+                
                 if card.top < CARD_HEIGHT: # The top cards
-                    if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:   # Add the stockpile
-                        if len(game.stock.cards) == 0:
+                    
+                    # Add the stockpile
+                    if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:   
+                        inPile = False             
+                        for element in game.stock.cards: 
+                            if card.to_string() == element.to_string():
+                                inPile = True
+                        if not inPile:
                             game.stock.cards.append(card)
                             game.stock.frontCard = card
                             print(card.to_string() + " added to stock. Confidence " + str(confidences[i]))
-
-                        else:             
+                            print("Cards in stock: ")
                             for element in game.stock.cards: 
-                                if card.value != element.value and card.suit != element.suit:
-                                    game.stock.cards.append(card)
-                                    game.stock.frontCard = card
-                                    print(card.to_string() + " added to stock. Confidence " + str(confidences[i]))
-                                    print("Cards in stock: ")
-                                    for element in game.stock.cards: 
-                                        print(element.to_string())
-                        
-
+                                print(element.to_string())
+                    
                     # Add foundation pile
                     foundationNumber = 0
                     placementNumber = 3
