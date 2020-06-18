@@ -63,9 +63,8 @@ args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
 # Card variables
-cardWidth = 280
-cardHeight = 350
-
+CARD_WIDTH = 280
+CARD_HEIGHT = 350
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
 game = Game()
@@ -259,10 +258,10 @@ def postprocess(frame, outs):
 
             if checkDuplicate(card, nomadCards, height): # Only add card if all of the tags are visible on one pile
             
-                if top < cardHeight: # The top cards
+                if top < CARD_HEIGHT: # The top cards
               
                     # Add the stockpile
-                    if left < cardWidth*2 and left > cardWidth*1: 
+                    if left < CARD_WIDTH*2 and left > CARD_WIDTH*1: 
                             if card not in game.stock.cards:
                                 game.stock.cards.append(card)
                                 print(card.to_string + " added to stock. Confidence " + str(confidences[i]))
@@ -273,7 +272,7 @@ def postprocess(frame, outs):
                     placementNumber = 3
                     for foundationPile in game.foundationPiles:
                         if card not in foundationPile:
-                            if left > cardWidth*placementNumber and left < cardWidth*(placementNumber+1): 
+                            if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1): 
                                 foundationPile.append(card)
                                 print(card.to_string + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
                                 print(foundationPile)
@@ -281,13 +280,13 @@ def postprocess(frame, outs):
                         placementNumber += 1
                 
                 # The tableau piles
-                if top > cardHeight:
+                if top > CARD_HEIGHT:
                     tableauNumber = 0                
                     for tableauPile in game.foundationPiles:
-                        if left > cardWidth*tableauNumber and left < cardWidth*(tableauNumber+1): # Add card to second foundation pile
+                        if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
                             if card not in tableauPile:
                                 tableauPile.append(card)
-                                print(card.to_string + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
+                                print(card.to_string + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
                                 print(tableauPile)
                         tableauNumber += 1
 
@@ -417,10 +416,10 @@ while cv.waitKey(1) < 0:
             cv.putText(frame, label, (0, 45), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
 
         #Top line
-        cv.line(frame,(0,cardHeight),(1920,cardHeight),(0,0,255),thickness=2)
+        cv.line(frame,(0,CARD_HEIGHT),(1920,CARD_HEIGHT),(0,0,255),thickness=2)
 
         for line in range(7):
-            cv.line(frame,(cardWidth*line,0),(cardWidth*line,1080),(0,0,255),thickness=2)
+            cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
 
 
         cv.imshow(winName, frame)
