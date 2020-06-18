@@ -367,7 +367,7 @@ def last_ditch_effort(game):
         cardToBeMoved = find_first_visible_card(tabPile)
         if cardToBeMoved != 0:
             break             
-    print_table(game)
+    #print_table(game)
     suitArray = search_for_suit(game, cardToBeMoved)
     if suitArray == 0:
         cardToBeMoved = find_twin(game, cardToBeMoved)

@@ -314,13 +314,25 @@ def postprocess(frame, outs):
                         if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
                             #if check_duplicate(card, tableauPile, height):                            
                             if not check_duplicate_BJH(card, tableauPile.cards, height):
-                                tableauPile.cards.append(card)
-                                tableauPile.frontCard = card
-                                print(card.to_string() + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
-                                print("Cards in tableau pile: " + str(tableauNumber))
-                                for element in tableauPile.cards: 
-                                    print(element.to_string())
+                                if tableauPile.frontCard == None:
+                                    tableauPile.cards.append(card)
+                                    tableauPile.frontCard = card
+                                    print(card.to_string() + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile as frontcard. Confidence " + str(confidences[i]))
+                                    print("Cards in tableau pile: " + str(tableauNumber))
+                                    for element in tableauPile.cards: 
+                                        print(element.to_string())
+                                elif card.value.value - tableauPile.frontCard.value.value == -1 and card.color != tableauPile.frontCard.color:
+                                    tableauPile.cards.append(card)
+                                    tableauPile.frontCard = card
+                                    print(card.to_string() + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
+                                    print("Cards in tableau pile: " + str(tableauNumber))
+                                    for element in tableauPile.cards: 
+                                        print(element.to_string())
+                                else:
+                                    print("Cards do not match! " + card.to_string() + " | " + tableauPile.frontCard.to_string())
                         tableauNumber += 1
+        
+    give_advice(game)
     
     
                 
