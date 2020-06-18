@@ -331,8 +331,6 @@ def postprocess(frame, outs):
                                 else:
                                     print("Cards do not match! " + card.to_string() + " | " + tableauPile.frontCard.to_string())
                         tableauNumber += 1
-        
-    give_advice(game)
     
     
                 
@@ -469,6 +467,7 @@ while cv.waitKey(1) < 0:
 
 
         cv.imshow(winName, frame)
+        give_advice(game)
 
     except queue.Empty:
         pass
