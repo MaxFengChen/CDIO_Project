@@ -66,6 +66,7 @@ args.classes = findFile(args.classes)
 # Card variables
 CARD_WIDTH = 280
 CARD_HEIGHT = 350
+DUPLICATE_THRESHOLD = 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
 game = Game()
@@ -132,18 +133,22 @@ def ID_to_card(subject, leftPos, topPos):
 
 def check_duplicate(element, elements, height):
     count = 0
+
+    #if len(elements) == 0: # If pile is empty, there is no duplicate. Return True
+   #     return True
+
     for duplicate in elements:
         if element.value == duplicate.value and element.suit == duplicate.suit:
             count = count + 1
-            print(str(len(elements)))
+            #print(str(len(elements)))
             #print("Count: " + str(count) + str(duplicate.value) + str(duplicate.suit))
             if count == 2:
-                print("count er 2")
-                if duplicate.top - element.top+height > 5  or  duplicate.top - element.top+height < (-5):
-                    print("Duplicate found for: " + str(element.suit) + " " + str(element.suit) + " distance between duplicate: " + str(duplicate.top - element.top+height))
+                #print("count er 2")
+                if duplicate.top - element.top+height > DUPLICATE_THRESHOLD or duplicate.top - element.top+height < (-DUPLICATE_THRESHOLD):
+                    print("Duplicate found for: " + duplicate.to_string() + " distance between duplicate: " + str(duplicate.top - element.top+height))
                     return True
-
-    #print("den falske luder")
+    
+    #print("den falske luder") 
     return False
 
 def postprocess(frame, outs):
@@ -259,26 +264,30 @@ def postprocess(frame, outs):
             detectedCards.append(card)
             #print("Appended card: " + str(card.value) + " " + str(card.suit))
             if check_duplicate(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
-                print("Kommer ind her 1")
-
                 if card.top < CARD_HEIGHT: # The top cards
-                    print("Kommer ind her 2")
-
-                    # Add the stockpile
-                    if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
-                        print("Kommer ind her 3")
-                        if card not in game.stock.cards:
+                    if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:   # Add the stockpile
+                        if len(game.stock.cards) == 0:
                             game.stock.cards.append(card)
                             game.stock.frontCard = card
-                            print(card.to_string + " added to stock. Confidence " + str(confidences[i]))
-                            print(game.stock)
-                    
+                            print(card.to_string() + " added to stock. Confidence " + str(confidences[i]))
+
+                        else:             
+                            for element in game.stock.cards: 
+                                if card.value != element.value and card.suit != element.suit:
+                                    game.stock.cards.append(card)
+                                    game.stock.frontCard = card
+                                    print(card.to_string() + " added to stock. Confidence " + str(confidences[i]))
+                                    print("Cards in stock: ")
+                                    for element in game.stock.cards: 
+                                        print(element.to_string())
+                        
+
                     # Add foundation pile
                     foundationNumber = 0
                     placementNumber = 3
                     for foundationPile in game.foundationPiles:
-                        if card not in foundationPile:
-                            if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1): 
+                        if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1): 
+                            if check_duplicate(card, foundationPile, height):
                                 foundationPile.append(card)
                                 foundationPile.frontCard = card
                                 print(card.to_string + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
@@ -291,11 +300,13 @@ def postprocess(frame, outs):
                     tableauNumber = 0                
                     for tableauPile in game.foundationPiles:
                         if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
-                            if card not in tableauPile:
+                            if check_duplicate(card, tableauPile, height):
                                 tableauPile.append(card)
                                 print(card.to_string + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
                                 print(tableauPile)
                         tableauNumber += 1
+    
+    
                 
 # Process inputs
 winName = 'Deep learning object detection in OpenCV'
