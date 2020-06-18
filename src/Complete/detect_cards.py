@@ -132,14 +132,14 @@ def ID_to_card(subject, leftPos, topPos):
 def checkDuplicate(element, elements, height):
     count = 0
     for duplicate in elements:
-        if element == duplicate:
+        if element.value == duplicate.value and element.suit == duplicate.suit:
             count = count + 1
-            #print(str(len(elements)))
+            print(str(len(elements)))
             #print("Count: " + str(count) + str(duplicate.value) + str(duplicate.suit))
             if count == 2:
-                print("")
-                if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
-                    print("Duplicate found for: " + element.to_string_verbose + " distance between duplicate: " + str(duplicate.top - element.top+height))
+                print("count er 2")
+                if duplicate.top - element.top+height > 5  or  duplicate.top - element.top+height < (-5):
+                    print("Duplicate found for: " + str(element.suit) + " " + str(element.suit) + " distance between duplicate: " + str(duplicate.top - element.top+height))
                     return True
 
     #print("den falske luder")
