@@ -264,6 +264,7 @@ def postprocess(frame, outs):
                     if left < CARD_WIDTH*2 and left > CARD_WIDTH*1: 
                             if card not in game.stock.cards:
                                 game.stock.cards.append(card)
+                                game.stock.frontCard = card
                                 print(card.to_string + " added to stock. Confidence " + str(confidences[i]))
                                 print(game.stock)
                     
@@ -274,6 +275,7 @@ def postprocess(frame, outs):
                         if card not in foundationPile:
                             if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1): 
                                 foundationPile.append(card)
+                                foundationPile.frontCard = card
                                 print(card.to_string + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
                                 print(foundationPile)
                         foundationNumber += 1
@@ -286,10 +288,15 @@ def postprocess(frame, outs):
                         if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
                             if card not in tableauPile:
                                 tableauPile.append(card)
+<<<<<<< HEAD
                                 print(card.to_string + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
+=======
+                                tableauPile.frontCard = card
+                                print(card.to_string + " added to " + numberArray[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
+>>>>>>> 777de6def4d61f42fcad21082a148538ada41e81
                                 print(tableauPile)
                         tableauNumber += 1
-
+                
 # Process inputs
 winName = 'Deep learning object detection in OpenCV'
 cv.namedWindow(winName, cv.WINDOW_NORMAL)
