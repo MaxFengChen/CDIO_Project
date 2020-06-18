@@ -68,7 +68,7 @@ CARD_HEIGHT = 350
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
 game = Game()
-
+print("Test!")
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
 if 'model' in config:
