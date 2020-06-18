@@ -22,7 +22,7 @@ from operator import attrgetter
 backends = (cv.dnn.DNN_BACKEND_DEFAULT, cv.dnn.DNN_BACKEND_HALIDE, cv.dnn.DNN_BACKEND_INFERENCE_ENGINE, cv.dnn.DNN_BACKEND_OPENCV)
 targets = (cv.dnn.DNN_TARGET_CPU, cv.dnn.DNN_TARGET_OPENCL, cv.dnn.DNN_TARGET_OPENCL_FP16, cv.dnn.DNN_TARGET_MYRIAD)
 
-parser = argparse.ArgumentParser(add_help=False)
+parser = argparse.ArgumentParser(add_help=False)nomadCards
 parser.add_argument('--zoo', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models.yml'),
                     help='An optional path to file with preprocessing parameters.')
 parser.add_argument('--input', help='Path to input image or video file. Skip this argument to capture frames from a camera.')
@@ -102,9 +102,7 @@ nmsThreshold = args.nms
 
 def ID_to_card(subject, leftPos, topPos):
     # Convert a cardID to a card object
-  #  nomadCards = []
-    #for subject in classes:
-    #Attributes for a new card is init.
+    #Attributes for a new card is initialized.
     suit = None
     color = None
     pile = None
@@ -129,10 +127,9 @@ def ID_to_card(subject, leftPos, topPos):
         suit = Suit.S
         color = Color.BLACK
         value = (subject - 52)*(-1)
-    card = create_card(value, suit, pile, color, left, top)
+
+    card = create_card(value, suit, pile, color, left, top) 
     return card
-       # nomadCards.append(card)
-    #return nomadCards
 
 
 def checkDuplicate(element, list, height):
@@ -140,7 +137,7 @@ def checkDuplicate(element, list, height):
     for duplicate in list:
         if element == duplicate:
             if duplicate.top - element.top+height > 123  or  duplicate.top - element.top+height < (-123):
-                print("Duplicate found for: " + element.to_string_verbose + str(duplicate.top - element.top+height))
+                print("Duplicate found for: " + element.to_string_verbose + " distance between duplicate: " + str(duplicate.top - element.top+height))
                 return True
         else:
             return False
@@ -242,7 +239,7 @@ def postprocess(frame, outs):
         indices = np.arange(0, len(classIds))
 
 
-    nomadCards = [] # card objects with no pile
+    detectedCards = [] # card objects with no pile
     for i in indices:
         box = boxes[i]
         left = box[0]
@@ -256,8 +253,8 @@ def postprocess(frame, outs):
             
             #Create card objects
             card = ID_to_card(classIds[i], left, top)
-
-            if checkDuplicate(card, nomadCards, height): # Only add card if all of the tags are visible on one pile
+            detectedCards.append(card)
+            if checkDuplicate(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
             
                 if top < cardHeight: # The top cards
               
