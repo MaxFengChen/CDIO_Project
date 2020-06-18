@@ -151,6 +151,9 @@ def check_duplicate(element, elements, height):
     #print("den falske luder") 
     return False
 
+#def check_tableau()
+
+
 def postprocess(frame, outs):
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
@@ -298,7 +301,7 @@ def postprocess(frame, outs):
                 # The tableau piles
                 if top > CARD_HEIGHT:
                     tableauNumber = 0                
-                    for tableauPile in game.foundationPiles:
+                    for tableauPile in game.tableauPiles:
                         if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
                             if check_duplicate(card, tableauPile, height):
                                 tableauPile.append(card)
