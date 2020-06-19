@@ -247,7 +247,7 @@ def insert_card(cardValue, cardSuit, cardPile, cardColor, inPile):
 
 def create_card(cardValue, cardSuit, cardPile, cardColor, cardLeft, cardTop):
     # For adding certain cards in testing
-    return PlayingCard(Suit(cardSuit), Color(cardColor), Pile.TABLEAU, Value(cardValue), Visible.TRUE, cardLeft, cardTop)
+    return PlayingCard(Suit(cardSuit), Color(cardColor), TableauPile(cardPile), Value(cardValue), Visible.TRUE, cardLeft, cardTop)
 
 
 def print_cards(game):

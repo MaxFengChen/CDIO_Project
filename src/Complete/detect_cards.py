@@ -70,7 +70,7 @@ DUPLICATE_THRESHOLD = 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
 game = Game()
-game.tableauPiles = (TableauPile(1),TableauPile(2),TableauPile(3),TableauPile(4),TableauPile(5),TableauPile(6),TableauPile(7),)
+game.tableauPiles = [TableauPile(1),TableauPile(2),TableauPile(3),TableauPile(4),TableauPile(5),TableauPile(6),TableauPile(7)]
 game.foundationPiles = (FoundationPile(None),FoundationPile(None),FoundationPile(None),FoundationPile(None))
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
@@ -107,7 +107,7 @@ def ID_to_card(subject, leftPos, topPos):
     #Attributes for a new card is initialized.
     suit = None
     color = None
-    pile = None
+    pile = 0
     value = None
     visible = Visible.TRUE
     left = leftPos
@@ -164,6 +164,7 @@ def check_duplicate(element, elements, height):
 
 #def check_tableau()
 
+detectedCards = [] # card objects with no pile
 
 def postprocess(frame, outs):
     frameHeight = frame.shape[0]
@@ -260,7 +261,7 @@ def postprocess(frame, outs):
         indices = np.arange(0, len(classIds))
 
 
-    detectedCards = [] # card objects with no pile
+    
     #print("Detected cards reset")
     for i in indices:
         box = boxes[i]
@@ -275,7 +276,16 @@ def postprocess(frame, outs):
             
             #Create card objects
             card = ID_to_card(classIds[i], left, top)
-            detectedCards.append(card)
+            if not detectedCards:
+                    detectedCards.append(card)
+            else:
+                for oldCard in detectedCards:
+                    if card.value.value == oldCard.value.value and card.suit == oldCard.suit:
+                        card = oldCard
+                        break
+                    else:
+                        detectedCards.append(card)
+
             #print("Appended card: " + str(card.value) + " " + str(card.suit))
             if check_duplicate_BJH(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
                 
@@ -315,15 +325,45 @@ def postprocess(frame, outs):
                             #if check_duplicate(card, tableauPile, height):                            
                             if not check_duplicate_BJH(card, tableauPile.cards, height):
                                 if tableauPile.frontCard == None:
+                                    
                                     tableauPile.cards.append(card)
                                     tableauPile.frontCard = card
-                                    print(card.to_string() + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile as frontcard. Confidence " + str(confidences[i]))
+                                    print("Test1:")
+                                    print(card.to_string() + " added to " + NUMBER_ARRAY[tableauPile.number-1] + " tableau pile as frontcard. Confidence " + str(confidences[i]))
                                     print("Cards in tableau pile: " + str(tableauNumber))
+                                    card.pile = tableauPile
+
                                     for element in tableauPile.cards: 
                                         print(element.to_string())
+                                        print("Card pile number: " + card.to_string() + ": " + str(card.pile.number))
                                 elif card.value.value - tableauPile.frontCard.value.value == -1 and card.color != tableauPile.frontCard.color:
+
+                                    print("Tableaupile: " + str(tableauPile.number) + " has length: " +  str(len(tableauPile.cards)))
+                                    print("Card = " + card.to_string())
+                                    print("Tableaupile: " + str(card.pile.number) + " has length: " + str(len(card.pile.cards)))
+                                    #pileBuffer = card.pile
+
+
+                                    print(card.to_string() + "'s pile is: " + str(card.pile.number))
+                            
                                     tableauPile.cards.append(card)
                                     tableauPile.frontCard = card
+
+                                    print(game.tableauPiles[card.pile.number-1].cards[0].to_string() + " test4")
+                                    #print("Kort i bunke: " + str(game.tableauPiles[card.pile.number-1])
+
+                                    #for element3 in game.tableauPiles[card.pile.number-1].cards:
+                                       # print("SAuce?" + element3.to_string())
+
+
+                                    game.tableauPiles[card.pile.number-1].cards.remove(card)
+                                    game.tableauPiles[card.pile.number-1].frontcard = None
+
+                                    #card.pile.cards.remove(card)
+                                    #card.pile.frontcard = None
+
+                                    card.pile = tableauPile
+
                                     print(card.to_string() + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
                                     print("Cards in tableau pile: " + str(tableauNumber))
                                     for element in tableauPile.cards: 
