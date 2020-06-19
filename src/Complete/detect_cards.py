@@ -317,6 +317,8 @@ def postprocess(frame, outs, game):
             else:
                 for oldCard in detectedCards:
                     if card.value.value == oldCard.value.value and card.suit == oldCard.suit:
+                        oldCard.top = card.top
+                        oldCard.left = card.left
                         card = oldCard
                         detectedTableau = oldCard.pile
                         break
@@ -339,23 +341,31 @@ def postprocess(frame, outs, game):
                                 print(element.to_string())
                     
                     # Add foundation pile
-                    foundationNumber = 0
-                    placementNumber = 3
-                    for foundationPile in game.foundationPiles:
-                        if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1):
-                            if not check_duplicate_BJH(card, foundationPile.cards, height):
-                            #if check_duplicate(card, foundationPile, height):
-                                foundationPile.cards.append(card)
-                                foundationPile.frontCard = card
-                                print(card.to_string() + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
-                                print("Cards in foundation pile: " + str(foundationNumber))
-                                for element in foundationPile.cards: 
-                                    print(element.to_string())
-                        foundationNumber += 1
-                        placementNumber += 1
-                
+                    elif card.left > CARD_WIDTH*2:
+                        foundationNumber = 0
+                        placementNumber = 3
+                        for foundationPile in game.foundationPiles:
+                            if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1):
+                                if not check_duplicate_BJH(card, foundationPile.cards, height):
+                                #if check_duplicate(card, foundationPile, height):
+                                    #foundationPile.cards.append(card)
+                                    #foundationPile.frontCard = card
+
+                                    print("Test af foundation")
+                                    print("Card: " + card.to_string() + "Card pile: " + str(card.pile.number))
+                                    start_add_to_goal(card, card.pile, game)
+                                    #elif card.pile == Stock:
+                                        
+                                    print(card.to_string() + " added to " + NUMBER_ARRAY[foundationNumber] + " foundation pile. Confidence " + str(confidences[i]))
+                                    print("Cards in foundation pile: " + str(foundationNumber))
+
+                                    for element in foundationPile.cards: 
+                                        print(element.to_string())
+                            foundationNumber += 1
+                            placementNumber += 1
+                    
                 # The tableau piles
-                if card.top > CARD_HEIGHT:
+                elif card.top > CARD_HEIGHT:
                     tableauNumber = 0                
                     for tableauPile in game.tableauPiles:
                         if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
