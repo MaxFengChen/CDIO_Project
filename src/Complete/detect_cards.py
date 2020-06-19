@@ -68,6 +68,7 @@ CARD_WIDTH = 280
 CARD_HEIGHT = 350
 DUPLICATE_THRESHOLD = 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
+STOCKPILE_THRESHOLD = 500
 
 
 def setupGameComputerVision(game):
@@ -158,6 +159,23 @@ def check_duplicate_BJH(element, elements, height):
                 count = 1
             return True
     return False    
+
+def check_stockpile():
+    stockpileFrame = frame[0:CARD_HEIGHT,0:CARD_WIDTH]
+    stockpileFrameGrey = cv.cvtColor(stockpileFrame, cv.COLOR_BGR2GRAY)
+    _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)
+    contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    
+    if len(contours) > STOCKPILE_THRESHOLD:
+        print("Stockpile is not empty")
+        return False
+    else:
+        if len(game.stock.cards) == 0:
+            print("Stockpile is empty")    
+            return True
+    #print(len(contours))
+    #cv.drawContours(stockpileFrame, contours, -1, (255,0,0), 3)
+    #cv.imshow(winName, stockpileFrame)
 
 def check_duplicate(element, elements, height):
     count = 0
