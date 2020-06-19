@@ -69,11 +69,26 @@ CARD_HEIGHT = 350
 DUPLICATE_THRESHOLD = 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
+
+def setupGameComputerVision(game):
+    game.playingCards = []
+    game.tableauPiles = []
+    game.foundationPiles = []
+    for pileNumber in range(1, 8):
+        currentPile = TableauPile(pileNumber)
+        game.tableauPiles.append(currentPile)
+    for suit in Suit:
+        newFoundationPile = FoundationPile(suit)
+        newFoundationPile.nextCard = Value.ACE
+        game.foundationPiles.append(newFoundationPile)
+
 game = Game()
-for tableapile in range(1, 8):
-    game.tableauPiles.append(TableauPile(tableapile))
+
+setupGameComputerVision(game) #Sauce?
+#for tableapile in range(1, 8):
+ #   game.tableauPiles.append(TableauPile(tableapile))
 #game.tableauPiles = [TableauPile(1),TableauPile(2),TableauPile(3),TableauPile(4),TableauPile(5),TableauPile(6),TableauPile(7)]
-game.foundationPiles = (FoundationPile(None),FoundationPile(None),FoundationPile(None),FoundationPile(None))
+#game.foundationPiles = (FoundationPile(None),FoundationPile(None),FoundationPile(None),FoundationPile(None))
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
@@ -346,9 +361,15 @@ def postprocess(frame, outs, game):
                                     print("Card = " + card.to_string())
                                     print("Tableaupile: " + str(card.pile.number) + " has length: " + str(len(card.pile.cards)))
                                     #pileBuffer = card.pile
-
                                     
-                                    print("Test123: " + str(len(detectedTableau.cards)))
+                                    count = 0
+                                    tester = card
+                                    for test1 in game.tableauPiles:
+                                        if tester == test1.cards:
+                                            count += 1
+                                        if count == 2:
+                                            print("Der er dublicates")
+                                            count = 0
 
                                     print(card.to_string() + "'s pile is: " + str(card.pile.number))
                             
@@ -359,9 +380,12 @@ def postprocess(frame, outs, game):
                                     print(game.tableauPiles[card.pile.number-1].cards[0].to_string() + " test4")
                                     print("Kort i bunke: " + game.tableauPiles[card.pile.number-1].cards[0].to_string())
 
+                                    print("Test 1")
+                                    remove_from_tableau_pile(card, card.pile)
+                                    print("Test 2")
 
-                                    game.tableauPiles[card.pile.number-1].cards.remove(card)
-                                    game.tableauPiles[card.pile.number-1].frontcard = None
+                                    #game.tableauPiles[card.pile.number-1].cards.remove(card)
+                                    #game.tableauPiles[card.pile.number-1].frontcard = None
 
                                     #card.pile.cards.remove(card)
                                     #card.pile.frontcard = None
@@ -372,8 +396,10 @@ def postprocess(frame, outs, game):
                                     print("Cards in tableau pile: " + str(tableauNumber))
                                     for element in tableauPile.cards: 
                                         print(element.to_string())
-                                else:
+                                elif not(card.value.value - tableauPile.frontCard.value.value == -1 and card.color != tableauPile.frontCard.color):
+                                    
                                     print("Cards do not match! " + card.to_string() + " | " + tableauPile.frontCard.to_string())
+                                    
                         tableauNumber += 1
     
     
