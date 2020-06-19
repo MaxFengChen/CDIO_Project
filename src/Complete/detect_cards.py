@@ -70,7 +70,9 @@ DUPLICATE_THRESHOLD = 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 
 game = Game()
-game.tableauPiles = [TableauPile(1),TableauPile(2),TableauPile(3),TableauPile(4),TableauPile(5),TableauPile(6),TableauPile(7)]
+for tableapile in range(1, 8):
+    game.tableauPiles.append(TableauPile(tableapile))
+#game.tableauPiles = [TableauPile(1),TableauPile(2),TableauPile(3),TableauPile(4),TableauPile(5),TableauPile(6),TableauPile(7)]
 game.foundationPiles = (FoundationPile(None),FoundationPile(None),FoundationPile(None),FoundationPile(None))
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
@@ -165,8 +167,9 @@ def check_duplicate(element, elements, height):
 #def check_tableau()
 
 detectedCards = [] # card objects with no pile
+detectedTableau = [] # Fuck 3 ugers og sut en ged
 
-def postprocess(frame, outs):
+def postprocess(frame, outs, game):
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
 
@@ -282,6 +285,7 @@ def postprocess(frame, outs):
                 for oldCard in detectedCards:
                     if card.value.value == oldCard.value.value and card.suit == oldCard.suit:
                         card = oldCard
+                        detectedTableau = oldCard.pile
                         break
                     else:
                         detectedCards.append(card)
@@ -343,17 +347,17 @@ def postprocess(frame, outs):
                                     print("Tableaupile: " + str(card.pile.number) + " has length: " + str(len(card.pile.cards)))
                                     #pileBuffer = card.pile
 
+                                    
+                                    print("Test123: " + str(len(detectedTableau.cards)))
 
                                     print(card.to_string() + "'s pile is: " + str(card.pile.number))
                             
                                     tableauPile.cards.append(card)
                                     tableauPile.frontCard = card
 
-                                    print(game.tableauPiles[card.pile.number-1].cards[0].to_string() + " test4")
-                                    #print("Kort i bunke: " + str(game.tableauPiles[card.pile.number-1])
 
-                                    #for element3 in game.tableauPiles[card.pile.number-1].cards:
-                                       # print("SAuce?" + element3.to_string())
+                                    print(game.tableauPiles[card.pile.number-1].cards[0].to_string() + " test4")
+                                    print("Kort i bunke: " + game.tableauPiles[card.pile.number-1].cards[0].to_string())
 
 
                                     game.tableauPiles[card.pile.number-1].cards.remove(card)
@@ -486,7 +490,7 @@ while cv.waitKey(1) < 0:
         outs = predictionsQueue.get_nowait()
         frame = processedFramesQueue.get_nowait()
 
-        postprocess(frame, outs)
+        postprocess(frame, outs, game)
 
         # Put efficiency information.
         if predictionsQueue.counter > 1:
