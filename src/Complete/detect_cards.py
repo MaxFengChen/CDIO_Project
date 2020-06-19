@@ -405,11 +405,19 @@ def postprocess(frame, outs, game):
                                     tableauPile.frontCard = card
 
 
-                                    print(game.tableauPiles[card.pile.number-1].cards[0].to_string() + " test4")
-                                    print("Kort i bunke: " + game.tableauPiles[card.pile.number-1].cards[0].to_string())
-
                                     print("Test 1")
-                                    remove_from_tableau_pile(card, card.pile)
+                                    if card != card.pile.frontCard:
+                                        print("Test for at rykke hele bunken")
+                                        for element in card.pile.cards:
+                                            print("Card pile: " + element.to_string())
+                                        print("Bagerste kort for bunke: " + card.pile.cards[0].to_string())
+                                        start_add_to_tableau(card.pile.cards, card.pile, tableauPile) 
+                                        for element2 in tableauPile.cards:
+                                            print("Card in pile after move: " + element2.to_string())
+                                    else:
+                                        print("Test for at rykke et enkelt kort")
+                                        remove_from_tableau_pile(card, card.pile)
+                                    #remove_from_tableau_pile(card, card.pile)
                                     print("Test 2")
 
                                     #game.tableauPiles[card.pile.number-1].cards.remove(card)
