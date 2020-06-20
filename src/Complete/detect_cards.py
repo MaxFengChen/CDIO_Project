@@ -333,13 +333,14 @@ def postprocess(frame, outs, game):
                         detectedCards.append(card)
 
             #print("Appended card: " + str(card.value) + " " + str(card.suit))
-            if check_duplicate_BJH(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
+            checkDupValue = check_duplicate_BJH(card, detectedCards, height)
+            if checkDupValue: # Only add card if all of the tags are visible on one pile
                 
                 if card.top < CARD_HEIGHT: # The top cards
 
                     # Add the stockpile
                     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:   
-                        if not check_duplicate_BJH(card, game.stock.cards, height):
+                        if not checkDupValue:
                             if not check_stockpile():
                                 game.stock.cards.append(card)
                                 game.stock.frontCard = card
@@ -356,7 +357,7 @@ def postprocess(frame, outs, game):
                         placementNumber = 3
                         for foundationPile in game.foundationPiles:
                             if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1):
-                                if not check_duplicate_BJH(card, foundationPile.cards, height):
+                                if not checkDupVal:
                                 #if check_duplicate(card, foundationPile, height):
                                     #foundationPile.cards.append(card)
                                     #foundationPile.frontCard = card
@@ -378,28 +379,16 @@ def postprocess(frame, outs, game):
                 elif card.top > CARD_HEIGHT:
                     tableauNumber = 0                
                     for tableauPile in game.tableauPiles:
-                        if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
-                            #if check_duplicate(card, tableauPile, height):                            
-                            if not check_duplicate_BJH(card, tableauPile.cards, height):
+                        if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile                        
+                            if not checkDupValue:
                                 if tableauPile.frontCard == None:
                                     
                                     tableauPile.cards.append(card)
                                     tableauPile.frontCard = card
-                                    print("Test1:")
-                                    print(card.to_string() + " added to " + NUMBER_ARRAY[tableauPile.number-1] + " tableau pile as frontcard. Confidence " + str(confidences[i]))
-                                    print("Cards in tableau pile: " + str(tableauNumber))
                                     card.pile = tableauPile
 
-                                    for element in tableauPile.cards: 
-                                        print(element.to_string())
-                                        print("Card pile number: " + card.to_string() + ": " + str(card.pile.number))
                                 elif card.value.value - tableauPile.frontCard.value.value == -1 and card.color != tableauPile.frontCard.color:
 
-                                    print("Tableaupile: " + str(tableauPile.number) + " has length: " +  str(len(tableauPile.cards)))
-                                    print("Card = " + card.to_string())
-                                    print("Tableaupile: " + str(card.pile.number) + " has length: " + str(len(card.pile.cards)))
-                                    #pileBuffer = card.pile
-                                    
                                     count = 0
                                     tester = card
                                     for test1 in game.tableauPiles:
@@ -414,37 +403,16 @@ def postprocess(frame, outs, game):
                                     tableauPile.cards.append(card)
                                     tableauPile.frontCard = card
 
-
-                                    print("Test 1")
                                     if card != card.pile.frontCard:
-                                        print("Test for at rykke hele bunken")
                                         for element in card.pile.cards:
-                                            print("Card pile: " + element.to_string())
                                             remove_from_tableau_pile(element, card.pile)
-                                        #print("Bagerste kort for bunke: " + card.pile.cards[0].to_string())
-                                     
-                                        for element2 in tableauPile.cards:
-                                            print("Card in pile after move: " + element2.to_string())
+                                    
                                     else:
-                                        print("Test for at rykke et enkelt kort")
                                         remove_from_tableau_pile(card, card.pile)
-                                    #remove_from_tableau_pile(card, card.pile)
-                                    print("Test 2")
-
-                                    #game.tableauPiles[card.pile.number-1].cards.remove(card)
-                                    #game.tableauPiles[card.pile.number-1].frontcard = None
-
-                                    #card.pile.cards.remove(card)
-                                    #card.pile.frontcard = None
 
                                     card.pile = tableauPile
 
-                                    print(card.to_string() + " added to " + NUMBER_ARRAY[tableauNumber] + " tableau pile. Confidence " + str(confidences[i]))
-                                    print("Cards in tableau pile: " + str(tableauNumber))
-                                    for element in tableauPile.cards: 
-                                        print(element.to_string())
                                 elif not(card.value.value - tableauPile.frontCard.value.value == -1 and card.color != tableauPile.frontCard.color):
-                                    
                                     print("Cards do not match! " + card.to_string() + " | " + tableauPile.frontCard.to_string())
                                     
                         tableauNumber += 1
