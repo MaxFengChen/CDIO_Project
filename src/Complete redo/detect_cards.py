@@ -160,6 +160,9 @@ def ID_to_card(subject, leftPos, topPos):
 def generate_cards(cardIDs, confidences, boxes):
     count = 0
     detectedCards.clear()
+    for tableauPile in game.tableauPiles:
+        tableauPile.cards.clear()
+
     for cardID in cardIDs:
         if confidences[count] > 0.95:
             detectedCards.append(ID_to_card(cardID, boxes[count][0], boxes[count][1]))
@@ -198,7 +201,6 @@ def add_foundation_piles(card):
 def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
-        tableauPile.cards.clear()
         if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
             print("In tableau " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
             tableauPile.cards.append(card)
@@ -214,8 +216,16 @@ def add_piles(cards):
             if not stockCycled:
                 add_initial_stock(card) 
  
+def sort_tableau_piles():
+    i = 0
+    for tableauPile in game.tableauPiles:
+        #tableauPile.cards.sort(key=lambda x: x.top)
+        print("Sorted " + NUMBER_ARRAY[i] + " tableau pile")
+        for card in tableauPile.cards:
+            print(card.to_string())
+        i+=1
 
-def stockpile_is_empty():
+def stockpile_is_empty(): # Works on a well focussed image
     stockpileFrame = frame[0:CARD_HEIGHT,0:CARD_WIDTH]
     stockpileFrameGrey = cv.cvtColor(stockpileFrame, cv.COLOR_BGR2GRAY)
     _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)
@@ -330,6 +340,7 @@ def postprocess(frame, outs, game):
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
     generate_cards(classIds, confidences, boxes)
     add_piles(detectedCards)
+    sort_tableau_piles()
     
 
     # print("detectedCards: ")
