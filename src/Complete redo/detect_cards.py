@@ -77,8 +77,7 @@ stockStrings = []
 foundationStrings = ([],[],[],[])
 tableauStrings = ([],[],[],[],[],[],[])
 stockCycled = False
-
-
+stockCycledCounter = int()
 
 def setupGameComputerVision(game):
     game.playingCards = []
@@ -156,10 +155,7 @@ def ID_to_card(subject, leftPos, topPos):
         value = (subject - 52)*(-1)
 
     card = create_card(value, suit, pile, color, left, top) 
-    #print("returning: " + str(value) + ", " + str(suit))
     return card
-
-
 
 def generate_cards(cardIDs, confidences, boxes):
     count = 0
@@ -181,21 +177,20 @@ def remove_duplicate(cards):
                 cards.pop(i)
             i+=1
 
-def add_initial_stock(card):
+def add_initial_stock(card): #SKAL OPTIMERES!!!!!
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
-        if len(stockStrings) == 0:
-            game.stock.cards.append(card)
-            stockStrings.append(card.to_string())
-        elif card.to_string() not in stockStrings:
-            game.stock.cards.append(card)
-            stockStrings.append(card.to_string())    
+        game.stock.cards.append(card)
+        #stockStrings.append(card.to_string())
+        print("In stockPl " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
+        remove_duplicate(game.stock.cards)
+
 
 def add_foundation_piles(card):
     foundationNumber = 0
     placementNumber = 3
     for foundationPile in game.foundationPiles:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
-            print("In fndtion " + card.to_string() +" "+ str(card.left) + " "+  str(card.top))
+            print("In fndtion " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
             foundationPile.cards.append(card)
         foundationNumber += 1
         placementNumber += 1
@@ -204,13 +199,9 @@ def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
         tableauPile.cards.clear()
-        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile     
-            #if card.to_string() not in tableauStrings[tableauNumber]:
-            print("In tableau " + card.to_string() +" "+ str(card.left) + " "+  str(card.top))
-            # for string in tableauStrings:
-            #     print(string)
+        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
+            print("In tableau " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
             tableauPile.cards.append(card)
-                #tableauStrings[tableauNumber].append(card.to_string())
         tableauNumber += 1
 
 def add_piles(cards):
@@ -220,19 +211,20 @@ def add_piles(cards):
             add_tableau_piles(card)
         elif card.top < CARD_HEIGHT: # The top cards    
             add_foundation_piles(card)
+            if not stockCycled:
+                add_initial_stock(card) 
+ 
 
 def stockpile_is_empty():
     stockpileFrame = frame[0:CARD_HEIGHT,0:CARD_WIDTH]
     stockpileFrameGrey = cv.cvtColor(stockpileFrame, cv.COLOR_BGR2GRAY)
     _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)
     contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    
+    print(str(len(contours)))
     if len(contours) > STOCKPILE_THRESHOLD:
         return False
-    elif len(game.stock.cards) == 0:
-        return True
     else:
-        return False
+        return True
 
 def postprocess(frame, outs, game):
     frameHeight = frame.shape[0]
