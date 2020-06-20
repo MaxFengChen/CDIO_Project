@@ -161,7 +161,8 @@ def generate_cards(cardIDs, confidences, boxes):
     count = 0
     for cardID in cardIDs:
         if confidences[count] < 0.95:
-            detectedCards.append(ID_to_card(cardIDs[count], confidences[count], boxes[count][0], boxes[count][1]))
+            detectedCards.append(ID_to_card(cardID, boxes[count][0], boxes[count][1]))
+        count+=1
 
 def add_initial_stock(card):
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
@@ -185,10 +186,10 @@ def add_foundation_piles(card):
         placementNumber += 1
 
 def add_tableau_piles(card):
-    tabnumber = 0
+    tableauNumber = 0
     for tableauPile in game.tableauPiles:
-        if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile     
-            if card.to_string() not in tableauString[tabNumber]:
+        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile     
+            if card.to_string() not in tableauStrings[tableauNumber]:
                 tableauPile.cards.append(card)
                 tableauStrings[tabnumber].append(card.to.string())
         tabnumber += 1
@@ -320,7 +321,7 @@ def postprocess(frame, outs, game):
         width = box[2]
         height = box[3]
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
-    add_pile
+    add_piles(detectedCards)
     generate_cards(classIds, confidences, boxes)
     
                 
