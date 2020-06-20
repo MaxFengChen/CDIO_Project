@@ -106,6 +106,7 @@ class PlayingCard:
         self.visible = visible
         self.left = left
         self.top = top
+        self.ID = self.to_string()
     
     def to_string(self):
         if self.visible == Visible.TRUE:

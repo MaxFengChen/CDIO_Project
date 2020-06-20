@@ -71,6 +71,8 @@ NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH
 STOCKPILE_THRESHOLD = 500
 
 detectedCards = []
+detectedCardsOrdered = []
+
 stockStrings = []
 foundationStrings = ([],[],[],[])
 tableauStrings = ([],[],[],[],[],[],[])
@@ -154,15 +156,30 @@ def ID_to_card(subject, leftPos, topPos):
         value = (subject - 52)*(-1)
 
     card = create_card(value, suit, pile, color, left, top) 
+    #print("returning: " + str(value) + ", " + str(suit))
     return card
-           
+
+
+
 def generate_cards(cardIDs, confidences, boxes):
-    cardIDs = list(set(cardIDs))
     count = 0
+    detectedCards.clear()
     for cardID in cardIDs:
-        if confidences[count] < 0.95:
+        if confidences[count] > 0.95:
             detectedCards.append(ID_to_card(cardID, boxes[count][0], boxes[count][1]))
-        count+=1
+            count+=1
+    remove_duplicate(detectedCards)
+
+def remove_duplicate(cards):
+    for card in cards:
+        count = 0
+        i = 0
+        for element in cards:
+            if card.ID == element.ID:
+                count+=1
+            if count == 2:
+                cards.pop(i)
+            i+=1
 
 def add_initial_stock(card):
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
@@ -176,27 +193,30 @@ def add_initial_stock(card):
 def add_foundation_piles(card):
     foundationNumber = 0
     placementNumber = 3
-    
     for foundationPile in game.foundationPiles:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
-            if card.to_string() not in foundationStrings[foundationNumber]:
-                foundationPile.cards.append(card)
-                foundationStrings[foundationNumber].append(card.to_string()) 
+            print("In fndtion " + card.to_string() +" "+ str(card.left) + " "+  str(card.top))
+            foundationPile.cards.append(card)
         foundationNumber += 1
         placementNumber += 1
 
 def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
+        tableauPile.cards.clear()
         if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile     
-            if card.to_string() not in tableauStrings[tableauNumber]:
-                tableauPile.cards.append(card)
-                tableauStrings[tabnumber].append(card.to.string())
-        tabnumber += 1
+            #if card.to_string() not in tableauStrings[tableauNumber]:
+            print("In tableau " + card.to_string() +" "+ str(card.left) + " "+  str(card.top))
+            # for string in tableauStrings:
+            #     print(string)
+            tableauPile.cards.append(card)
+                #tableauStrings[tableauNumber].append(card.to_string())
+        tableauNumber += 1
 
 def add_piles(cards):
+    print("Adding piles")
     for card in cards:
-        if card.top < CARD_HEIGHT: # The top cards
+        if card.top > CARD_HEIGHT: # The top cards
             add_tableau_piles(card)
         elif card.top < CARD_HEIGHT: # The top cards    
             add_foundation_piles(card)
@@ -213,9 +233,6 @@ def stockpile_is_empty():
         return True
     else:
         return False
-
-detectedCards = [] # card objects with no pile
-detectedTableau = [] # Fuck 3 ugers og sut en ged
 
 def postprocess(frame, outs, game):
     frameHeight = frame.shape[0]
@@ -310,8 +327,6 @@ def postprocess(frame, outs, game):
             indices.extend(class_indices[nms_indices])
     else:
         indices = np.arange(0, len(classIds))
-
-
     
     #print("Detected cards reset")
     for i in indices:
@@ -321,9 +336,13 @@ def postprocess(frame, outs, game):
         width = box[2]
         height = box[3]
         drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
-    add_piles(detectedCards)
     generate_cards(classIds, confidences, boxes)
+    add_piles(detectedCards)
     
+
+    # print("detectedCards: ")
+    # for element in detectedCards:
+    #     print(element.to_string())
                 
 # Process inputs
 winName = 'Deep learning object detection in OpenCV'
@@ -458,7 +477,7 @@ while cv.waitKey(1) < 0:
 
 
         cv.imshow(winName, frame)
-        give_advice(game)
+        #give_advice(game)
 
     except queue.Empty:
         pass
