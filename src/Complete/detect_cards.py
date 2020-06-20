@@ -151,6 +151,17 @@ def ID_to_card(subject, leftPos, topPos):
     card = create_card(value, suit, pile, color, left, top) 
     return card
 
+def check_duplicate_BJH_BJH(element, elements, height):
+    count = 0
+    for duplicate in elements: 
+        if element.suit == duplicate.suit:
+            if element.value == duplicate.value:
+                count += 1
+                if count == 2:
+                    if duplicate.top - (element.top+height) > DUPLICATE_THRESHOLD or duplicate.top - (element.top+height) < (-DUPLICATE_THRESHOLD):
+                        return True
+    return False
+
 def check_duplicate_BJH(element, elements, height):
     for duplicate in elements: 
         if duplicate.to_string() == element.to_string():
@@ -333,13 +344,13 @@ def postprocess(frame, outs, game):
                         detectedCards.append(card)
 
             #print("Appended card: " + str(card.value) + " " + str(card.suit))
-            if check_duplicate_BJH(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
+            if check_duplicate_BJH_BJH(card, detectedCards, height): # Only add card if all of the tags are visible on one pile
                 
                 if card.top < CARD_HEIGHT: # The top cards
 
                     # Add the stockpile
                     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:   
-                        if not check_duplicate_BJH(card, game.stock.cards, height):
+                        if not check_duplicate_BJH_BJH(card, game.stock.cards, height):
                             if not check_stockpile():
                                 game.stock.cards.append(card)
                                 game.stock.frontCard = card
@@ -356,7 +367,7 @@ def postprocess(frame, outs, game):
                         placementNumber = 3
                         for foundationPile in game.foundationPiles:
                             if left > CARD_WIDTH*placementNumber and left < CARD_WIDTH*(placementNumber+1):
-                                if not check_duplicate_BJH(card, foundationPile.cards, height):
+                                if not check_duplicate_BJH_BJH(card, foundationPile.cards, height):
                                 #if check_duplicate(card, foundationPile, height):
                                     #foundationPile.cards.append(card)
                                     #foundationPile.frontCard = card
@@ -380,7 +391,7 @@ def postprocess(frame, outs, game):
                     for tableauPile in game.tableauPiles:
                         if left > CARD_WIDTH*tableauNumber and left < CARD_WIDTH*(tableauNumber+1): # Add card to second foundation pile
                             #if check_duplicate(card, tableauPile, height):                            
-                            if not check_duplicate_BJH(card, tableauPile.cards, height):
+                            if not check_duplicate_BJH_BJH(card, tableauPile.cards, height):
                                 if tableauPile.frontCard == None:
                                     
                                     tableauPile.cards.append(card)
@@ -413,7 +424,6 @@ def postprocess(frame, outs, game):
                             
                                     tableauPile.cards.append(card)
                                     tableauPile.frontCard = card
-
 
                                     print("Test 1")
                                     if card != card.pile.frontCard:
