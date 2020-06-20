@@ -166,16 +166,23 @@ def check_stockpile():
     _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)
     contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     
-    if len(contours) > STOCKPILE_THRESHOLD:
-        print("Stockpile is not empty")
-        return False
-    else:
-        if len(game.stock.cards) == 0:
-            print("Stockpile is empty")    
-            return True
     #print(len(contours))
     #cv.drawContours(stockpileFrame, contours, -1, (255,0,0), 3)
     #cv.imshow(winName, stockpileFrame)
+    
+    if len(contours) > STOCKPILE_THRESHOLD:
+        #print("Stockpile is not empty")
+        return False
+    else:
+        #print("Stockpile is empty")    
+        return True
+
+def check_win():
+    if check_stockpile():
+        if len(game.stock.cards) == 0:
+            return True
+    else:
+        return False
 
 def check_duplicate(element, elements, height):
     count = 0
@@ -333,12 +340,15 @@ def postprocess(frame, outs, game):
                     # Add the stockpile
                     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:   
                         if not check_duplicate_BJH(card, game.stock.cards, height):
-                            game.stock.cards.append(card)
-                            game.stock.frontCard = card
-                            print(card.to_string() + " added to stock. Confidence " + str(confidences[i]))
-                            print("Cards in stock: ")
-                            for element in game.stock.cards: 
-                                print(element.to_string())
+                            if not check_stockpile():
+                                game.stock.cards.append(card)
+                                game.stock.frontCard = card
+                                print(card.to_string() + " added to stock. Keep adding cards. Confidence " + str(confidences[i]))
+                                print("Cards in stock: ")
+                                for element in game.stock.cards: 
+                                    print(element.to_string())
+                            else:
+                                print("Stockpile has been loaded. Start playing.")
                     
                     # Add foundation pile
                     elif card.left > CARD_WIDTH*2:
@@ -410,8 +420,9 @@ def postprocess(frame, outs, game):
                                         print("Test for at rykke hele bunken")
                                         for element in card.pile.cards:
                                             print("Card pile: " + element.to_string())
-                                        print("Bagerste kort for bunke: " + card.pile.cards[0].to_string())
-                                        start_add_to_tableau(card.pile.cards, card.pile, tableauPile) 
+                                            remove_from_tableau_pile(element, card.pile)
+                                        #print("Bagerste kort for bunke: " + card.pile.cards[0].to_string())
+                                     
                                         for element2 in tableauPile.cards:
                                             print("Card in pile after move: " + element2.to_string())
                                     else:
