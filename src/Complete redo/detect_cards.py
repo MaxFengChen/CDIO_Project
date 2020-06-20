@@ -66,18 +66,11 @@ args.classes = findFile(args.classes)
 # Card variables
 CARD_WIDTH = 280
 CARD_HEIGHT = 350
-DUPLICATE_THRESHOLD = 50
+     = 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 STOCKPILE_THRESHOLD = 500
 
 detectedCards = []
-detectedCardsOrdered = []
-
-stockStrings = []
-foundationStrings = ([],[],[],[])
-tableauStrings = ([],[],[],[],[],[],[])
-stockCycled = False
-stockCycledCounter = int()
 
 def setupGameComputerVision(game):
     game.playingCards = []
@@ -183,7 +176,6 @@ def remove_duplicate(cards):
 def add_initial_stock(card): #SKAL OPTIMERES!!!!!
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
         game.stock.cards.append(card)
-        #stockStrings.append(card.to_string())
         print("In stockPl " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
         remove_duplicate(game.stock.cards)
 
@@ -213,8 +205,8 @@ def add_piles(cards):
             add_tableau_piles(card)
         elif card.top < CARD_HEIGHT: # The top cards    
             add_foundation_piles(card)
-            if not stockCycled:
-                add_initial_stock(card) 
+            # if not stockCycled:
+            #     add_initial_stock(card) 
  
 def sort_tableau_piles():
     i = 0
@@ -414,7 +406,6 @@ def processingThreadBody():
         except queue.Empty:
             pass
 
-
         if not frame is None:
             frameHeight = frame.shape[0]
             frameWidth = frame.shape[1]
@@ -477,7 +468,6 @@ while cv.waitKey(1) < 0:
 
         for line in range(7):
             cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
-
 
         cv.imshow(winName, frame)
         #give_advice(game)
