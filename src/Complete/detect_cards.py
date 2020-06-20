@@ -151,6 +151,17 @@ def ID_to_card(subject, leftPos, topPos):
     card = create_card(value, suit, pile, color, left, top) 
     return card
 
+def check_duplicate_BJH_BJH(element, elements, height):
+    count = 0
+    for duplicate in elements: 
+        if element.suit == duplicate.suit:
+            if element.value == duplicate.value:
+                count += 1
+                if count == 2:
+                    if duplicate.top - (element.top+height) > DUPLICATE_THRESHOLD or duplicate.top - (element.top+height) < (-DUPLICATE_THRESHOLD):
+                        return True
+    return False
+
 def check_duplicate_BJH(element, elements, height):
     for duplicate in elements: 
         if duplicate.to_string() == element.to_string():
