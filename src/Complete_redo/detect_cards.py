@@ -175,7 +175,7 @@ def remove_duplicate(cards):
 def add_initial_stock(card): #SKAL OPTIMERES!!!!!
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
         game.stock.cards.append(card)
-        print("In stockPl " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
+        print("In stockPl " + card.to_string() + " " + str(card.left) + " " + str(card.top))
         remove_duplicate(game.stock.cards)
 
 def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
@@ -183,8 +183,10 @@ def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
     placementNumber = 3
     for foundationPile in game.foundationPiles:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
-            print("In fndtion " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
+            print("In fndtion " + card.to_string() + " " + str(card.left) + " " + str(card.top))
             foundationPile.cards.append(card)
+        if len(foundationPile.cards) > 0:  
+            foundationPile.frontCard = foundationPile.cards[LAST_INDEX]
         remove_duplicate(foundationPile.cards)
         foundationNumber += 1
         placementNumber += 1
@@ -192,10 +194,10 @@ def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
 def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
-        if card.left > CARD_WIDTHtableauNumber and card.left < CARD_WIDTH(tableauNumber+1): 
-            print("In tableau " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
+        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
+            print("In tableau " + card.to_string() + " " + str(card.left) + " " + str(card.top))
             tableauPile.cards.append(card)
-        if len(tableauPile.cards )> 0:
+        if len(tableauPile.cards) > 0:
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
         tableauNumber += 1
 
