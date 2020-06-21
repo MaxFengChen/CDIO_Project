@@ -156,23 +156,15 @@ def free_king_advice(game):
         if not pile.cards: # if the pile.cards is empty  
             emptyPile = pile
         else:                       # If the pile is not empty, we can check if it has a king ready to be moved.  
-            if pile.cards[0].visible == Visible.FALSE : # We are only interested in a king that is on top of non-visible cards
-                for card in pile.cards:                 # Find the king
-                    if card.visible == Visible.TRUE and card.value.value == 13:   
-                        if len(pile.cards) > biggestLen : # If the king is found update the variables.
-                            biggestLen = len(pile.cards) 
-                            targetPile = pile
-                            targetCard = card
+            for card in pile.cards:                 # Find the king
+                if card.value.value == 13:   
+                    if card.top > biggestLen : # If the king is found update the variables.
+                        biggestLen = card.top
+                        targetPile = pile
+                        targetCard = card
     if targetPile != None and emptyPile != None: # If a king and an empty pile is found
         print("Function 3")                      # Instructions:
         print("Move the " + targetCard.value.name + " of " + targetCard.suit.to_string()+ " to the empty tableau pile nr. " + str(emptyPile.number))
-        #choice = input("If you wish to do so enter 1: ")
-        #if choice == '1': # Choose to execute.
-         #   movePile = [] # Card array to the move function.
-          #  for card in targetPile.cards: # Take all visible card, eligible to be moved.
-           #     if card.visible == Visible.TRUE: 
-            #        movePile.append(card)
-            #start_add_to_tableau(movePile,targetPile,emptyPile) # The move between tableau piles function is given, the visible cards, the old pile, and the new pile. 
         return '1' 
     else:
         return '0'
@@ -251,29 +243,15 @@ def twin_is_found(game):
             if twinpile.frontCard != None: # If the tableau pile is not empty
                 previousCard = None
                 for twincard in twinpile.cards: # For each card in the pile, we try to find a visible card of same color and value as target card.
-                    if previousCard != None:    # Important is at the card must lie on top of a visible card.
-                        if previousCard.visible == Visible.TRUE: 
-                            previousCard = twincard 
-                            if targetCard.value.value == twincard.value.value and targetCard.color == twincard.color and twincard.visible == Visible.TRUE:
-                                for pile in game.tableauPiles: # When all requirements have been meet, we check all other tableau piles for a place for the targetCard
-                                    if pile.frontCard != None and pile != twinpile:
-                                        if pile.frontCard.value.value == targetCard.value.value + 1 and pile.frontCard.color != targetCard.color:
-                                            print("Function 6") #Instructions
-                                            print("Move the " + targetCard.value.name + " of " + targetCard.suit.to_string() + " to " + pile.frontCard.value.name + " of " + pile.frontCard.suit.to_string()) 
-                                            #game.stock.frontCard = targetCard # but the targetCard on top of stock
-                          
-                if card.color != stockCard.color and card.value.value - stockCard.value.value == -1: #If they do match, check if the card from stock matches with a card from tableau
-                    for tableau in game.tableauPiles:
-                        if len(tableau.cards) != 0:
-                            if stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.frontCard.value.value == -1:  #If it does move stock card to tableau
-                                print("Function 6")
-                                print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + " to " + tableau.frontCard.value.name + " of " + tableau.frontCard.suit.to_string())
-                                game.stock.cards.remove(stockCard)
-                                #choic e = input("If you wish to do so enter 1: ")
-                                #if choice == '1':
-                                    #game.stock.frontCard = stockCard
-                                    #stock_to_tableau(game,tableau)  #Remove from stock and add to tableau
-                                return '1'
+                    if previousCard != None:    # Important is at the card must lie on top of a visible card. 
+                        previousCard = twincard 
+                        if targetCard.value.value == twincard.value.value and targetCard.color == twincard.color:
+                            for pile in game.tableauPiles: # When all requirements have been meet, we check all other tableau piles for a place for the targetCard
+                                if pile.frontCard != None and pile != twinpile:
+                                    if pile.frontCard.value.value == targetCard.value.value + 1 and pile.frontCard.color != targetCard.color:
+                                        print("Function 6") #Instructions
+                                        print("Move the " + targetCard.value.name + " of " + targetCard.suit.to_string() + " to " + pile.frontCard.value.name + " of " + pile.frontCard.suit.to_string()) 
+                                        #game.stock.frontCard = targetCard # but the targetCard on top of stock
                         else:
                             previousCard = twincard
     return '0'
@@ -339,6 +317,11 @@ def stockpile_to_tableau(game):
                     #    game.stock.frontCard = card
                     #    stock_to_tableau(game, tableauPile) # Move to tableauPile
                     return '1'
+            elif card.value.value == 13:
+                print("Function 8")
+                print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to empty tableau pile nr. " + str(tableauPile.number))
+                game.stock.cards.remove(card)
+
     return '0'
 
 # Step 9
