@@ -211,9 +211,12 @@ def sort_tableau_piles():
     i = 0
     for tableauPile in game.tableauPiles:
         tableauPile.cards.sort(key=lambda x: x.top)
-        print("Sorted " + NUMBER_ARRAY[i] + " tableau pile")
-        for card in tableauPile.cards:
-            print(card.to_string())
+        if len(tableauPile.cards )> 0:  
+            tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
+            #print("Tableaupile number " + NUMBER_ARRAY[i] + " Frontcard: " + str(tableauPile.frontCard.to_string()))
+        # print("Sorted " + NUMBER_ARRAY[i] + " tableau pile")
+        # for card in tableauPile.cards:
+        #     print(card.to_string())
         i+=1
 
 def stockpile_is_empty(): # Works on a well focussed image
