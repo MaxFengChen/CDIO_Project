@@ -69,6 +69,7 @@ CARD_HEIGHT = 350
      #= 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 STOCKPILE_THRESHOLD = 500
+CONFIDENCE_THRESHOLD = 0.95
 
 detectedCards = []
 
@@ -148,12 +149,13 @@ def ID_to_card(subject, leftPos, topPos):
 
 def generate_cards(cardIDs, confidences, boxes):
     count = 0
-    detectedCards.clear()
+    if len(detectedCards) > 0:
+        detectedCards.clear()
     for tableauPile in game.tableauPiles:
         tableauPile.cards.clear()
 
     for cardID in cardIDs:
-        if confidences[count] > 0.95:
+        if confidences[count] > CONFIDENCE_THRESHOLD:
             detectedCards.append(ID_to_card(cardID, boxes[count][0], boxes[count][1]))
             count+=1
     remove_duplicate(detectedCards)
@@ -174,7 +176,6 @@ def add_initial_stock(card): #SKAL OPTIMERES!!!!!
         game.stock.cards.append(card)
         print("In stockPl " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
         remove_duplicate(game.stock.cards)
-
 
 def add_foundation_piles(card):
     foundationNumber = 0
@@ -207,7 +208,7 @@ def add_piles(cards):
 def sort_tableau_piles():
     i = 0
     for tableauPile in game.tableauPiles:
-        #tableauPile.cards.sort(key=lambda x: x.top)
+        tableauPile.cards.sort(key=lambda x: x.top)
         print("Sorted " + NUMBER_ARRAY[i] + " tableau pile")
         for card in tableauPile.cards:
             print(card.to_string())
@@ -330,6 +331,8 @@ def postprocess(frame, outs, game):
     generate_cards(classIds, confidences, boxes)
     add_piles(detectedCards)
     sort_tableau_piles()
+    #framesQueue.queue.clear()  # Skip the rest of frames
+    #time.sleep(1)
     
 
     # print("detectedCards: ")
