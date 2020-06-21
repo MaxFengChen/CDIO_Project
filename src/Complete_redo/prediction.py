@@ -36,6 +36,7 @@ from classes import *
 from SavingGames import *
 
 def give_advice(game):
+    newLowestNeededCard(game)
     #This is "main" for running the AI
     foundAdvice = '0'
     funcCount = 0
@@ -92,9 +93,9 @@ def give_advice(game):
 def move_to_foundation_advice(game):                                        #move a card to the foundation pile
     #Give an advice what to do
     for pile in game.tableauPiles:                                          #Go through  the tableau piles 
-        if len(pile.cards) != 0:                                            # If the pile is not emty
+        if len(pile.cards) != 0 or pile.frontCard != None:                                            # If the pile is not emty
             card = pile.frontCard                                            
-            if card.value.value <= game.lowestNeededCard.value:             #If the frontcard is not larger than the lowes needed value
+            if card.value.value <= game.lowestNeededCard.value:             #If the frontcard is not larger than the lowes needed value    
                 for foundPile in game.foundationPiles:                      # go through the foundation piles and see if theres a card that can be added to the foundation piles 
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
                         print("Move the " + card.value.name + " " + card.suit.to_string() + " to the foundation pile")
@@ -114,7 +115,7 @@ def move_to_foundation_advice(game):                                        #mov
 def move_to_foundation_advice_and_do(game):                                 #move a card to the foundation pile but do it in the game logic so comments in function above
     #Give an advice what to do
     for pile in game.tableauPiles:
-        if len(pile.cards) != 0:
+        if len(pile.cards) != 0 and pile.frontCard != None:
             card = pile.frontCard
             if card.value.value <= game.lowestNeededCard.value:
                 for foundPile in game.foundationPiles:

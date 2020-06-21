@@ -192,6 +192,7 @@ def add_tableau_piles(card):
         if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
             print("In tableau " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
             tableauPile.cards.append(card)
+            tableauPile.frontCard = card
         tableauNumber += 1
 
 def add_piles(cards):
@@ -467,7 +468,7 @@ while cv.waitKey(1) < 0:
             cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
 
         cv.imshow(winName, frame)
-        #give_advice(game)
+        give_advice(game)
 
     except queue.Empty:
         pass
