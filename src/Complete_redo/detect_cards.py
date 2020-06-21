@@ -69,7 +69,7 @@ CARD_WIDTH = 280
 CARD_HEIGHT = 350
      #= 50
 STOCKPILE_THRESHOLD = 500
-CONFIDENCE_THRESHOLD = 0.5
+CONFIDENCE_THRESHOLD = 0.80
 
 detectedCards = []
 #classIds = []
@@ -161,10 +161,11 @@ def generate_cards(cardIDs, confidences, boxes):
         if confidences[count] > CONFIDENCE_THRESHOLD:
             card = ID_to_card(cardID, boxes[count][0], boxes[count][1])
         #print("Appending card: " + card.to_string() + " with count: " + str(count))
-        detectedCards.append(card)
+            detectedCards.append(card)
         count+=1
     #print("count: " + str(count) + " len(set()): " + str(len(set(cardIDs))))
     remove_duplicate(detectedCards)
+    remove_duplicate(detectedCards) 
 
     #print("Stock: ")
     breakFlag = False
@@ -195,12 +196,13 @@ def remove_duplicate(cards):
             if n == 2:
                 cards.remove(element)
                 n = 0
-            
 
 
 def add_initial_stock(card): #SKAL OPTIMERES!!!!! næ
+    game.stock.cards.clear()    
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
         game.stock.frontCard = card
+        game.stock.cards.append(card)
         #game.stock.cards.append(card)
        # print("In stockPl " + card.to_string() + " " + str(card.left) + " " + str(card.top))
         #remove_duplicate(game.stock.cards)
@@ -262,7 +264,8 @@ def piles_legal():
     for tableau in game.tableauPiles:
         if len(tableau.cards) > 1:
             if tableau.frontCard.value.value - tableau.cards[len(tableau.cards)-2].value.value == -1 and tableau.frontCard.color != tableau.cards[len(tableau.cards)-2].color:
-                print(".")
+                luder =1
+                #print(".")
             else:
                 print("Cards do not match!!\n")
                 print("Move " + tableau.frontCard.to_string() + " away from " + tableau.cards[len(tableau.cards)-2].to_string())
@@ -394,8 +397,6 @@ def postprocess(frame, outs, game):
     piles_legal()
     #if len(game.stock.cards) > 0:
     #    remove_duplicate(detectedCards, game.stock.cards)
-
-
     print_table(game)
 
                 
@@ -426,7 +427,6 @@ class QueueFPS(queue.Queue):
 
     def getFPS(self):
         return self.counter / (time.time() - self.startTime)
-
 
 process = True
 

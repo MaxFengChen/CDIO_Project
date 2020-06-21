@@ -45,16 +45,19 @@ def give_advice(game):
     #Step 1 and 2:
     if foundAdvice == '0':
        foundAdvice = move_to_foundation_advice_and_do(game)
+    #    print("Done with 1 & 2")
     
     #Step 3
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = free_king_advice(game)
+        # print(" Done with 3")
     
     #Step #4
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = find_biggest_tableau_advise(game)
+        # print(" Done with 4")
     
     #Step 5 is already imnplemented as program knows stock
     
@@ -62,34 +65,35 @@ def give_advice(game):
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = twin_is_found(game)
+        # print("done with 6")
     
     #Step 7
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = move_from_stock7(game)
+        # print("Doen with 7")
 
     #Step 8
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(game)
+        # print(" done with 8")
     
     #Step 9
     if foundAdvice == '0':
         funcCount = funcCount + 1
         foundAdvice = move_to_foundation_advice_without_limit_and_do(game)
-    
-    #Step new 10
+        # print("done with 9")
+
     if foundAdvice == '0':
-        funcCount = funcCount +1
-        foundAdvice = draw_a_card_from_stock(game)
-    if foundAdvice == '0':
+        draw_a_card_from_stock(game)
         funcCount = funcCount + 1
     #elif foundAdvice == '1':
      #   choice = input("If you wish to do so enter 1: ")    #If the Use wants to do this  
       #  if choice == '1':   
        #     print("Testing for choice!")
-    if funcCount == 7:
-        print("No moves possible, game unsolvable.")
+    if funcCount == 6:
+        print("No moves possible. Either draw from stock or game unsolvable.")
     #    saveFailedGames(game)
 
         return 0
@@ -170,71 +174,45 @@ def free_king_advice(game):
     if targetPile != None and emptyPile != None: # If a king and an empty pile is found
         print("Function 3")                      # Instructions:
         print("Move the " + targetCard.value.name + " of " + targetCard.suit.to_string()+ " to the empty tableau pile nr. " + str(emptyPile.number))
-        game.kingArray[targetCard.suit.value] = 1
-        
+        game.kingArray[targetCard.suit.value] = 1          # Tweak
         return '1' 
     else:
         return '0'
 
 #step 4
 def find_biggest_tableau_advise(game):  #Find moveable pile with most nonvisual cards
-    bigestPile = game.tableauPiles[0]   #Variable that saves the pile with most nonevisual cards
+    biggestPile = None  #Variable that saves the pile with most nonevisual cards
     fromPile = game.tableauPiles[0]
     movePile = []  #Number of cards to move from the bigest pile
-    bufferTest = [] #Buffer used to save all visible cards in the current pile
+    bufferTest =  None #Buffer used to save all visible cards in the current pile
 
     nonVisualCount = 0
     nVCPrevious = 0
-
+    card = None
     for searchBiggest in game.tableauPiles: #Current pile
-        if searchBiggest.frontCard != None:
+        if searchBiggest.frontCard != None and len(searchBiggest.cards) > 0:
             for pile in game.tableauPiles:  #All tableau piles
                 if pile.frontCard != None:
-                    bufferTest = []
-                    if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1: #Compare tableau piles frontcard
+                    if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1 and len(searchBiggest.cards) < 2:
                         for cardsInPile in searchBiggest.cards: #Cards in current pile
-                            if cardsInPile.visible == Visible.FALSE:    
-                                nonVisualCount = nonVisualCount+1   #Nonvisual cards in current pile
-                        if len(bigestPile.cards) != 0:  
-                            for cards in bigestPile.cards:      #Cards in current pile with most nonevisual cards
-                                if cards.visible == Visible.FALSE:  #Nonvisual cards in biggest pile
-                                    nVCPrevious = nVCPrevious+1
-                        if nonVisualCount >= nVCPrevious: #COmpare current pile with current biggest pile
-                            bigestPile = searchBiggest  # Update the pile with most nonvisual cards
-                            fromPile = searchBiggest  
-                            nonVisualCount = 0  
-                
-                    elif len(searchBiggest.cards) > 1:  #If there are more than 1 card in pile
-                        for cardInPile in searchBiggest.cards:  
-                            if cardInPile.visible == Visible.TRUE:
-                                bufferTest.append(cardInPile)   #Buffer used to save all visual cards. Can't move nonvisual cards
+                            nonVisualCount = cardsInPile.top
+                            bufferTest = searchBiggest
+                            biggestPile = pile
+                            card = cardsInPile
+                    elif searchBiggest.cards[0].value.value - pile.frontCard.value.value == -1 and searchBiggest.cards[0].color != pile.frontCard.color:
+                        for cardsInPile in searchBiggest.cards: #Cards in current pile
+                        #    if cardsInPile.visible == Visible.FALSE:
+                       #         nonVisualCount = nonVisualCount+1   #Nonvisual cards in current pile
+                         if nonVisualCount < cardsInPile.top:
+                            nonVisualCount = cardsInPile.top
+                            bufferTest = searchBiggest
+                            biggestPile = pile
+                            card = cardsInPile
 
-                        if bufferTest[0].color != pile.frontCard.color and bufferTest[0].value.value - pile.frontCard.value.value == -1:    #If first cards in pile can be moved
-                            bigestPile = searchBiggest
-                            fromPile = searchBiggest
-                            bufferTest = []
-
-    for cards in bigestPile.cards: 
-        if cards.visible == Visible.TRUE:   # if they are visible we can add them to the move pile
-            movePile.append(cards)          #We only move cards that are visual
-
-    cardMoved = 0
-    if len(movePile) == 0:
-        # print("No more cards to move in tableau\n") #If there are no more cards to move in tableau
-        return '0' 
-    else:
-        for toPile in game.tableauPiles:
-            if toPile.frontCard != None:
-                if movePile[0].color != toPile.frontCard.color and movePile[0].value.value - toPile.frontCard.value.value == -1:
-                    if cardMoved == 0:
-                        print("Function 4")
-                        print("Move the " + movePile[0].value.name + " of " + movePile[0].suit.to_string()+ " to " + toPile.frontCard.value.name + " of " + toPile.frontCard.suit.to_string())
-                        #choice = input("If you wish to do so enter 1: ")
-                        #if choice == '1':
-                         #   start_add_to_tableau(movePile, fromPile, toPile)    #Move tableau pile to other tableau pile
-                          #  cardMoved = 1
-                        return '1'
-            
+    if bufferTest != None:
+        print("Function 4")
+        print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to " + biggestPile.frontCard.value.name + " of " + biggestPile.frontCard.suit.to_string()) 
+        return '1'
     return '0'
 
 #Step 5, is a step for the user. This step will give the application the knowledge of the entire stockpile, to give advise from.
@@ -374,7 +352,11 @@ def move_to_foundation_advice_without_limit_and_do(game):                       
 
 # new step 10
 def draw_a_card_from_stock(game):
-    print("Please draw a card to stock pile\n")
+    if len(game.stock) == 0:
+        print("Please draw from stock dude")
+        return '1'
+    else:
+        return '0'
 
 
 def last_ditch_effort(game):
