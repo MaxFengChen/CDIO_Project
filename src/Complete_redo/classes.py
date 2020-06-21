@@ -37,6 +37,8 @@ NO_CARDS = 52
 NO_SUITS = 4
 NO_CARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
 LAST_INDEX = -1
+NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
+
 
 class Suit(Enum):
     # HEARTS = 0
@@ -151,3 +153,4 @@ class Game:
         self.stock = StockPile()
         self.wastePile = WastePile()
         self.lowestNeededCard = Value(2)
+        self.kingArray = []
