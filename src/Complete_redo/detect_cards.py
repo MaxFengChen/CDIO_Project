@@ -192,10 +192,11 @@ def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
 def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
-        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
+        if card.left > CARD_WIDTHtableauNumber and card.left < CARD_WIDTH(tableauNumber+1): 
             print("In tableau " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
             tableauPile.cards.append(card)
-            tableauPile.frontCard = card
+        if len(tableauPile.cards )> 0:
+            tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
         tableauNumber += 1
 
 def add_piles(cards):
@@ -460,12 +461,7 @@ while cv.waitKey(1) < 0:
             for line in range(7):
                 cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
         cv.imshow(winName, frame)
-<<<<<<< HEAD:src/Complete_redo/detect_cards.py
         give_advice(game)
-=======
-        
-        #give_advice(game)
->>>>>>> 3ef4a9378d43689aca6b348eea2bc9be88321bb0:src/Complete redo/detect_cards.py
 
     except queue.Empty:
         pass

@@ -150,7 +150,7 @@ def free_king_advice(game):
     targetPile = None   # The pile that the king is in.
     choice = None       # User choice
     for pile in game.tableauPiles: # Check if any tableau is empty by finding a pile with no frontcard.
-        if pile.frontCard == None: 
+        if not pile.cards: # if the pile.cards is empty  
             emptyPile = pile
         else:                       # If the pile is not empty, we can check if it has a king ready to be moved.  
             if pile.cards[0].visible == Visible.FALSE : # We are only interested in a king that is on top of non-visible cards
