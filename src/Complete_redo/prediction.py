@@ -266,7 +266,7 @@ def twin_is_found(game):
                     for tableau in game.tableauPiles:
                         if len(tableau.cards) != 0:
                             if stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.frontCard.value.value == -1:  #If it does move stock card to tableau
-                                print("Function 7")
+                                print("Function 6")
                                 print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + " to " + tableau.frontCard.value.name + " of " + tableau.frontCard.suit.to_string())
                                 game.stock.cards.remove(stockCard)
                                 #choic e = input("If you wish to do so enter 1: ")
@@ -282,12 +282,11 @@ def twin_is_found(game):
 def move_from_stock7(game): #Move from stock to tableau if next move is number 4
     cards = []
     for tabPile in game.tableauPiles: #Look through tableauPiles and see if they match with card in stock
-        if tabPile.frontCard != None:
-            tabCard = tabPile.frontCard
-            #for tabCard in reversed(tabPile.cards): #Find the last visible card in the pile
-             #   if tabCard.visible == Visible.TRUE:
-            cards.append(tabCard)
-            #card = cards[-1]    #Last element - last visible card
+         #Find the last visible card in the pile
+        cards.append(tabPile.cards[0])
+        cards.append(tabPile.frontCard)
+
+        
     if len(game.stock.cards) != 0:
         for stockCard in game.stock.cards:
             for card in cards:
@@ -303,7 +302,6 @@ def move_from_stock7(game): #Move from stock to tableau if next move is number 4
                                     #game.stock.frontCard = stockCard
                                     #stock_to_tableau(game,tableau)  #Remove from stock and add to tableau
                                 return '1'
-
                         elif len(tableau.cards) == 0 and stockCard.value.value == 13:   #If there is an empty tableau pile, move out king from stock
                             print("Function 7")
                             print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + " from stock to the " + NUMBER_ARRAY[tableau.number] + " tableau pile")
