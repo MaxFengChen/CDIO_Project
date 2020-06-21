@@ -164,6 +164,20 @@ def generate_cards(cardIDs, confidences, boxes):
     #print("count: " + str(count) + " len(set()): " + str(len(set(cardIDs))))
     remove_duplicate(detectedCards)
 
+    print("Stock: ")
+    breakFlag = False
+    for card in game.stock.cards:
+        print(card.to_string())
+        for tableauPile in game.tableauPiles:
+            if card.value == tableauPile.frontCard.value and card.suit == tableauPile.frontCard.suit:
+                game.stock.cards.remove(card) 
+                breakFlag = True
+                break
+        if breakFlag:
+            break
+
+
+
 def remove_duplicate(cards):
     for card in cards:
         n = 0
@@ -182,13 +196,16 @@ def add_initial_stock(card): #SKAL OPTIMERES!!!!!
        # print("In stockPl " + card.to_string() + " " + str(card.left) + " " + str(card.top))
         remove_duplicate(game.stock.cards)
 
+
+
 def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
     foundationNumber = 0
     placementNumber = 3
     for foundationPile in game.foundationPiles:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
             #print("In fndtion " + card.to_string() + " " + str(card.left) + " " + str(card.top))
-            foundationPile.cards.append(card)
+            #foundationPile.cards.append(card)
+            start_add_to_goal(card, foundationPile, game)
         if len(foundationPile.cards) > 0:  
             foundationPile.frontCard = foundationPile.cards[LAST_INDEX]
         remove_duplicate(foundationPile.cards)
@@ -205,7 +222,7 @@ def add_tableau_piles(card):
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
         tableauNumber += 1
 
-def add_piles(cards):
+def add_piles(cards, game):
    # print("Adding piles")
     for card in cards:
         if card.top > CARD_HEIGHT: # The top cards
@@ -213,7 +230,6 @@ def add_piles(cards):
         elif card.top < CARD_HEIGHT: # The top cards    
             add_foundation_piles(card)
             add_initial_stock(card)
-
             # if not stockCycled:
                   
  
@@ -344,11 +360,11 @@ def postprocess(frame, outs, game):
     
 
     generate_cards(classIds, confidences, boxes)
-    add_piles(detectedCards)
+    add_piles(detectedCards, game)
     sort_tableau_piles()
-    print("Stock: ")
-    for card in game.stock.cards:
-        print(card.to_string())
+    #if len(game.stock.cards) > 0:
+    #    remove_duplicate(detectedCards, game.stock.cards)
+
 
     print_table(game)
 

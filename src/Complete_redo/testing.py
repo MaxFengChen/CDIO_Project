@@ -45,7 +45,7 @@ def setup_table(game):
     game.playingCards = []
     for suitSelect in range(NO_SUITS):
         for valueSelect in range(1, 14):
-            game.playingCards.append(PlayingCard(Suit(suitSelect), Color(colorSelect), Pile.STOCK, Value(valueSelect), Visible.FALSE))
+            game.playingCards.append(PlayingCard(Suit(suitSelect), Color(colorSelect), Pile.STOCK, Value(valueSelect), Visible.FALSE), None, None)
         # Toggle the color.
         colorSelect+=1
         if colorSelect == 2:
@@ -120,25 +120,22 @@ def remove_from_tableau_pile(card, tableauPile):
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
             tableauPile.frontCard.visible = Visible.TRUE
         
-def add_to_goal(card, goalPile, fromPile, game):
+def add_to_goal(card, goalPile, game):
     # Don't call this call start_add_to_goal(), but this adds the card to the foundation pile
     goalPile.frontCard = card
     if goalPile.nextCard == Value(13):
         goalPile.nextCard = Value(13)
     else:
         goalPile.nextCard = Value(goalPile.nextCard.value + 1)
-    remove_from_tableau_pile(card, fromPile)
+    # remove_from_tableau_pile(card, fromPile)
     goalPile.cards.append(card)
 
-def start_add_to_goal(card, fromPile, game):
+def start_add_to_goal(card, foundPile, game):
     # The one to call, this checks if the move is legal
-    for foundationPile in game.foundationPiles:
-        if foundationPile.nextCard == card.value and foundationPile.suit == card.suit:
-            add_to_goal(card, foundationPile, fromPile, game)
-            newLowestNeededCard(game)
-            break
-    else:
-        print("Illegal move", end=" ")
+    # print("fffffff" + str(foundPile.suit) + " " + str(foundPile.nextCard) )
+    if foundPile.nextCard == card.value and foundPile.suit == card.suit:
+        add_to_goal(card, foundPile, game)
+        newLowestNeededCard(game)
 
 def newLowestNeededCard(game):
     #checks the foundation piles and will maybe set a new lowestNeededCard
@@ -244,7 +241,7 @@ def draw_from_stock (game):
 
 def insert_card(cardValue, cardSuit, cardPile, cardColor, inPile):
     # For adding certain cards in testing
-    inPile.cards.append(PlayingCard(Suit(cardSuit), Color(cardColor), Pile.TABLEAU, Value(cardValue), Visible.TRUE))
+    inPile.cards.append(PlayingCard(Suit(cardSuit), Color(cardColor), Pile.TABLEAU, Value(cardValue), Visible.TRUE, None, None))
 
 def create_card(cardValue, cardSuit, cardPile, cardColor, cardLeft, cardTop):
     # For adding certain cards in testing
