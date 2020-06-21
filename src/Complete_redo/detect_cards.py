@@ -69,6 +69,7 @@ CARD_HEIGHT = 350
      #= 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 STOCKPILE_THRESHOLD = 500
+CONFIDENCE_THRESHOLD = 0.95
 
 detectedCards = []
 
@@ -148,26 +149,28 @@ def ID_to_card(subject, leftPos, topPos):
 
 def generate_cards(cardIDs, confidences, boxes):
     count = 0
-    detectedCards.clear()
+    if len(detectedCards) > 0:
+        detectedCards.clear()
     for tableauPile in game.tableauPiles:
         tableauPile.cards.clear()
 
     for cardID in cardIDs:
-        if confidences[count] > 0.95:
+        if confidences[count] > CONFIDENCE_THRESHOLD:
             detectedCards.append(ID_to_card(cardID, boxes[count][0], boxes[count][1]))
             count+=1
     remove_duplicate(detectedCards)
 
 def remove_duplicate(cards):
     for card in cards:
-        count = 0
+        n = 0
         i = 0
         for element in cards:
             if card.ID == element.ID:
-                count+=1
-            if count == 2:
+                n+=1
+            if n == 2:
                 cards.pop(i)
             i+=1
+
 
 def add_initial_stock(card): #SKAL OPTIMERES!!!!!
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
@@ -175,14 +178,14 @@ def add_initial_stock(card): #SKAL OPTIMERES!!!!!
         print("In stockPl " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
         remove_duplicate(game.stock.cards)
 
-
-def add_foundation_piles(card):
+def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
     foundationNumber = 0
     placementNumber = 3
     for foundationPile in game.foundationPiles:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
             print("In fndtion " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
             foundationPile.cards.append(card)
+        remove_duplicate(foundationPile.cards)
         foundationNumber += 1
         placementNumber += 1
 
@@ -208,7 +211,7 @@ def add_piles(cards):
 def sort_tableau_piles():
     i = 0
     for tableauPile in game.tableauPiles:
-        #tableauPile.cards.sort(key=lambda x: x.top)
+        tableauPile.cards.sort(key=lambda x: x.top)
         print("Sorted " + NUMBER_ARRAY[i] + " tableau pile")
         for card in tableauPile.cards:
             print(card.to_string())
@@ -236,10 +239,10 @@ def drawPred(frame, classId, conf, left, top, right, bottom):
         assert(classId < len(classes))
         label = '%s: %s' % (classes[classId], label)
 
-    labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+    labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_DUPLEX, 1, 1)
     top = max(top, labelSize[1])
     cv.rectangle(frame, (left, top - labelSize[1]), (left + labelSize[0], top + baseLine), (255, 255, 255), cv.FILLED)
-    cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
+    cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
 
 def postprocess(frame, outs, game):
     frameHeight = frame.shape[0]
@@ -331,21 +334,17 @@ def postprocess(frame, outs, game):
     generate_cards(classIds, confidences, boxes)
     add_piles(detectedCards)
     sort_tableau_piles()
-    
 
-    # print("detectedCards: ")
-    # for element in detectedCards:
-    #     print(element.to_string())
                 
 # Process inputs
-winName = 'Deep learning object detection in OpenCV'
+winName = 'CV Solitaire solver - Gruppe 7'
 cv.namedWindow(winName, cv.WINDOW_NORMAL)
 
-def callback(pos):
-    global confThreshold
-    confThreshold = pos / 100.0
+# def callback(pos):
+#     global confThreshold
+#     confThreshold = pos / 100.0
 
-cv.createTrackbar('Confidence threshold, %', winName, int(confThreshold * 100), 99, callback)
+# cv.createTrackbar('Confidence threshold, %', winName, int(confThreshold * 100), 99, callback)
 
 #cap = cv.VideoCapture('http://192.168.31.97:8080/video')
 cap = cv.VideoCapture(cv.samples.findFileOrKeep(args.input) if args.input else 0)
@@ -452,23 +451,21 @@ while cv.waitKey(1) < 0:
 
         # Put efficiency information.
         if predictionsQueue.counter > 1:
-            label = 'Camera: %.2f FPS' % (framesQueue.getFPS())
-            cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
+            label = '%.2f FPS' % (predictionsQueue.getFPS())
+            cv.putText(frame, label, (5, 30), cv.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
 
-            label = 'Network: %.2f FPS' % (predictionsQueue.getFPS())
-            cv.putText(frame, label, (0, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
+            #Top line
+            cv.line(frame,(0,CARD_HEIGHT),(1920,CARD_HEIGHT),(0,0,255),thickness=2)
 
-            label = 'Skipped frames: %d' % (framesQueue.counter - predictionsQueue.counter)
-            cv.putText(frame, label, (0, 45), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
-
-        #Top line
-        cv.line(frame,(0,CARD_HEIGHT),(1920,CARD_HEIGHT),(0,0,255),thickness=2)
-
-        for line in range(7):
-            cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
-
+            for line in range(7):
+                cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
         cv.imshow(winName, frame)
+<<<<<<< HEAD:src/Complete_redo/detect_cards.py
         give_advice(game)
+=======
+        
+        #give_advice(game)
+>>>>>>> 3ef4a9378d43689aca6b348eea2bc9be88321bb0:src/Complete redo/detect_cards.py
 
     except queue.Empty:
         pass
