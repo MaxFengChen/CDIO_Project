@@ -136,6 +136,8 @@ def start_add_to_goal(card, foundPile, game):
     if foundPile.nextCard == card.value and foundPile.suit == card.suit:
         add_to_goal(card, foundPile, game)
         newLowestNeededCard(game)
+   #else:
+    #   print("Can't place " + card.to_string() + " on " + str(foundPile.nextCard) + " of " + str(foundPile.suit))
 
 def newLowestNeededCard(game):
     #checks the foundation piles and will maybe set a new lowestNeededCard
