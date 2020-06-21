@@ -69,9 +69,10 @@ CARD_HEIGHT = 350
      #= 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 STOCKPILE_THRESHOLD = 500
-CONFIDENCE_THRESHOLD = 0.95
+CONFIDENCE_THRESHOLD = 0.5
 
 detectedCards = []
+#classIds = []
 
 def setupGameComputerVision(game):
     game.playingCards = []
@@ -84,7 +85,8 @@ def setupGameComputerVision(game):
         newFoundationPile = FoundationPile(suit)
         newFoundationPile.nextCard = Value.ACE
         game.foundationPiles.append(newFoundationPile)
-
+    newLowestNeededCard(game)
+    # print("NLNC: " + str(game.lowestNeededCard))
 game = Game()
 setupGameComputerVision(game) #Sauce?
 
@@ -153,29 +155,31 @@ def generate_cards(cardIDs, confidences, boxes):
         detectedCards.clear()
     for tableauPile in game.tableauPiles:
         tableauPile.cards.clear()
-
     for cardID in cardIDs:
         if confidences[count] > CONFIDENCE_THRESHOLD:
-            detectedCards.append(ID_to_card(cardID, boxes[count][0], boxes[count][1]))
-            count+=1
+            card = ID_to_card(cardID, boxes[count][0], boxes[count][1])
+        #print("Appending card: " + card.to_string() + " with count: " + str(count))
+        detectedCards.append(card)
+        count+=1
+    #print("count: " + str(count) + " len(set()): " + str(len(set(cardIDs))))
     remove_duplicate(detectedCards)
 
 def remove_duplicate(cards):
     for card in cards:
         n = 0
-        i = 0
         for element in cards:
             if card.ID == element.ID:
                 n+=1
             if n == 2:
-                cards.pop(i)
-            i+=1
+                cards.remove(element)
+                n = 0
+            
 
 
 def add_initial_stock(card): #SKAL OPTIMERES!!!!!
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
         game.stock.cards.append(card)
-        print("In stockPl " + card.to_string() + " " + str(card.left) + " " + str(card.top))
+       # print("In stockPl " + card.to_string() + " " + str(card.left) + " " + str(card.top))
         remove_duplicate(game.stock.cards)
 
 def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
@@ -183,7 +187,7 @@ def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
     placementNumber = 3
     for foundationPile in game.foundationPiles:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
-            print("In fndtion " + card.to_string() + " " + str(card.left) + " " + str(card.top))
+            #print("In fndtion " + card.to_string() + " " + str(card.left) + " " + str(card.top))
             foundationPile.cards.append(card)
         if len(foundationPile.cards) > 0:  
             foundationPile.frontCard = foundationPile.cards[LAST_INDEX]
@@ -195,21 +199,23 @@ def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
         if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
-            print("In tableau " + card.to_string() + " " + str(card.left) + " " + str(card.top))
+            #print("In tableau " + card.to_string() + " " + str(card.left) + " " + str(card.top))
             tableauPile.cards.append(card)
         if len(tableauPile.cards) > 0:
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
         tableauNumber += 1
 
 def add_piles(cards):
-    print("Adding piles")
+   # print("Adding piles")
     for card in cards:
         if card.top > CARD_HEIGHT: # The top cards
             add_tableau_piles(card)
         elif card.top < CARD_HEIGHT: # The top cards    
             add_foundation_piles(card)
+            add_initial_stock(card)
+
             # if not stockCycled:
-            #     add_initial_stock(card) 
+                  
  
 def sort_tableau_piles():
     i = 0
@@ -245,10 +251,10 @@ def drawPred(frame, classId, conf, left, top, right, bottom):
         assert(classId < len(classes))
         label = '%s: %s' % (classes[classId], label)
 
-    labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_DUPLEX, 1, 1)
+    labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_DUPLEX, 0.5, 1)
     top = max(top, labelSize[1])
     cv.rectangle(frame, (left, top - labelSize[1]), (left + labelSize[0], top + baseLine), (255, 255, 255), cv.FILLED)
-    cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0))
+    cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0))
 
 def postprocess(frame, outs, game):
     frameHeight = frame.shape[0]
@@ -257,7 +263,6 @@ def postprocess(frame, outs, game):
     layerNames = net.getLayerNames()
     lastLayerId = net.getLayerId(layerNames[-1])
     lastLayer = net.getLayer(lastLayerId)
-
     classIds = []
     confidences = []
     boxes = []
@@ -336,10 +341,16 @@ def postprocess(frame, outs, game):
         width = box[2]
         height = box[3]
         drawPred(frame, classIds[i], confidences[i], left, top, left + width, top + height)
+    
 
     generate_cards(classIds, confidences, boxes)
     add_piles(detectedCards)
     sort_tableau_piles()
+    print("Stock: ")
+    for card in game.stock.cards:
+        print(card.to_string())
+
+    print_table(game)
 
                 
 # Process inputs
@@ -453,6 +464,8 @@ while cv.waitKey(1) < 0:
         outs = predictionsQueue.get_nowait()
         frame = processedFramesQueue.get_nowait()
 
+        give_advice(game)
+
         postprocess(frame, outs, game)
 
         # Put efficiency information.
@@ -466,7 +479,6 @@ while cv.waitKey(1) < 0:
             for line in range(7):
                 cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
         cv.imshow(winName, frame)
-        give_advice(game)
 
     except queue.Empty:
         pass
