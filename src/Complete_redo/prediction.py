@@ -37,6 +37,7 @@ from SavingGames import *
 
 def give_advice(game):
     newLowestNeededCard(game)
+    # print("NLNC: " + str(game.lowestNeededCard))
     #This is "main" for running the AI
     foundAdvice = '0'
     funcCount = 0
@@ -102,12 +103,12 @@ def move_to_foundation_advice(game):                                        #mov
                         return '1'
     if len(game.stock.cards) != 0:                                          # If theres cards in the stockpile 
         pile = game.stock                                               
-        for cards in game.stock.cards:                                      # Go through all cards and see if any can be added to the foundations piles
-            if cards.value.value <= game.lowestNeededCard.value:
+        for card in game.stock.cards:                                      # Go through all cards and see if any can be added to the foundations piles
+            if card.value.value <= game.lowestNeededCard.value:
                 for foundPiles in game.foundationPiles:
                     if cards.suit == foundPiles.suit and cards.value == foundPiles.nextCard:
                         print("Function 1 og 2")
-                        print("Move the " + cards.value.name + " of " + cards.suit.to_string()+ " from stock pile to the foundation pile")
+                        print("Move the " + card.value.name + " of " + card.suit.to_string()+ " from stock pile to the foundation pile")
                         return '1'
     return '0'                        
     
@@ -122,6 +123,7 @@ def move_to_foundation_advice_and_do(game):                                 #mov
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
                         print("Function 1 og 2")
                         print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to the foundation pile")
+                        
                         #choice = input("If you wish to do so enter 1: ")    #If the Use wants to do this  
                         #if choice == '1':   
                         #   start_add_to_goal(card, pile, game)              #run this function
@@ -130,12 +132,13 @@ def move_to_foundation_advice_and_do(game):                                 #mov
 
     if len(game.stock.cards) != 0:
         pile = game.stock
-        for cards in game.stock.cards:
-            if cards.value.value <= game.lowestNeededCard.value:
+        for card in game.stock.cards:
+            if card.value.value <= game.lowestNeededCard.value:
                 for foundPiles in game.foundationPiles:
-                    if cards.suit == foundPiles.suit and cards.value == foundPiles.nextCard:
+                    if card.suit == foundPiles.suit and card.value == foundPiles.nextCard:
                         print("Function 1 og 2")
-                        print("Move the " + cards.value.name + " of " + cards.suit.to_string()+ " from stock pile to the foundation pile")
+                        print("Move the " + card.value.name + " of " + card.suit.to_string()+ " from stock pile to the foundation pile")
+                        game.stock.cards.remove(card)
                         #choice = input("If you wish to do so enter 1: ")    #If the Use wants to do this 
                         #if choice == '1':
                         #   start_add_to_goal(cards, pile, game)             #run this function
@@ -218,7 +221,7 @@ def find_biggest_tableau_advise(game):  #Find moveable pile with most nonvisual 
 
     cardMoved = 0
     if len(movePile) == 0:
-        print("No more cards to move in tableau\n") #If there are no more cards to move in tableau
+        # print("No more cards to move in tableau\n") #If there are no more cards to move in tableau
         return '0' 
     else:
         for toPile in game.tableauPiles:
@@ -258,10 +261,21 @@ def twin_is_found(game):
                                             print("Function 6") #Instructions
                                             print("Move the " + targetCard.value.name + " of " + targetCard.suit.to_string() + " to " + pile.frontCard.value.name + " of " + pile.frontCard.suit.to_string()) 
                                             #game.stock.frontCard = targetCard # but the targetCard on top of stock
-                                            #stock_to_tableau(game, pile) #Move the card into tableau pile.
-                                            return '1'
-                    else:
-                        previousCard = twincard
+                          
+                if card.color != stockCard.color and card.value.value - stockCard.value.value == -1: #If they do match, check if the card from stock matches with a card from tableau
+                    for tableau in game.tableauPiles:
+                        if len(tableau.cards) != 0:
+                            if stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.frontCard.value.value == -1:  #If it does move stock card to tableau
+                                print("Function 7")
+                                print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + " to " + tableau.frontCard.value.name + " of " + tableau.frontCard.suit.to_string())
+                                game.stock.cards.remove(stockCard)
+                                #choic e = input("If you wish to do so enter 1: ")
+                                #if choice == '1':
+                                    #game.stock.frontCard = stockCard
+                                    #stock_to_tableau(game,tableau)  #Remove from stock and add to tableau
+                                return '1'
+                        else:
+                            previousCard = twincard
     return '0'
     
 #step 7
@@ -283,8 +297,8 @@ def move_from_stock7(game): #Move from stock to tableau if next move is number 4
                             if stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.frontCard.value.value == -1:  #If it does move stock card to tableau
                                 print("Function 7")
                                 print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + " to " + tableau.frontCard.value.name + " of " + tableau.frontCard.suit.to_string())
-
-                                #choice = input("If you wish to do so enter 1: ")
+                                game.stock.cards.remove(stockCard)
+                                #choic e = input("If you wish to do so enter 1: ")
                                 #if choice == '1':
                                     #game.stock.frontCard = stockCard
                                     #stock_to_tableau(game,tableau)  #Remove from stock and add to tableau
@@ -292,9 +306,9 @@ def move_from_stock7(game): #Move from stock to tableau if next move is number 4
 
                         elif len(tableau.cards) == 0 and stockCard.value.value == 13:   #If there is an empty tableau pile, move out king from stock
                             print("Function 7")
-                            print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + "from stock to the empty tableau pile nr. " + str(tableau.number))
+                            print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + " from stock to the " + NUMBER_ARRAY[tableau.number] + " tableau pile")
                             #choice = input("If you wish to do so enter 1: ")
-                            
+                            game.stock.cards.remove(stockCard)
                             #if choice == '1':
                                 #   game.stock.frontCard = stockCard
                                 #  game.stock.cards.remove(game.stock.frontCard)   #Remove king from stock
@@ -321,6 +335,7 @@ def stockpile_to_tableau(game):
                 if card.value.value - tableauPile.frontCard.value.value == -1 and tableauPile.frontCard.color !=  card.color: 
                     print("Function 8")
                     print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to the tableau pile containing: " + tableauPile.frontCard.value.name + " of " + tableauPile.frontCard.suit.to_string())
+                    game.stock.cards.remove(card)
                     #choice = input("If you wish to do so enter 1: ")
                     #if choice == '1':
                     #    game.stock.frontCard = card
