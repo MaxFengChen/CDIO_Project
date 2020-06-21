@@ -267,45 +267,47 @@ def twin_is_found(game):
 #step 7
 def move_from_stock7(game): #Move from stock to tableau if next move is number 4
     cards = []
-    for i in game.tableauPiles: #Look through tableauPiles and see if they match with card in stock
-        if i.frontCard != None:
-            for h in reversed(i.cards): #Find the last visible card in the pile
-                if h.visible == Visible.TRUE:
-                    cards.append(h)
-                    card = cards[-1]    #Last element - last visible card
-            if len(game.stock.cards) != 0:
-                for j in game.stock.cards:
-                    if card.color != j.color and card.value.value - j.value.value == -1: #If they do match, check if the card from stock matches with a card from tableau
-                        for tableau in game.tableauPiles:
-                            if len(tableau.cards) != 0:
-                                if j.color != tableau.frontCard.color and j.value.value - tableau.frontCard.value.value == -1:  #If it does move stock card to tableau
-                                    print("Function 7")
-                                    print("Move the " + j.value.name + " of " + j.suit.to_string() + " to " + tableau.frontCard.value.name + " of " + tableau.frontCard.suit.to_string())
-
-                                    #choice = input("If you wish to do so enter 1: ")
-                                    #if choice == '1':
-                                        #game.stock.frontCard = j
-                                        #stock_to_tableau(game,tableau)  #Remove from stock and add to tableau
-                                    return '1'
-
-                            elif len(tableau.cards) == 0 and j.value.value == 13:   #If there is an empty tableau pile, move out king from stock
+    for tabPile in game.tableauPiles: #Look through tableauPiles and see if they match with card in stock
+        if tabPile.frontCard != None:
+            tabCard = tabPile.frontCard
+            #for tabCard in reversed(tabPile.cards): #Find the last visible card in the pile
+             #   if tabCard.visible == Visible.TRUE:
+            cards.append(tabCard)
+            #card = cards[-1]    #Last element - last visible card
+    if len(game.stock.cards) != 0:
+        for stockCard in game.stock.cards:
+            for card in cards:
+                if card.color != stockCard.color and card.value.value - stockCard.value.value == -1: #If they do match, check if the card from stock matches with a card from tableau
+                    for tableau in game.tableauPiles:
+                        if len(tableau.cards) != 0:
+                            if stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.frontCard.value.value == -1:  #If it does move stock card to tableau
                                 print("Function 7")
-                                print("Move the " + j.value.name + " of " + j.suit.to_string() + "from stock to the empty tableau pile nr. " + str(tableau.number))
+                                print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + " to " + tableau.frontCard.value.name + " of " + tableau.frontCard.suit.to_string())
+
                                 #choice = input("If you wish to do so enter 1: ")
-                                
                                 #if choice == '1':
-                                 #   game.stock.frontCard = j
-                                  #  game.stock.cards.remove(game.stock.frontCard)   #Remove king from stock
-                                   # if len(game.stock.cards) != 0:
-                                    #    game.stock.frontCard = game.stock.cards[LAST_INDEX] #New frontcard
-                                     #   game.stock.frontCard.visible = Visible.TRUE
-                                
-                                    #else:
-                                     #   game.stock.frontCard = None
-                                
-                                    #tableau.cards.append(j) #Add king to tableau pile
-                                    #tableau.frontCard = j   #King is the new frontcard
+                                    #game.stock.frontCard = stockCard
+                                    #stock_to_tableau(game,tableau)  #Remove from stock and add to tableau
                                 return '1'
+
+                        elif len(tableau.cards) == 0 and stockCard.value.value == 13:   #If there is an empty tableau pile, move out king from stock
+                            print("Function 7")
+                            print("Move the " + stockCard.value.name + " of " + stockCard.suit.to_string() + "from stock to the empty tableau pile nr. " + str(tableau.number))
+                            #choice = input("If you wish to do so enter 1: ")
+                            
+                            #if choice == '1':
+                                #   game.stock.frontCard = stockCard
+                                #  game.stock.cards.remove(game.stock.frontCard)   #Remove king from stock
+                                # if len(game.stock.cards) != 0:
+                                #    game.stock.frontCard = game.stock.cards[LAST_INDEX] #New frontcard
+                                    #   game.stock.frontCard.visible = Visible.TRUE
+                            
+                                #else:
+                                    #   game.stock.frontCard = None
+                            
+                                #tableau.cards.append(stockCard) #Add king to tableau pile
+                                #tableau.frontCard = stockCard   #King is the new frontcard
+                            return '1'
 
     return '0'
 

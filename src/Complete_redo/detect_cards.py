@@ -192,7 +192,7 @@ def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
 def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
-        if card.left > CARD_WIDTHtableauNumber and card.left < CARD_WIDTH(tableauNumber+1): 
+        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
             print("In tableau " + card.to_string() + " " + str(card.left) + " " +  str(card.top))
             tableauPile.cards.append(card)
         if len(tableauPile.cards )> 0:
