@@ -93,10 +93,11 @@ def setup_table(game):
 def win_check(game):
     # Check if all cards are visible and thus you game can be won
     check = 0
-    for card in game.playingCards:
-        if card.visible == Visible.FALSE:
-            check = 1
-    if check == 0:
+    for foundation in game.foundationPiles:
+        check =check + len(game.foundation.cards)
+    for tableau in game.tableauPiles:
+        check = check + len(game.tableau.cards)
+    if check == 52:
         print("")
         print("  / ____|                           | |     | | \ \   / /        ( )                               | | | | | | | | |\n" 
         + " | |      ___  _ __   __ _ _ __ __ _| |_ ___| |  \ \_/ /__  _   _|/__   _____  __      _____  _ __ | | | | | | | | |\n" 

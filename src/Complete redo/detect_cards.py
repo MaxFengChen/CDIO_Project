@@ -66,7 +66,7 @@ args.classes = findFile(args.classes)
 # Card variables
 CARD_WIDTH = 280
 CARD_HEIGHT = 350
-     = 50
+     #= 50
 NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
 STOCKPILE_THRESHOLD = 500
 
@@ -86,10 +86,6 @@ def setupGameComputerVision(game):
 
 game = Game()
 setupGameComputerVision(game) #Sauce?
-#for tableapile in range(1, 8):
- #   game.tableauPiles.append(TableauPile(tableapile))
-#game.tableauPiles = [TableauPile(1),TableauPile(2),TableauPile(3),TableauPile(4),TableauPile(5),TableauPile(6),TableauPile(7)]
-#game.foundationPiles = (FoundationPile(None),FoundationPile(None),FoundationPile(None),FoundationPile(None))
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
@@ -228,25 +224,25 @@ def stockpile_is_empty(): # Works on a well focussed image
     else:
         return True
 
+def drawPred(frame, classId, conf, left, top, right, bottom):
+    # Draw a bounding box.
+    cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0))
+
+    label = '%.2f' % conf
+
+    # Print a label of class.
+    if classes:
+        assert(classId < len(classes))
+        label = '%s: %s' % (classes[classId], label)
+
+    labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+    top = max(top, labelSize[1])
+    cv.rectangle(frame, (left, top - labelSize[1]), (left + labelSize[0], top + baseLine), (255, 255, 255), cv.FILLED)
+    cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
+
 def postprocess(frame, outs, game):
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
-
-    def drawPred(classId, conf, left, top, right, bottom):
-        # Draw a bounding box.
-        cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0))
-
-        label = '%.2f' % conf
-
-        # Print a label of class.
-        if classes:
-            assert(classId < len(classes))
-            label = '%s: %s' % (classes[classId], label)
-
-        labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
-        top = max(top, labelSize[1])
-        cv.rectangle(frame, (left, top - labelSize[1]), (left + labelSize[0], top + baseLine), (255, 255, 255), cv.FILLED)
-        cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
 
     layerNames = net.getLayerNames()
     lastLayerId = net.getLayerId(layerNames[-1])
@@ -329,7 +325,8 @@ def postprocess(frame, outs, game):
         top = box[1]
         width = box[2]
         height = box[3]
-        drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
+        drawPred(frame, classIds[i], confidences[i], left, top, left + width, top + height)
+
     generate_cards(classIds, confidences, boxes)
     add_piles(detectedCards)
     sort_tableau_piles()
