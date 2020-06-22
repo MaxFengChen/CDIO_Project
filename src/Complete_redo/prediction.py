@@ -308,11 +308,12 @@ def stockpile_to_tableau(game):
         card = game.stock.frontCard
         
         for tableauPile in game.tableauPiles:
-            if tableauPile.frontCard != None:
+            if tableauPile.frontCard != None and len(tableauPile.cards) < 1:
             # If card matches
                 if card.value.value - tableauPile.frontCard.value.value == -1 and tableauPile.frontCard.color != card.color: 
                     print("Function 8: Move any card from stock to tableau")
                     print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to to the tableau pile containing: " + tableauPile.frontCard.value.name + " of " + tableauPile.frontCard.suit.to_string())
+                    game.stock.cards.remove(card)
                     #choice = input("If you wish to do so enter 1: ")
                     #if choice == '1':
                     #    game.stock.frontCard = card
