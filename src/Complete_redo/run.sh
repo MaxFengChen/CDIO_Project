@@ -5,7 +5,7 @@
 
 # Use ip camera (High res needed for accuracy)
 # 1216
-#python3 detect_cards.py --config=yolocards_test.cfg --model=yolocards_90000.weights --classes=cards.names --width=1216 --height=1216 --scale=0.00392 --input=http://192.168.31.97:8080/video --rgb
+python3 detect_cards.py --config=yolocards_test.cfg --model=yolocards_90000.weights --classes=cards.names --width=1216 --height=1216 --scale=0.00392 --input=http://192.168.31.97:8080/video --rgb
 # 1600
 #python3 detect_cards.py --config=yolocards_test.cfg --model=yolocards_90000.weights --classes=cards.names --width=1600 --height=1600 --scale=0.00392 --input=http://192.168.31.97:8080/video --rgb
 # 2000
@@ -16,5 +16,5 @@
 # 800
 #python3 detect_cards.py --config=yolocards_test.cfg --model=yolocards_90000.weights --classes=cards.names --width=800 --height=800 --scale=0.00392 --input=http://192.168.31.97:8080/video --rgb
 # 320
-python3 detect_cards.py --config=yolocards_test.cfg --model=yolocards_90000.weights --classes=cards.names --width=320 --height=320 --scale=0.00392 --input=http://192.168.31.97:8080/video --rgb
+#python3 detect_cards.py --config=yolocards_test.cfg --model=yolocards_90000.weights --classes=cards.names --width=320 --height=320 --scale=0.00392 --input=http://192.168.31.97:8080/video --rgb
 
