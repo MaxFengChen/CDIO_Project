@@ -155,6 +155,8 @@ def generate_cards(cardIDs, confidences, boxes):
     count = 0
     if len(detectedCards) > 0:
         detectedCards.clear()
+        game.stock.cards.clear()
+        game.stock.frontCard = None
     for tableauPile in game.tableauPiles:
         tableauPile.cards.clear()
     for cardID in cardIDs:
@@ -199,8 +201,8 @@ def remove_duplicate(cards):
 
 
 def add_initial_stock(card): #SKAL OPTIMERES!!!!! næ
-    game.stock.cards.clear()    
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
+    
         game.stock.frontCard = card
         game.stock.cards.append(card)
         #game.stock.cards.append(card)
@@ -254,6 +256,7 @@ def sort_tableau_piles():
         tableauPile.cards.sort(key=lambda x: x.top)
         if len(tableauPile.cards )> 0:  
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
+            
             #print("Tableaupile number " + NUMBER_ARRAY[i] + " Frontcard: " + str(tableauPile.frontCard.to_string()))
         # print("Sorted " + NUMBER_ARRAY[i] + " tableau pile")
         # for card in tableauPile.cards:
@@ -283,10 +286,10 @@ def stockpile_is_empty(): # Works on a well focussed image
     stockpileFrameGrey = cv.cvtColor(stockpileFrame, cv.COLOR_BGR2GRAY)
     _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)
     contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    print(str(len(contours)))
-    if len(contours) > STOCKPILE_THRESHOLD:
+    #print(str(len(contours)))
+    if len(contours) > STOCKPILE_THRESHOLD or game.stock.frontCard != None:
         return False
-    else:
+    elif len(contours) < STOCKPILE_THRESHOLD and game.stock.frontCard == None:
         return True
 
 def drawPred(frame, classId, conf, left, top, right, bottom):
@@ -511,7 +514,8 @@ while cv.waitKey(1) < 0:
         frame = processedFramesQueue.get_nowait()
         #os.system('cls' if os.name == 'nt' else 'clear')
 
-        give_advice(game)
+        give_advice(game, stockpile_is_empty())
+        win_check(game)
 
         postprocess(frame, outs, game)
 

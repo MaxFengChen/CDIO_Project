@@ -92,23 +92,21 @@ def setup_table(game):
 
 def win_check(game):
     # Check if all cards are visible and thus you game can be won
-    check = 0
+
     for foundation in game.foundationPiles:
-        check =check + len(game.foundation.cards)
-    for tableau in game.tableauPiles:
-        check = check + len(game.tableau.cards)
-    if check == 52:
-        print("")
-        print("  / ____|                           | |     | | \ \   / /        ( )                               | | | | | | | | |\n" 
-        + " | |      ___  _ __   __ _ _ __ __ _| |_ ___| |  \ \_/ /__  _   _|/__   _____  __      _____  _ __ | | | | | | | | |\n" 
-        + " | |     / _ \| '_ \ / _` | '__/ _` | __/ __| |   \   / _ \| | | | \ \ / / _ \ \ \ /\ / / _ \| '_ \| | | | | | | | |\n" 
-        + " | |____| (_) | | | | (_| | | | (_| | |_\__ \_|    | | (_) | |_| |  \ V /  __/  \ V  V / (_) | | | |_|_|_|_|_|_|_|_|\n" 
-        + "  \_____|\___/|_| |_|\__, |_|  \__,_|\__|___(_)    |_|\___/ \__,_|   \_/ \___|   \_/\_/ \___/|_| |_(_|_|_|_|_|_|_|_)\n"
-        + "                      __/ |                                                                                         \n"
-        + "                     |___/                                                                                          ", end="\n")
-        playsound('./fanfare.mp3') #https://www.youtube.com/watch?v=4PIjjmq5cqg
-        exit()
-        #return 0
+        if foundation.frontCard != None:
+            if foundation.frontCard.value.value == 13:
+                print("")
+                print("  / ____|                           | |     | | \ \   / /        ( )                               | | | | | | | | |\n" 
+                + " | |      ___  _ __   __ _ _ __ __ _| |_ ___| |  \ \_/ /__  _   _|/__   _____  __      _____  _ __ | | | | | | | | |\n" 
+                + " | |     / _ \| '_ \ / _` | '__/ _` | __/ __| |   \   / _ \| | | | \ \ / / _ \ \ \ /\ / / _ \| '_ \| | | | | | | | |\n" 
+                + " | |____| (_) | | | | (_| | | | (_| | |_\__ \_|    | | (_) | |_| |  \ V /  __/  \ V  V / (_) | | | |_|_|_|_|_|_|_|_|\n" 
+                + "  \_____|\___/|_| |_|\__, |_|  \__,_|\__|___(_)    |_|\___/ \__,_|   \_/ \___|   \_/\_/ \___/|_| |_(_|_|_|_|_|_|_|_)\n"
+                + "                      __/ |                                                                                         \n"
+                + "                     |___/                                                                                          ", end="\n")
+                playsound('./fanfare.mp3') #https://www.youtube.com/watch?v=4PIjjmq5cqg
+                exit()
+            #return 0
 
 def remove_from_tableau_pile(card, tableauPile):
     # Removes a card from the Tableau piles
