@@ -73,6 +73,8 @@ def king_is_on_card(frame, game, card):
     kingFrameGrey = cv.cvtColor(kingFrame, cv.COLOR_BGR2GRAY)
     _, thresh = cv.threshold(kingFrameGrey, 127, 255, 0)
     contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    print("counts of " + card.to_string())
+    print(str(len(contours)))
     if len(contours) > KING_THRESHOLD:
         return True
     elif len(contours) < KING_THRESHOLD:
