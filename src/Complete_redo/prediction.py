@@ -96,13 +96,13 @@ def give_advice(game, stockIsEmpty, frame):
     
     #Step 3
     if foundAdvice == '0':
-        funcCount = funcCount + 1
+        #funcCount = funcCount + 1
         foundAdvice = free_king_advice(game, frame)
         # print(" Done with 3")
     
     #Step #4
     if foundAdvice == '0':
-        funcCount = funcCount + 1
+        #funcCount = funcCount + 1
         foundAdvice = find_biggest_tableau_advise(game, frame)
         # print(" Done with 4")
     
@@ -110,25 +110,25 @@ def give_advice(game, stockIsEmpty, frame):
     
     #Step 6 
     if foundAdvice == '0':
-        funcCount = funcCount + 1
+        #funcCount = funcCount + 1
         foundAdvice = twin_is_found(game, frame)
         # print("done with 6")
     
     #Step 7
     if foundAdvice == '0':
-        funcCount = funcCount + 1
+        #funcCount = funcCount + 1
         foundAdvice = move_from_stock7(game, frame)
         # print("Doen with 7")
 
     #Step 8
     if foundAdvice == '0':
-        funcCount = funcCount + 1
+        #funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(game, frame)
         # print(" done with 8")
     
     #Step 9
     if foundAdvice == '0':
-        funcCount = funcCount + 1
+        #funcCount = funcCount + 1
         if stockIsEmpty:
             foundAdvice = move_to_foundation_advice_without_limit_and_do(game, frame)
         # print("done with 9")
@@ -141,7 +141,9 @@ def give_advice(game, stockIsEmpty, frame):
       #  if choice == '1':   
        #     print("Testing for choice!")
 
-    if funcCount == 6 and foundAdvice == None:
+#    if funcCount == 6 and foundAdvice == None:
+    if foundAdvice == None:
+
         print("No moves possible. Game unsolvable.")
         print_advice(frame, "No moves possible. Game unsolvable.")
     #    saveFailedGames(game)

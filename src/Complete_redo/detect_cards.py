@@ -31,6 +31,10 @@
 #   Objects: camelCase                        
 #   Constants: SCREAMING_SNAKE_CASE 
 
+# This code is based on "object_detection.py" from the opencv github.
+# This code uses several files from the dnn examples folder.
+# https://github.com/opencv/opencv/tree/master/samples/dnn 
+
 import cv2
 import argparse
 import numpy as np
@@ -110,16 +114,20 @@ def setup_game_computer_vision(game):
     game.tableauPiles = []
     game.foundationPiles = []
     
-    # 
+    # Make the tableaupiles and append them to the list 
     for pileNumber in range(1, 8):
         currentPile = TableauPile(pileNumber)
         game.tableauPiles.append(currentPile)
+
+    # Make the foundationPiles and append them to the list
     for suit in Suit:
         newFoundationPile = FoundationPile(suit)
         newFoundationPile.nextCard = Value.ACE
         game.foundationPiles.append(newFoundationPile)
+    # Initializes the "lowest needed card" for each foundationPile, which is set to 1 in this case.
     newLowestNeededCard(game)
 
+# The game object is initialized
 game = Game()
 setup_game_computer_vision(game) 
 
@@ -153,7 +161,7 @@ nmsThreshold = args.nms
 
 def ID_to_card(subject, leftPos, topPos):
     # Convert a cardID to a card object
-    #Attributes for a new card is initialized.
+    # Attributes for a new card is initialized.
     suit = None
     color = None
     pile = 0
@@ -161,7 +169,7 @@ def ID_to_card(subject, leftPos, topPos):
     visible = Visible.TRUE
     left = leftPos
     top = topPos
-    #Determine suit and color based on offset defined in cards.names.
+    # Determine suit and color based on offset defined in cards.names.
     if subject < 13:
         suit = Suit.H
         color = Color.RED   
@@ -181,29 +189,38 @@ def ID_to_card(subject, leftPos, topPos):
     card = create_card(value, suit, pile, color, left, top)
     return card
 
+# Generate the cards 
 def generate_cards(cardIDs, confidences, boxes):
     count = 0
+    # If the detectedCards list already contains cards, clear the list and the stock.
     if len(detectedCards) > 0:
         detectedCards.clear()
         game.stock.cards.clear()
         game.stock.frontCard = None
+    
+    # Clear all the tableau piles
     for tableauPile in game.tableauPiles:
         tableauPile.cards.clear()
+    # CardsIDS contains the "raw" number corresponding to the cards.names file of all the detected cards.
+    # If the confidence level is high enough, create a card and append to detectedCards.
     for cardID in cardIDs:
         if confidences[count] > CONFIDENCE_THRESHOLD:
             card = ID_to_card(cardID, boxes[count][0], boxes[count][1])
             detectedCards.append(card)
         count+=1
+    # Since some cards have two visible symbols and are therefore added twice to the detectedCards list, they are removed.
     remove_duplicate(detectedCards)
     #remove_duplicate(detectedCards) # Was needed at one point
     breakFlag = False
     for card in game.stock.cards:
+        # Check if a card was moved from the stock to tableau. Remove card from stock if true.
         for tableauPile in game.tableauPiles:
             if len(tableauPile.cards) > 0:
                 if card.ID == tableauPile.frontCard.ID:
                     game.stock.cards.remove(card)
                     breakFlag = True
                     break
+        # Check if a card was moved from the stock to foundation. Remove card from stock if true.
         for foundationPile in game.foundationPiles:
             if len(foundationPile.cards) > 0:
                 if card.ID == foundationPile.frontCard.ID:
@@ -213,6 +230,7 @@ def generate_cards(cardIDs, confidences, boxes):
         if breakFlag:
             break
 
+# Remove duplicate card from list
 def remove_duplicate(cards):
     for card in cards:
         n = 0
@@ -223,20 +241,26 @@ def remove_duplicate(cards):
                 cards.remove(element)
                 n = 0
 
+# If the card is in the stock (wastepile) position, add to stock as frontCard
 def add_initial_stock(card):
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
         game.stock.frontCard = card
         game.stock.cards.append(card)
 
+
 def add_foundation_piles(card):
     foundationNumber = 0
     placementNumber = 3
     for foundationPile in game.foundationPiles:
+        # if the card is one of the foundationPile positions:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
+            # Add the card to the foundationPile using the start_add_to_goal() function
             start_add_to_goal(card, foundationPile, game)
+        
+        # Make the card added last the frontCard 
         if len(foundationPile.cards) > 0:
             foundationPile.frontCard = foundationPile.cards[LAST_INDEX]
-        remove_duplicate(foundationPile.cards)
+        # Increment
         foundationNumber += 1
         placementNumber += 1
 
