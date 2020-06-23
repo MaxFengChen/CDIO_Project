@@ -64,9 +64,7 @@ args.model = findFile(args.model)
 args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
-
 detectedCards = []
-#classIds = []
 
 def setupGameComputerVision(game):
     game.playingCards = []
@@ -80,11 +78,8 @@ def setupGameComputerVision(game):
         newFoundationPile.nextCard = Value.ACE
         game.foundationPiles.append(newFoundationPile)
     newLowestNeededCard(game)
-    for count in range(4):
-        game.kingArray.append(0)
-    # print("NLNC: " + str(game.lowestNeededCard))
 game = Game()
-setupGameComputerVision(game) #Sauce?
+setupGameComputerVision(game) 
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)

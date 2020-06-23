@@ -162,4 +162,3 @@ class Game:
         self.stock = StockPile()
         self.wastePile = WastePile()
         self.lowestNeededCard = Value(2)
-        self.kingArray = []
