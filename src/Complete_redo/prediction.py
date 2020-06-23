@@ -33,16 +33,13 @@
 # 
 from testing import *
 from classes import *
+from SavingGames import *
 import cv2 as cv
 
-PADDING = 2
-
-# Method to highlight a specified card on screen
-def highlight_card(frame, card): #Takes the fram to print on and card in question.
+def highlight_card(frame, card):
     cv.rectangle(frame, (card.left-PADDING, card.top-PADDING), (card.left+WIDTH_OF_CARD, card.top+HEIGHT_OF_CARD), (0, 255, 255),thickness=2)
-    #Use opencv2 to call the rectangle method, specify rectangle boundaries, color and thickness
 
-def highlight_pile(frame, pile, number): # Method to highlight a specified pile and pile type on screen
+def highlight_pile(frame, pile, number):
     if pile == "tableau":
         cv.rectangle(frame, ((CARD_WIDTH*number)+PADDING,CARD_HEIGHT+PADDING), ((CARD_WIDTH*(number+1))-PADDING,RESOLUTION_Y-PADDING),(0, 255, 255),thickness=2)
     elif pile == "foundation":
@@ -50,100 +47,129 @@ def highlight_pile(frame, pile, number): # Method to highlight a specified pile 
     elif pile == "stock":
         cv.rectangle(frame,(PADDING,PADDING), (CARD_WIDTH-PADDING,CARD_HEIGHT-PADDING),(0, 255, 255),thickness=2)
 
-# Method to print the advice of the gamelogic on screen
-def print_advice(frame, advice): # Takes frame to print on and advice to display
+def print_advice(frame, advice):
     cv.putText(frame, advice, (90,CARD_HEIGHT-20), cv.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), thickness=2)
-    # Specify the text with advice argument, coordinates, font, color etc. 
 
-# Method to draw up the game table on screen.
-def print_grid(frame): # Takes the frame to print on.
+def print_grid(frame):
     # Top line
     cv.line(frame,(0,CARD_HEIGHT),(RESOLUTION_X,CARD_HEIGHT),(0,0,255),thickness=2)
     # Bottom lines
     for line in range(7):
         cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,RESOLUTION_Y),(0,0,255),thickness=2)
     
-# Method to identify if the stock pile is empty based on level of contour in top left square. 
 def stockpile_is_empty(frame, game): # Works on a well focussed image
-    stockpileFrame = frame[0:CARD_HEIGHT,0:CARD_WIDTH] #Define the stockpile frame(top left square)
-    stockpileFrameGrey = cv.cvtColor(stockpileFrame, cv.COLOR_BGR2GRAY) # Convert the frame to a gray color space
-    _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)   # Filters out pixels outside of the range from 127 to 255. 
-                                                                # Returns binary picture, 0 on the pixels outside of the range and 1 for the pixels inside.
-    contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE) #Finds the contour of a binary image.
-    if len(contours) > STOCKPILE_THRESHOLD or game.stock.frontCard != None: #If the contour is bigger than our specified threshold the stock pile is not empty
+    stockpileFrame = frame[0:CARD_HEIGHT,0:CARD_WIDTH]
+    stockpileFrameGrey = cv.cvtColor(stockpileFrame, cv.COLOR_BGR2GRAY)
+    _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)
+    contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    #print(str(len(contours)))
+    if len(contours) > STOCKPILE_THRESHOLD or game.stock.frontCard != None:
         return False
-    elif len(contours) < STOCKPILE_THRESHOLD and game.stock.frontCard == None: # Otherwise empty.
+    elif len(contours) < STOCKPILE_THRESHOLD and game.stock.frontCard == None:
         return True        
 
-# Method to see if a king is on top of non-visual cards. Works the same as the stock_is_empty
 def king_is_on_card(frame, game, card): 
     kingFrame = frame[card.top-50:card.top,card.left:card.left+WIDTH_OF_CARD]
     kingFrameGrey = cv.cvtColor(kingFrame, cv.COLOR_BGR2GRAY)
     _, thresh = cv.threshold(kingFrameGrey, 127, 255, 0)
     contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    print("counts of " + card.to_string())
+    print(str(len(contours)))
     if len(contours) > KING_THRESHOLD:
         return True
     elif len(contours) < KING_THRESHOLD:
         return False  
 
-# Method to generate advice for the user.  
-def give_advice(game, stockIsEmpty, frame): # Takes the game object, value for whether stock is empty and the frame to print on.
-    newLowestNeededCard(game) #Updates the lowest needed card for the foundation piles.
-    foundAdvice = '0' # Variables see if an advice has been found, only one advice can be generated per iteration. 
-    #funcCount = 0     # 
+def give_advice(game, stockIsEmpty, frame):
+    newLowestNeededCard(game)
+    # print("NLNC: " + str(game.lowestNeededCard))
+    #This is "main" for running the AI
+    foundAdvice = '0'
+    funcCount = 0
 
-    print_grid(frame) # Print the game table
-
-    # Every possible move, will now be calculated in a prioritised way. If a possible move is found, '1' is returned and the advice is given.
-    # Each priority is represented with a function call as seen below.
+    print_grid(frame)
 
     #Step 1 and 2:
     if foundAdvice == '0':
        foundAdvice = move_to_foundation_advice_and_do(game, frame)
-   
+    #    print("Done with 1 & 2")
+    
     #Step 3
     if foundAdvice == '0':
-    #    funcCount = funcCount + 1
+        funcCount = funcCount + 1
         foundAdvice = free_king_advice(game, frame)
+        # print(" Done with 3")
     
-    #Step 4
+    #Step #4
     if foundAdvice == '0':
-    #    funcCount = funcCount + 1
+        funcCount = funcCount + 1
         foundAdvice = find_biggest_tableau_advise(game, frame)
+        # print(" Done with 4")
     
-    #Step 5 is already imnplemented in step 10
-     
-    # Step 6 
+    #Step 5 is already imnplemented as program knows stock
+    
+    #Step 6 
     if foundAdvice == '0':
-    #    funcCount = funcCount + 1
+        funcCount = funcCount + 1
         foundAdvice = twin_is_found(game, frame)
+        # print("done with 6")
     
-    # Step 7
+    #Step 7
     if foundAdvice == '0':
-    #   funcCount = funcCount + 1
+        funcCount = funcCount + 1
         foundAdvice = move_from_stock7(game, frame)
+        # print("Doen with 7")
 
-    # Step 8
+    #Step 8
     if foundAdvice == '0':
-    #    funcCount = funcCount + 1
+        funcCount = funcCount + 1
         foundAdvice = stockpile_to_tableau(game, frame)
+        # print(" done with 8")
     
-    # Step 9
+    #Step 9
     if foundAdvice == '0':
         funcCount = funcCount + 1
         if stockIsEmpty:
             foundAdvice = move_to_foundation_advice_without_limit_and_do(game, frame)
+        # print("done with 9")
 
-    # Step 10
     if foundAdvice == '0':
         foundAdvice = draw_a_card_from_stock(game, frame)
-    #    funcCount = funcCount + 1
+        funcCount = funcCount + 1
+    #elif foundAdvice == '1':
+     #   choice = input("If you wish to do so enter 1: ")    #If the Use wants to do this  
+      #  if choice == '1':   
+       #     print("Testing for choice!")
 
-    if foundAdvice == '0':
+    if funcCount == 6 and foundAdvice == None:
         print("No moves possible. Game unsolvable.")
         print_advice(frame, "No moves possible. Game unsolvable.")
-        return 0                       
+    #    saveFailedGames(game)
+        return 0
+
+#Step 1 and 2
+# def move_to_foundation_advice(game):                                        #move a card to the foundation pile
+#     #Give an advice what to do
+#     for pile in game.tableauPiles:                                          #Go through  the tableau piles 
+#         if len(pile.cards) != 0 or pile.frontCard != None:                                            # If the pile is not emty
+#             card = pile.frontCard                                            
+#             if card.value.value <= game.lowestNeededCard.value:             #If the frontcard is not larger than the lowes needed value    
+#                 for foundPile in game.foundationPiles:                      # go through the foundation piles and see if theres a card that can be added to the foundation piles 
+#                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
+#                         print("Move the " + card.value.name + " " + card.suit.to_string() + " to the foundation pile")
+#                         return '1'
+#     if len(game.stock.cards) != 0:                                          # If theres cards in the stockpile 
+#         pile = game.stock                                               
+#         for card in game.stock.cards:                                      # Go through all cards and see if any can be added to the foundations piles
+#             if card.value.value <= game.lowestNeededCard.value:
+#                 for foundPiles in game.foundationPiles:
+#                     if card.suit == foundPiles.suit and card.value == foundPiles.nextCard:
+#                         print("Function 1 og 2")
+#                         print("Move the " + card.value.name + " of " + card.suit.to_string()+ " from stock pile to the foundation pile")
+#                         return '1'
+#     return '0'                        
     
+<<<<<<< HEAD
 # Step 1 and 2 
 # Method will see if a card in stock or tableau is needed in the foundationPile, based on game.lowestNeededCard.
 def move_to_foundation_advice_and_do(game, frame):
@@ -154,12 +180,24 @@ def move_to_foundation_advice_and_do(game, frame):
                 for foundPile in game.foundationPiles:  # For each foundation pile 
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard: # if the card is the same suit of the pile and is the next needed card in the pile
                         print("Function 1 og 2: Move card to foundation")                  # Give the advise to move the card.
+=======
+#Step 1 and 2 with testing
+def move_to_foundation_advice_and_do(game, frame):                                 #move a card to the foundation pile but do it in the game logic so comments in function above
+    #Give an advice what to do
+    for pile in game.tableauPiles:
+        if len(pile.cards) != 0 and pile.frontCard != None:
+            card = pile.frontCard
+            if card.value.value <= game.lowestNeededCard.value:
+                for foundPile in game.foundationPiles:
+                    if card.suit == foundPile.suit and card.value == foundPile.nextCard:
+                        print("Function 1 og 2: Move card to foundation")
+>>>>>>> 3dbff6aeb6e1c93c0c51727fb1ec2280e09905fc
                         print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to the " + NUMBER_ARRAY[foundPile.suit.value] + " foundation pile")
-                        highlight_card(frame, card) #Highlight the card and foundation pile in question. And print the advice on screen.
-                        highlight_pile(frame, "foundation", foundPile.suit.value) 
+                        highlight_card(frame, card)
+                        highlight_pile(frame, "foundation", foundPile.suit.value)
                         print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string()+ " to the " + NUMBER_ARRAY[foundPile.suit.value] + " foundation pile")
                         return '1'
-    if game.stock.frontCard != None: # Do the same for the stock card.
+    if game.stock.frontCard != None:
         card = game.stock.frontCard
         if card.value.value <= game.lowestNeededCard.value:
             for foundPiles in game.foundationPiles:
@@ -168,36 +206,43 @@ def move_to_foundation_advice_and_do(game, frame):
                     print("Move the " + card.value.name + " of " + card.suit.to_string()+ " from stock pile to the foundation pile")
                     highlight_card(frame, card)
                     highlight_pile(frame, "foundation", foundPile.suit.value)
+                    # game.stock.cards.remove(card)
+                    #choice = input("If you wish to do so enter 1: ")    #If the Use wants to do this 
+                    #if choice == '1':
+                    #   start_add_to_goal(cards, pile, game)             #run this function
                     return '1'
     return '0'
     
-#Step 3
-# Metohd to move the king from the tableau pile with the most non-visible cards to an empty space.
+#Step 3, is to move the king from the tableau pile with the most non-visible cards to an empty space.
 def free_king_advice(game, frame): 
     biggestLen = 0      # Measure of pile with the biggest amount of non visible cards.
     emptyPile = None    # The pile ready to have a king placed.
     targetCard = None   # The king
+    targetPile = None   # The pile that the king is in.
     choice = None       # User choice
     for pile in game.tableauPiles: # Check if any tableau is empty by finding a pile with no frontcard.
         if not pile.cards: # if the pile.cards is empty
             emptyPile = pile
         else:                       # If the pile is not empty, we can check if it has a king ready to be moved.
             for card in pile.cards:                 # Find the king
-                if card.value.value == 13 and king_is_on_card(frame, game, card): # if the card is a king and is not on top of non visual cards
-                    if card.top > biggestLen : # Try and pick the king that is furthest down the game table as it is most likely the king on top of most non visual cards.
+                if card.value.value == 13 and king_is_on_card(frame, game, card):
+                    if card.top > biggestLen : # If the king is found update the variables.
                         biggestLen = card.top
+                        targetPile = pile
                         targetCard = card
-    if targetCard != None and emptyPile != None: # If a king and an empty pile is found
-        print("Function 3: Move king")                      # Give the advice
+    if targetPile != None and emptyPile != None: # If a king and an empty pile is found
+        print("Function 3: Move king")                      # Instructions:
         print("Move the " + targetCard.value.name + " of " + targetCard.suit.to_string()+ " to the empty tableau pile nr. " + str(emptyPile.number))
         highlight_card(frame, targetCard)
         highlight_pile(frame, "tableau", emptyPile.number-1)
         king_is_on_card(frame, game, targetCard)
         print_advice(frame,"Move the " + targetCard.value.name + " of " + targetCard.suit.to_string()+ " to the empty tableau pile nr. " + str(emptyPile.number))
+        # game.kingArray[targetCard.suit.value] = 1          # Tweak
         return '1' 
     else:
         return '0'
 
+<<<<<<< HEAD
 # Step 4
 # Method to find moves from one tableau to another
 def find_biggest_tableau_advise(game, frame):  
@@ -222,6 +267,41 @@ def find_biggest_tableau_advise(game, frame):
                             targetPile = pile
                             card = tabPile.cards[0]
     if card != None:
+=======
+#step 4
+def find_biggest_tableau_advise(game, frame):  #Find moveable pile with most nonvisual cards
+    biggestPile = None  #Variable that saves the pile with most nonevisual cards
+    fromPile = game.tableauPiles[0]
+    movePile = []  #Number of cards to move from the bigest pile
+    bufferTest =  None #Buffer used to save all visible cards in the current pile
+
+    nonVisualCount = 0
+    nVCPrevious = 0
+    card = None
+    for searchBiggest in game.tableauPiles: #Current pile
+        if searchBiggest.frontCard != None and len(searchBiggest.cards) > 0:
+            for pile in game.tableauPiles:  #All tableau piles
+                if pile.frontCard != None:
+                    if searchBiggest.frontCard.color != pile.frontCard.color and searchBiggest.frontCard.value.value - pile.frontCard.value.value == -1 and len(searchBiggest.cards) < 2:
+                        for cardsInPile in searchBiggest.cards: #Cards in current pile
+                            if nonVisualCount < cardsInPile.top:
+                                nonVisualCount = cardsInPile.top
+                                bufferTest = searchBiggest
+                                biggestPile = pile
+                                card = cardsInPile
+
+                    elif searchBiggest.cards[0].value.value - pile.frontCard.value.value == -1 and searchBiggest.cards[0].color != pile.frontCard.color:
+                        for cardsInPile in searchBiggest.cards: #Cards in current pile
+                        #    if cardsInPile.visible == Visible.FALSE:
+                       #         nonVisualCount = nonVisualCount+1   #Nonvisual cards in current pile
+                            if nonVisualCount < cardsInPile.top:
+                                nonVisualCount = cardsInPile.top
+                                bufferTest = searchBiggest
+                                biggestPile = pile
+                                card = searchBiggest.cards[0]
+
+    if bufferTest != None:
+>>>>>>> 3dbff6aeb6e1c93c0c51727fb1ec2280e09905fc
         print("Function 4: Move tableau card/pile")
         print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string()) 
         highlight_card(frame, card)
@@ -229,6 +309,11 @@ def find_biggest_tableau_advise(game, frame):
         print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string()+ " to " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string())
         return '1'
     return '0'
+
+#Step 5, is a step for the user. This step will give the application the knowledge of the entire stockpile, to give advise from.
+def look_through_stockPile(stockPile):
+    print("Please go through the stock pile, the program will learn the contents, and give best advice.")
+    return
 
 #Step 6, is to move a card from stockpile to tableau pile if the same value and color of the card is already in a tableau pile on a visible card
 def twin_is_found(game, frame):

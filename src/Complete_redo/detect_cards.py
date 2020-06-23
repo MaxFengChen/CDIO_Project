@@ -1,3 +1,36 @@
+#          .x+=:.                     ..    .         s                   .                        
+#     z`    ^%              x .d88"    @88>      :8                  @88>                          
+#        .   <k        u.    5888R     %8P      .88                  %8P      .u    .              
+#      .@8Ned8"  ...ue888b   '888R      .      :888ooo       u        .     .d88B :@8c       .u    
+#    .@^%8888"   888R Y888r   888R    .@88u  -*8888888    us888u.   .@88u  ="8888f8888r   ud8888.  
+#   x88:  `)8b.  888R I888>   888R   ''888E`   8888    .@88 "8888" ''888E`   4888>'88"  :888'8888. 
+#   8888N=*8888  888R I888>   888R     888E    8888    9888  9888    888E    4888> '    d888 '88%" 
+#    %8"    R88  888R I888>   888R     888E    8888    9888  9888    888E    4888>      8888.+"    
+#     @8Wou 9%  u8888cJ888    888R     888E   .8888Lu= 9888  9888    888E   .d888L .+   8888L      
+#   .888888P`    "*888*P"    .888B .   888&   ^%888*   9888  9888    888&   ^"8888*"    '8888c. .+ 
+#   `   ^"F        'Y"       ^*888%    R888"    'Y"    "888*""888"   R888"     "Y"       "88888%   
+#                              "%       ""              ^Y"   ^Y'     ""                   "YP'    
+#    
+#   62410 CDIO-Projekt F20 - Solitaire solver
+#   https://github.com/MaxTheScrub/CDIO_Project 
+#
+#   Group 7:                                    
+#   Henrik Peter Warncke s184801                
+#   Max Feng Chen Bjørnsen s184811              
+#   Jeppe Møller Bak s164871                    
+#   Adam Aron Edelsten s173057                  
+#   Tobias Lauge Borgstrøm s184810              
+#   Tobias Ladefoged Jensen s184815             
+#   Markus Repnak Jacobsen s184808              
+#   Ajs Ritsmer Stormholt s174517               
+#
+#   Naming convention: https://www.python.org/dev/peps/pep-0008/                       
+#   Class names: PascalCase                         
+#   Function names: snake_case                       
+#   Variables: camelCase
+#   Objects: camelCase                        
+#   Constants: SCREAMING_SNAKE_CASE 
+
 import cv2
 import argparse
 import numpy as np
@@ -13,17 +46,18 @@ else:
     import queue
 import os
 
+# Import needed OpenCV example python documents to run the code
 from common import *
 from tf_text_graph_common import readTextMessage
 from tf_text_graph_ssd import createSSDGraph
 from tf_text_graph_faster_rcnn import createFasterRCNNGraph
 
-# for sorting cards in tableau
-from operator import attrgetter
+# Define the possible backends and targets. Is used with the parser 
 
 backends = (cv2.dnn.DNN_BACKEND_DEFAULT, cv2.dnn.DNN_BACKEND_HALIDE, cv2.dnn.DNN_BACKEND_INFERENCE_ENGINE, cv2.dnn.DNN_BACKEND_OPENCV)
 targets = (cv2.dnn.DNN_TARGET_CPU, cv2.dnn.DNN_TARGET_OPENCL, cv2.dnn.DNN_TARGET_OPENCL_FP16, cv2.dnn.DNN_TARGET_MYRIAD)
 
+# Add the parser arguments
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('--zoo', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models.yml'),
                     help='An optional path to file with preprocessing parameters.')
@@ -60,16 +94,23 @@ parser = argparse.ArgumentParser(parents=[parser],
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 args = parser.parse_args()
 
+# Set the model (yolocards_90000.weights), config file (yolocards_test.cfg) and class file (cards.names)
+
 args.model = findFile(args.model)
 args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
+# List used for all detected card objects
 detectedCards = []
 
-def setupGameComputerVision(game):
+# Function used to setup the games piles and initialising the Game object properly
+def setup_game_computer_vision(game):
+    # Make the lists
     game.playingCards = []
     game.tableauPiles = []
     game.foundationPiles = []
+    
+    # 
     for pileNumber in range(1, 8):
         currentPile = TableauPile(pileNumber)
         game.tableauPiles.append(currentPile)
@@ -78,8 +119,9 @@ def setupGameComputerVision(game):
         newFoundationPile.nextCard = Value.ACE
         game.foundationPiles.append(newFoundationPile)
     newLowestNeededCard(game)
+
 game = Game()
-setupGameComputerVision(game) 
+setup_game_computer_vision(game) 
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
