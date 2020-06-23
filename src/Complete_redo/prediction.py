@@ -364,11 +364,11 @@ def stockpile_to_tableau(game, frame):
                     #    game.stock.frontCard = card
                     #    stock_to_tableau(game, tableauPile) # Move to tableauPile
                     return '1'
-            elif card.value.value == 13 and game.kingArray[card.suit.value] != 1:
+            elif card.value.value == 13:
                 print("Function 8")
                 print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to empty tableau pile nr. " + str(tableauPile.number))
                 highlight_card(frame, card)
-                game.kingArray[card.suit.value] = 1
+                return '1'
                 # game.stock.cards.remove(card)
     return '0'
 

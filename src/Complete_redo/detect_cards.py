@@ -1,4 +1,4 @@
-import cv2 as cv
+import cv2
 import argparse
 import numpy as np
 import sys
@@ -21,8 +21,8 @@ from tf_text_graph_faster_rcnn import createFasterRCNNGraph
 # for sorting cards in tableau
 from operator import attrgetter
 
-backends = (cv.dnn.DNN_BACKEND_DEFAULT, cv.dnn.DNN_BACKEND_HALIDE, cv.dnn.DNN_BACKEND_INFERENCE_ENGINE, cv.dnn.DNN_BACKEND_OPENCV)
-targets = (cv.dnn.DNN_TARGET_CPU, cv.dnn.DNN_TARGET_OPENCL, cv.dnn.DNN_TARGET_OPENCL_FP16, cv.dnn.DNN_TARGET_MYRIAD)
+backends = (cv2.dnn.DNN_BACKEND_DEFAULT, cv2.dnn.DNN_BACKEND_HALIDE, cv2.dnn.DNN_BACKEND_INFERENCE_ENGINE, cv2.dnn.DNN_BACKEND_OPENCV)
+targets = (cv2.dnn.DNN_TARGET_CPU, cv2.dnn.DNN_TARGET_OPENCL, cv2.dnn.DNN_TARGET_OPENCL_FP16, cv2.dnn.DNN_TARGET_MYRIAD)
 
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('--zoo', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models.yml'),
@@ -37,13 +37,13 @@ parser.add_argument('--framework', choices=['caffe', 'tensorflow', 'torch', 'dar
                          'Detect it automatically if it does not set.')
 parser.add_argument('--thr', type=float, default=0.5, help='Confidence threshold')
 parser.add_argument('--nms', type=float, default=0.4, help='Non-maximum suppression threshold')
-parser.add_argument('--backend', choices=backends, default=cv.dnn.DNN_BACKEND_DEFAULT, type=int,
+parser.add_argument('--backend', choices=backends, default=cv2.dnn.DNN_BACKEND_DEFAULT, type=int,
                     help="Choose one of computation backends: "
                          "%d: automatically (by default), "
                          "%d: Halide language (http://halide-lang.org/), "
                          "%d: Intel's Deep Learning Inference Engine (https://software.intel.com/openvino-toolkit), "
                          "%d: OpenCV implementation" % backends)
-parser.add_argument('--target', choices=targets, default=cv.dnn.DNN_TARGET_CPU, type=int,
+parser.add_argument('--target', choices=targets, default=cv2.dnn.DNN_TARGET_CPU, type=int,
                     help='Choose one of target computation devices: '
                          '%d: CPU target (by default), '
                          '%d: OpenCL, '
@@ -64,9 +64,7 @@ args.model = findFile(args.model)
 args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
-
 detectedCards = []
-#classIds = []
 
 def setupGameComputerVision(game):
     game.playingCards = []
@@ -80,11 +78,8 @@ def setupGameComputerVision(game):
         newFoundationPile.nextCard = Value.ACE
         game.foundationPiles.append(newFoundationPile)
     newLowestNeededCard(game)
-    for count in range(4):
-        game.kingArray.append(0)
-    # print("NLNC: " + str(game.lowestNeededCard))
 game = Game()
-setupGameComputerVision(game) #Sauce?
+setupGameComputerVision(game) 
 
 # If config specified, try to load it as TensorFlow Object Detection API's pipeline.
 config = readTextMessage(args.config)
@@ -106,7 +101,7 @@ if args.classes:
         classes = f.read().rstrip('\n').split('\n')
 
 # Load a network
-net = cv.dnn.readNet(cv.samples.findFile(args.model), cv.samples.findFile(args.config), args.framework)
+net = cv2.dnn.readNet(cv2.samples.findFile(args.model), cv2.samples.findFile(args.config), args.framework)
 net.setPreferableBackend(args.backend)
 net.setPreferableTarget(args.target)
 outNames = net.getUnconnectedOutLayersNames()
@@ -141,8 +136,7 @@ def ID_to_card(subject, leftPos, topPos):
         suit = Suit.S
         color = Color.BLACK
         value = (subject - 52)*(-1)
-
-    card = create_card(value, suit, pile, color, left, top) 
+    card = create_card(value, suit, pile, color, left, top)
     return card
 
 def generate_cards(cardIDs, confidences, boxes):
@@ -156,32 +150,26 @@ def generate_cards(cardIDs, confidences, boxes):
     for cardID in cardIDs:
         if confidences[count] > CONFIDENCE_THRESHOLD:
             card = ID_to_card(cardID, boxes[count][0], boxes[count][1])
-        #print("Appending card: " + card.to_string() + " with count: " + str(count))
             detectedCards.append(card)
         count+=1
-    #print("count: " + str(count) + " len(set()): " + str(len(set(cardIDs))))
     remove_duplicate(detectedCards)
-    #remove_duplicate(detectedCards) 
-
-    #print("Stock: ")
+    #remove_duplicate(detectedCards) # Was needed at one point
     breakFlag = False
     for card in game.stock.cards:
-        #print(card.to_string())
         for tableauPile in game.tableauPiles:
-            if len(tableauPile.cards) > 0: 
+            if len(tableauPile.cards) > 0:
                 if card.ID == tableauPile.frontCard.ID:
-                    game.stock.cards.remove(card) 
+                    game.stock.cards.remove(card)
                     breakFlag = True
                     break
         for foundationPile in game.foundationPiles:
-            if len(foundationPile.cards) > 0: 
+            if len(foundationPile.cards) > 0:
                 if card.ID == foundationPile.frontCard.ID:
-                    game.stock.cards.remove(card) 
+                    game.stock.cards.remove(card)
                     breakFlag = True
                     break
         if breakFlag:
             break
-
 
 def remove_duplicate(cards):
     for card in cards:
@@ -193,32 +181,19 @@ def remove_duplicate(cards):
                 cards.remove(element)
                 n = 0
 
-
-def add_initial_stock(card): #SKAL OPTIMERES!!!!! næ
+def add_initial_stock(card):
     if card.left < CARD_WIDTH*2 and card.left > CARD_WIDTH*1:
-    
         game.stock.frontCard = card
         game.stock.cards.append(card)
-        #game.stock.cards.append(card)
-       # print("In stockPl " + card.to_string() + " " + str(card.left) + " " + str(card.top))
-        #remove_duplicate(game.stock.cards)
 
-
-
-def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
+def add_foundation_piles(card):
     foundationNumber = 0
     placementNumber = 3
     for foundationPile in game.foundationPiles:
         if card.left > CARD_WIDTH*placementNumber and card.left < CARD_WIDTH*(placementNumber+1):
-            #print("In fndtion " + card.to_string() + " " + str(card.left) + " " + str(card.top))
-            #foundationPile.cards.append(card)
             start_add_to_goal(card, foundationPile, game)
-            #print("Foundation, of " + str(foundationPile.suit) )
-            #for card in foundationPile.cards:
-            #    print(card.to_string())
-        if len(foundationPile.cards) > 0:  
+        if len(foundationPile.cards) > 0:
             foundationPile.frontCard = foundationPile.cards[LAST_INDEX]
-
         remove_duplicate(foundationPile.cards)
         foundationNumber += 1
         placementNumber += 1
@@ -226,23 +201,19 @@ def add_foundation_piles(card): #SKAL OPTIMERES!!!!!
 def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
-        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1): 
-            #print("In tableau " + card.to_string() + " " + str(card.left) + " " + str(card.top))
+        if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1):
             tableauPile.cards.append(card)
         if len(tableauPile.cards) > 0:
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
         tableauNumber += 1
 
 def add_piles(cards, game):
-   # print("Adding piles")
     for card in cards:
         if card.top > CARD_HEIGHT: # The top cards
             add_tableau_piles(card)
-        elif card.top < CARD_HEIGHT: # The top cards    
+        elif card.top < CARD_HEIGHT: # The top cards
             add_foundation_piles(card)
             add_initial_stock(card)
-            # if not stockCycled:
-                  
  
 def sort_tableau_piles():
     i = 0
@@ -250,37 +221,18 @@ def sort_tableau_piles():
         tableauPile.cards.sort(key=lambda x: x.top)
         if len(tableauPile.cards )> 0:  
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
-            
-            #print("Tableaupile number " + NUMBER_ARRAY[i] + " Frontcard: " + str(tableauPile.frontCard.to_string()))
-        # print("Sorted " + NUMBER_ARRAY[i] + " tableau pile")
-        # for card in tableauPile.cards:
-        #     print(card.to_string())
         i+=1
 
 def piles_legal():
     for tableau in game.tableauPiles:
         if len(tableau.cards) > 1:
-            if tableau.frontCard.value.value - tableau.cards[len(tableau.cards)-2].value.value == -1 and tableau.frontCard.color != tableau.cards[len(tableau.cards)-2].color:
-                luder =1
-                #print(".")
-            else:
-                print("Cards do not match!!\n")
+            if  not (tableau.frontCard.value.value - tableau.cards[len(tableau.cards)-2].value.value == -1 and tableau.frontCard.color != tableau.cards[len(tableau.cards)-2].color):
+                print("Cards do not match!!!")
                 print("Move " + tableau.frontCard.to_string() + " away from " + tableau.cards[len(tableau.cards)-2].to_string())
-    
-    #for foundation in game.foundationPiles:
-    #    if len(foundation.cards) > 1:
-    #        if foundation.cards[len(foundation.cards)-2].value.value  - foundation.frontCard.value.value == -1 and foundation.frontCard.color == foundation.cards[len(foundation.cards)-2].color:
-    #            print(".")
-    #        else:
-    #            print("Cards do not match in foundation!\n")
-    #            print("Move " + foundation.frontCard.to_string() + " away from " + foundation.cards[len(foundation.cards)-2].to_string())
-
-
 
 def drawPred(frame, classId, conf, left, top, right, bottom):
     # Draw a bounding box.
-    cv.rectangle(frame, (left, top), (right, bottom), (0, 255, 0))
-
+    cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0))
     label = '%.2f' % conf
 
     # Print a label of class.
@@ -288,10 +240,10 @@ def drawPred(frame, classId, conf, left, top, right, bottom):
         assert(classId < len(classes))
         label = '%s: %s' % (classes[classId], label)
 
-    labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_DUPLEX, 0.5, 1)
+    labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_DUPLEX, 0.5, 1)
     top = max(top, labelSize[1])
-    cv.rectangle(frame, (left, top - labelSize[1]), (left + labelSize[0], top + baseLine), (255, 255, 255), cv.FILLED)
-    cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0))
+    cv2.rectangle(frame, (left, top - labelSize[1]), (left + labelSize[0], top + baseLine), (255, 255, 255), cv2.FILLED)
+    cv2.putText(frame, label, (left, top), cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0))
 
 def postprocess(frame, outs, game):
     frameHeight = frame.shape[0]
@@ -354,7 +306,7 @@ def postprocess(frame, outs, game):
 
     # NMS is used inside Region layer only on DNN_BACKEND_OPENCV for another backends we need NMS in sample
     # or NMS is required if number of outputs > 1
-    if len(outNames) > 1 or lastLayer.type == 'Region' and args.backend != cv.dnn.DNN_BACKEND_OPENCV:
+    if len(outNames) > 1 or lastLayer.type == 'Region' and args.backend != cv2.dnn.DNN_BACKEND_OPENCV:
         indices = []
         classIds = np.array(classIds)
         boxes = np.array(boxes)
@@ -364,7 +316,7 @@ def postprocess(frame, outs, game):
             class_indices = np.where(classIds == cl)[0]
             conf = confidences[class_indices]
             box  = boxes[class_indices].tolist()
-            nms_indices = cv.dnn.NMSBoxes(box, conf, confThreshold, nmsThreshold)
+            nms_indices = cv2.dnn.NMSBoxes(box, conf, confThreshold, nmsThreshold)
             nms_indices = nms_indices[:, 0] if len(nms_indices) else []
             indices.extend(class_indices[nms_indices])
     else:
@@ -383,23 +335,14 @@ def postprocess(frame, outs, game):
     add_piles(detectedCards, game)
     sort_tableau_piles()
     piles_legal()
-    #if len(game.stock.cards) > 0:
-    #    remove_duplicate(detectedCards, game.stock.cards)
     print_table(game)
 
-                
+
 # Process inputs
 winName = 'CV Solitaire solver - Gruppe 7'
-cv.namedWindow(winName, cv.WINDOW_NORMAL)
+cv2.namedWindow(winName, cv2.WINDOW_NORMAL)
 
-# def callback(pos):
-#     global confThreshold
-#     confThreshold = pos / 100.0
-
-# cv.createTrackbar('Confidence threshold, %', winName, int(confThreshold * 100), 99, callback)
-
-#cap = cv.VideoCapture('http://192.168.31.97:8080/video')
-cap = cv.VideoCapture(cv.samples.findFileOrKeep(args.input) if args.input else 0)
+cap = cv2.VideoCapture(cv2.samples.findFileOrKeep(args.input) if args.input else 0)
 
 class QueueFPS(queue.Queue):
     def __init__(self):
@@ -461,13 +404,13 @@ def processingThreadBody():
             # Create a 4D blob from a frame.
             inpWidth = args.width if args.width else frameWidth
             inpHeight = args.height if args.height else frameHeight
-            blob = cv.dnn.blobFromImage(frame, size=(inpWidth, inpHeight), swapRB=args.rgb, ddepth=cv.CV_8U)
+            blob = cv2.dnn.blobFromImage(frame, size=(inpWidth, inpHeight), swapRB=args.rgb, ddepth=cv2.CV_8U)
             processedFramesQueue.put(frame)
 
             # Run a model
             net.setInput(blob, scalefactor=args.scale, mean=args.mean)
             if net.getLayer(0).outputNameToIndex('im_info') != -1:  # Faster-RCNN or R-FCN
-                frame = cv.resize(frame, (inpWidth, inpHeight))
+                frame = cv2.resize(frame, (inpWidth, inpHeight))
                 net.setInput(np.array([[inpHeight, inpWidth, 1.6]], dtype=np.float32), 'im_info')
 
             if args.asyncN:
@@ -492,12 +435,11 @@ processingThread.start()
 #
 # Postprocessing and rendering loop
 #
-while cv.waitKey(1) < 0:
+while cv2.waitKey(1) < 0:
     try:
         # Request prediction first because they put after frames
         outs = predictionsQueue.get_nowait()
         frame = processedFramesQueue.get_nowait()
-        #os.system('cls' if os.name == 'nt' else 'clear')
 
         give_advice(game, stockpile_is_empty(frame, game), frame)
         win_check(game)
@@ -507,13 +449,12 @@ while cv.waitKey(1) < 0:
         # Put efficiency information.
         if predictionsQueue.counter > 1:
             label = '%.2f FPS' % (predictionsQueue.getFPS())
-            cv.putText(frame, label, (5, 30), cv.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
+            cv2.putText(frame, label, (5, 30), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
 
-        cv.imshow(winName, frame)
+        cv2.imshow(winName, frame)
 
     except queue.Empty:
         pass
-
 
 process = False
 framesThread.join()

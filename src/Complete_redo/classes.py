@@ -45,9 +45,8 @@ HEIGHT_OF_CARD = 190
 RESOLUTION_X = 1920
 RESOLUTION_Y = 1080
 STOCKPILE_THRESHOLD = 500
-KING_THRESHOLD = 20
+KING_THRESHOLD = 50
 CONFIDENCE_THRESHOLD = 0.80
-
 
 class Suit(Enum):
     # HEARTS = 0
@@ -162,4 +161,3 @@ class Game:
         self.stock = StockPile()
         self.wastePile = WastePile()
         self.lowestNeededCard = Value(2)
-        self.kingArray = []
