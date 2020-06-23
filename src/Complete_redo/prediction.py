@@ -171,6 +171,18 @@ def give_advice(game, stockIsEmpty, frame):
 #                         return '1'
 #     return '0'                        
     
+<<<<<<< HEAD
+# Step 1 and 2 
+# Method will see if a card in stock or tableau is needed in the foundationPile, based on game.lowestNeededCard.
+def move_to_foundation_advice_and_do(game, frame):
+    for pile in game.tableauPiles: # Go through each tableau
+        if len(pile.cards) != 0 and pile.frontCard != None: # If the pile is not empty
+            card = pile.frontCard                           #check if the frontcard of the pile is smaller or equal tot he lowest needed card in foundation.
+            if card.value.value <= game.lowestNeededCard.value: 
+                for foundPile in game.foundationPiles:  # For each foundation pile 
+                    if card.suit == foundPile.suit and card.value == foundPile.nextCard: # if the card is the same suit of the pile and is the next needed card in the pile
+                        print("Function 1 og 2: Move card to foundation")                  # Give the advise to move the card.
+=======
 #Step 1 and 2 with testing
 def move_to_foundation_advice_and_do(game, frame):                                 #move a card to the foundation pile but do it in the game logic so comments in function above
     #Give an advice what to do
@@ -181,6 +193,7 @@ def move_to_foundation_advice_and_do(game, frame):                              
                 for foundPile in game.foundationPiles:
                     if card.suit == foundPile.suit and card.value == foundPile.nextCard:
                         print("Function 1 og 2: Move card to foundation")
+>>>>>>> 3dbff6aeb6e1c93c0c51727fb1ec2280e09905fc
                         print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to the " + NUMBER_ARRAY[foundPile.suit.value] + " foundation pile")
                         highlight_card(frame, card)
                         highlight_pile(frame, "foundation", foundPile.suit.value)
@@ -231,6 +244,32 @@ def free_king_advice(game, frame):
     else:
         return '0'
 
+<<<<<<< HEAD
+# Step 4
+# Method to find moves from one tableau to another
+def find_biggest_tableau_advise(game, frame):  
+    targetPile = None  # the pile to move to
+    biggestLen = 0 # value of the biggest top coordinate of a movable card
+    card = None  # the card to move
+
+    for tabPile in game.tableauPiles: # for each tableau pile we iterate thourgh every other
+        if tabPile.frontCard != None and len(tabPile.cards) > 0: #as long as the pile is not empty
+            for pile in game.tableauPiles:  
+                if pile.frontCard != None and len(tabPile.cards) > 0:
+                    #In the case that a pile with only one card is moveable:
+                    if tabPile.frontCard.color != pile.frontCard.color and tabPile.frontCard.value.value - pile.frontCard.value.value == -1 and len(tabPile.cards) < 2:
+                        if biggestLen < tabPile.frontcard.top: # Try and chose the card with most non visual cards
+                            biggestLen = tabPile.frontCard.top
+                            targetPile = pile
+                            card = tabPile.frontCard
+                    #In the case that the entire pile is moveable.
+                    elif tabPile.cards[0].value.value - pile.frontCard.value.value == -1 and tabPile.cards[0].color != pile.frontCard.color:
+                        if biggestLen < tabPile.cards[0].top:
+                            biggestLen = tabPile.cards[0].top
+                            targetPile = pile
+                            card = tabPile.cards[0]
+    if card != None:
+=======
 #step 4
 def find_biggest_tableau_advise(game, frame):  #Find moveable pile with most nonvisual cards
     biggestPile = None  #Variable that saves the pile with most nonevisual cards
@@ -264,11 +303,12 @@ def find_biggest_tableau_advise(game, frame):  #Find moveable pile with most non
                                 card = searchBiggest.cards[0]
 
     if bufferTest != None:
+>>>>>>> 3dbff6aeb6e1c93c0c51727fb1ec2280e09905fc
         print("Function 4: Move tableau card/pile")
-        print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to " + biggestPile.frontCard.value.name + " of " + biggestPile.frontCard.suit.to_string()) 
+        print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string()) 
         highlight_card(frame, card)
-        highlight_pile(frame, "tableau", biggestPile.number-1)
-        print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string()+ " to " + biggestPile.frontCard.value.name + " of " + biggestPile.frontCard.suit.to_string())
+        highlight_pile(frame, "tableau", targetPile.number-1)
+        print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string()+ " to " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string())
         return '1'
     return '0'
 
