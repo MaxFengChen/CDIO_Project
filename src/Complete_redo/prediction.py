@@ -36,8 +36,6 @@ from classes import *
 from SavingGames import *
 import cv2 as cv
 
-PADDING = 2
-
 def highlight_card(frame, card):
     cv.rectangle(frame, (card.left-PADDING, card.top-PADDING), (card.left+WIDTH_OF_CARD, card.top+HEIGHT_OF_CARD), (0, 255, 255),thickness=2)
 
@@ -75,8 +73,6 @@ def king_is_on_card(frame, game, card):
     kingFrameGrey = cv.cvtColor(kingFrame, cv.COLOR_BGR2GRAY)
     _, thresh = cv.threshold(kingFrameGrey, 127, 255, 0)
     contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    print("counts of " + card.to_string())
-    print(str(len(contours)))
     if len(contours) > KING_THRESHOLD:
         return True
     elif len(contours) < KING_THRESHOLD:
