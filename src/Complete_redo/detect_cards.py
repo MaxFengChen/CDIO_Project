@@ -64,12 +64,6 @@ args.model = findFile(args.model)
 args.config = findFile(args.config)
 args.classes = findFile(args.classes)
 
-# Card variables
-CARD_WIDTH = 280
-CARD_HEIGHT = 350
-     #= 50
-STOCKPILE_THRESHOLD = 500
-CONFIDENCE_THRESHOLD = 0.80
 
 detectedCards = []
 #classIds = []
@@ -167,7 +161,7 @@ def generate_cards(cardIDs, confidences, boxes):
         count+=1
     #print("count: " + str(count) + " len(set()): " + str(len(set(cardIDs))))
     remove_duplicate(detectedCards)
-    remove_duplicate(detectedCards) 
+    #remove_duplicate(detectedCards) 
 
     #print("Stock: ")
     breakFlag = False
@@ -281,16 +275,7 @@ def piles_legal():
     #            print("Cards do not match in foundation!\n")
     #            print("Move " + foundation.frontCard.to_string() + " away from " + foundation.cards[len(foundation.cards)-2].to_string())
 
-def stockpile_is_empty(): # Works on a well focussed image
-    stockpileFrame = frame[0:CARD_HEIGHT,0:CARD_WIDTH]
-    stockpileFrameGrey = cv.cvtColor(stockpileFrame, cv.COLOR_BGR2GRAY)
-    _, thresh = cv.threshold(stockpileFrameGrey, 127, 255, 0)
-    contours, _ = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    #print(str(len(contours)))
-    if len(contours) > STOCKPILE_THRESHOLD or game.stock.frontCard != None:
-        return False
-    elif len(contours) < STOCKPILE_THRESHOLD and game.stock.frontCard == None:
-        return True
+
 
 def drawPred(frame, classId, conf, left, top, right, bottom):
     # Draw a bounding box.
@@ -514,7 +499,7 @@ while cv.waitKey(1) < 0:
         frame = processedFramesQueue.get_nowait()
         #os.system('cls' if os.name == 'nt' else 'clear')
 
-        give_advice(game, stockpile_is_empty())
+        give_advice(game, stockpile_is_empty(frame, game), frame)
         win_check(game)
 
         postprocess(frame, outs, game)
@@ -524,11 +509,6 @@ while cv.waitKey(1) < 0:
             label = '%.2f FPS' % (predictionsQueue.getFPS())
             cv.putText(frame, label, (5, 30), cv.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
 
-            #Top line
-            cv.line(frame,(0,CARD_HEIGHT),(1920,CARD_HEIGHT),(0,0,255),thickness=2)
-
-            for line in range(7):
-                cv.line(frame,(CARD_WIDTH*line,0),(CARD_WIDTH*line,1080),(0,0,255),thickness=2)
         cv.imshow(winName, frame)
 
     except queue.Empty:
