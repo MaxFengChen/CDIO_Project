@@ -33,22 +33,22 @@
 
 from enum import Enum 
 
-NO_CARDS = 52
-NO_SUITS = 4
-NO_CARDS_PLATEAU = 28 # 1+2+3+4+5+6+7=28
-LAST_INDEX = -1
-NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH")
-CARD_WIDTH = 280
-CARD_HEIGHT = 350
-WIDTH_OF_CARD = 140
-HEIGHT_OF_CARD = 190
-RESOLUTION_X = 1920
+NO_CARDS = 52 # Number of cards
+NO_SUITS = 4 # Number of different card suits
+NO_CARDS_PLATEAU = 28 # Number of cards in tablea piles from start
+LAST_INDEX = -1       # Used in some cases to get last index
+NUMBER_ARRAY = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH") # Used to print advices
+CARD_WIDTH = 280 # Width of piles in frames
+CARD_HEIGHT = 350  # Height of piles in frames
+WIDTH_OF_CARD = 140  # Width of cards in frames
+HEIGHT_OF_CARD = 190 # Height of cards in frames
+RESOLUTION_X = 1920 #Frame resolution
 RESOLUTION_Y = 1080
-STOCKPILE_THRESHOLD = 500
-KING_THRESHOLD = 50
-CONFIDENCE_THRESHOLD = 0.80
-PADDING = 2
+STOCKPILE_THRESHOLD = 500 # Threshold used to see if stock pile is empty
+KING_THRESHOLD = 50 # Threshold used to see if the king is on top of a non visual card
+CONFIDENCE_THRESHOLD = 0.80 # Threshold of level of confidence the computer vision needs to have in the card. 
 
+#Class of the different card suits
 class Suit(Enum):
     # HEARTS = 0
     # CLUBS = 1
@@ -58,7 +58,7 @@ class Suit(Enum):
     C = 1
     D = 2
     S = 3
-
+    #Method to get color of suit
     def get_color(self):
         if self == Suit.H:
             return Color.RED
@@ -68,7 +68,7 @@ class Suit(Enum):
             return Color.RED
         if self == Suit.S:
             return Color.BLACK
-
+    #Method to get the suit printed
     def to_string(self):
         if self == Suit.H:
             return "HEARTS"
@@ -79,16 +79,18 @@ class Suit(Enum):
         elif self == Suit.S:
             return "SPADES"
 
+#Class for the different card colors
 class Color(Enum):
     RED = 0
     BLACK = 1
 
+#Class for the different types of piles of solitaire
 class Pile(Enum):
     STOCK = 0
     TABLEAU = 1
     FOUNDATION= 2
-    WASTE = 3
 
+# Class for the different card values
 class Value(Enum):
     ACE = 1
     TWO = 2
@@ -104,49 +106,42 @@ class Value(Enum):
     QUEEN = 12
     KING = 13
 
-class Visible(Enum):
-    FALSE = 0
-    TRUE = 1
-
+#Class for playing cards
 class PlayingCard:
-    def __init__(self, suit, color, pile, value, visible, left, top):
+    def __init__(self, suit, color, pile, value, left, top):
         self.suit = suit
         self.color = color
         self.pile = pile
         self.value = value
-        self.visible = visible
-        self.left = left
-        self.top = top
+        self.left = left # left coordinate in frame
+        self.top = top # top coordinate in frame
         self.ID = self.to_string()
     
+    # Method to print value and suit of card
     def to_string(self):
-        if self.visible == Visible.TRUE:
-            if self.value.value < 10:
-                return str(0) + str(self.value.value) + "," + str(self.suit.name)
-            else:
-                return str(self.value.value) + "," + str(self.suit.name)
+        if self.value.value < 10:
+            return str(0) + str(self.value.value) + "," + str(self.suit.name)
         else:
-            return "####"
+            return str(self.value.value) + "," + str(self.suit.name)
 
+    #Method to get the verbose of the playing card
     def to_string_verbose(self):
-        return str(self.suit.name) + " " + str(self.color.name) + " " + str(self.pile.name) + " " + str(self.value.value) + " " + str(self.visible.name)
+        return str(self.suit.name) + " " + str(self.color.name) + " " + str(self.pile.name) + " " + str(self.value.value)
 
+#Class for tableau piles
 class TableauPile:
     def __init__(self, number):
         self.cards = []
         self.frontCard = None
-        self.number = number
+        self.number = number # which number tableau piles is it counting left to right
 
+#Class for stock pile
 class StockPile:
     def __init__(self):
         self.cards = []
         self.frontCard = None
 
-class WastePile:
-    def __init__(self):
-        self.cards = []
-        self.frontCard = None
-
+# Class for foundation piles
 class FoundationPile:
     def __init__(self, suit):
         self.cards = []
@@ -154,11 +149,11 @@ class FoundationPile:
         self.nextCard = None
         self.suit = suit
 
+#Class for the solitaire game
 class Game:
     def __init__(self):
         self.playingCards = []
         self.tableauPiles = []
         self.foundationPiles = []
         self.stock = StockPile()
-        self.wastePile = WastePile()
         self.lowestNeededCard = Value(2)

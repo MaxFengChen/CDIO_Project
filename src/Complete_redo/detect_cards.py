@@ -32,7 +32,6 @@
 #   Constants: SCREAMING_SNAKE_CASE 
 
 # This code is based on "object_detection.py" from the opencv github.
-# This code uses several files from the dnn examples folder.
 # https://github.com/opencv/opencv/tree/master/samples/dnn 
 
 import cv2
@@ -52,57 +51,12 @@ import os
 
 # Import needed OpenCV example python documents to run the code
 from common import *
-from tf_text_graph_common import readTextMessage
-from tf_text_graph_ssd import createSSDGraph
-from tf_text_graph_faster_rcnn import createFasterRCNNGraph
 
-# Define the possible backends and targets. Is used with the parser 
-
-backends = (cv2.dnn.DNN_BACKEND_DEFAULT, cv2.dnn.DNN_BACKEND_HALIDE, cv2.dnn.DNN_BACKEND_INFERENCE_ENGINE, cv2.dnn.DNN_BACKEND_OPENCV)
-targets = (cv2.dnn.DNN_TARGET_CPU, cv2.dnn.DNN_TARGET_OPENCL, cv2.dnn.DNN_TARGET_OPENCL_FP16, cv2.dnn.DNN_TARGET_MYRIAD)
-
-# Add the parser arguments
-parser = argparse.ArgumentParser(add_help=False)
-parser.add_argument('--zoo', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models.yml'),
-                    help='An optional path to file with preprocessing parameters.')
-parser.add_argument('--input', help='Path to input image or video file. Skip this argument to capture frames from a camera.')
-parser.add_argument('--out_tf_graph', default='graph.pbtxt',
-                    help='For models from TensorFlow Object Detection API, you may '
-                         'pass a .config file which was used for training through --config '
-                         'argument. This way an additional .pbtxt file with TensorFlow graph will be created.')
-parser.add_argument('--framework', choices=['caffe', 'tensorflow', 'torch', 'darknet', 'dldt'],
-                    help='Optional name of an origin framework of the model. '
-                         'Detect it automatically if it does not set.')
-parser.add_argument('--thr', type=float, default=0.5, help='Confidence threshold')
-parser.add_argument('--nms', type=float, default=0.4, help='Non-maximum suppression threshold')
-parser.add_argument('--backend', choices=backends, default=cv2.dnn.DNN_BACKEND_DEFAULT, type=int,
-                    help="Choose one of computation backends: "
-                         "%d: automatically (by default), "
-                         "%d: Halide language (http://halide-lang.org/), "
-                         "%d: Intel's Deep Learning Inference Engine (https://software.intel.com/openvino-toolkit), "
-                         "%d: OpenCV implementation" % backends)
-parser.add_argument('--target', choices=targets, default=cv2.dnn.DNN_TARGET_CPU, type=int,
-                    help='Choose one of target computation devices: '
-                         '%d: CPU target (by default), '
-                         '%d: OpenCL, '
-                         '%d: OpenCL fp16 (half-float precision), '
-                         '%d: VPU' % targets)
-parser.add_argument('--async', type=int, default=0,
-                    dest='asyncN',
-                    help='Number of asynchronous forwards at the same time. '
-                         'Choose 0 for synchronous mode')
-args, _ = parser.parse_known_args()
-add_preproc_args(args.zoo, parser, 'object_detection')
-parser = argparse.ArgumentParser(parents=[parser],
-                                 description='Use this script to run object detection deep learning networks using OpenCV.',
-                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-args = parser.parse_args()
-
-# Set the model (yolocards_90000.weights), config file (yolocards_test.cfg) and class file (cards.names)
-
-args.model = findFile(args.model)
-args.config = findFile(args.config)
-args.classes = findFile(args.classes)
+resolution = sys.argv[1]
+modelFile = findFile("yolocards_90000.weights")
+configFile = findFile("yolocards_test.cfg")
+classesFile = findFile("cards.names")
+asynchronous = 0
 
 # List used for all detected card objects
 detectedCards = []
@@ -131,33 +85,18 @@ def setup_game_computer_vision(game):
 game = Game()
 setup_game_computer_vision(game) 
 
-# If config specified, try to load it as TensorFlow Object Detection API's pipeline.
-config = readTextMessage(args.config)
-if 'model' in config:
-    print('TensorFlow Object Detection API config detected')
-    if 'ssd' in config['model'][0]:
-        print('Preparing text graph representation for SSD model: ' + args.out_tf_graph)
-        createSSDGraph(args.model, args.config, args.out_tf_graph)
-        args.config = args.out_tf_graph
-    elif 'faster_rcnn' in config['model'][0]:
-        print('Preparing text graph representation for Faster-RCNN model: ' + args.out_tf_graph)
-        createFasterRCNNGraph(args.model, args.config, args.out_tf_graph)
-        args.config = args.out_tf_graph
-
 # Load names of classes
-classes = None
-if args.classes:
-    with open(args.classes, 'rt') as f:
-        classes = f.read().rstrip('\n').split('\n')
+with open(classesFile, 'rt') as f:
+    classes = f.read().rstrip('\n').split('\n')
 
 # Load a network
-net = cv2.dnn.readNet(cv2.samples.findFile(args.model), cv2.samples.findFile(args.config), args.framework)
-net.setPreferableBackend(args.backend)
-net.setPreferableTarget(args.target)
+net = cv2.dnn.readNet(cv2.samples.findFile(modelFile), cv2.samples.findFile(configFile), "darknet")
+net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 outNames = net.getUnconnectedOutLayersNames()
 
-confThreshold = args.thr
-nmsThreshold = args.nms
+confThreshold = CONFIDENCE_THRESHOLD
+nmsThreshold = 0.4
 
 def ID_to_card(subject, leftPos, topPos):
     # Convert a cardID to a card object
@@ -166,7 +105,6 @@ def ID_to_card(subject, leftPos, topPos):
     color = None
     pile = 0
     value = None
-    visible = Visible.TRUE
     left = leftPos
     top = topPos
     # Determine suit and color based on offset defined in cards.names.
@@ -267,20 +205,27 @@ def add_foundation_piles(card):
 def add_tableau_piles(card):
     tableauNumber = 0
     for tableauPile in game.tableauPiles:
+        # if the card is one of the tableauPile positions:
         if card.left > CARD_WIDTH*tableauNumber and card.left < CARD_WIDTH*(tableauNumber+1):
+            # Add the card to the list
             tableauPile.cards.append(card)
+        
+        # Make the card added last the frontCard 
         if len(tableauPile.cards) > 0:
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
+        # Increment
         tableauNumber += 1
 
+# Add all the cards (from detectedCards) to their piles
 def add_piles(cards, game):
     for card in cards:
-        if card.top > CARD_HEIGHT: # The top cards
+        if card.top > CARD_HEIGHT: # The bottom cards
             add_tableau_piles(card)
         elif card.top < CARD_HEIGHT: # The top cards
             add_foundation_piles(card)
             add_initial_stock(card)
  
+ # Sort the tableau piles according to their y position (top)
 def sort_tableau_piles():
     i = 0
     for tableauPile in game.tableauPiles:
@@ -289,6 +234,7 @@ def sort_tableau_piles():
             tableauPile.frontCard = tableauPile.cards[LAST_INDEX]
         i+=1
 
+# Check if the tableauPiles are arranged legally
 def piles_legal():
     for tableau in game.tableauPiles:
         if len(tableau.cards) > 1:
@@ -372,7 +318,7 @@ def postprocess(frame, outs, game):
 
     # NMS is used inside Region layer only on DNN_BACKEND_OPENCV for another backends we need NMS in sample
     # or NMS is required if number of outputs > 1
-    if len(outNames) > 1 or lastLayer.type == 'Region' and args.backend != cv2.dnn.DNN_BACKEND_OPENCV:
+    if len(outNames) > 1 or lastLayer.type == 'Region':
         indices = []
         classIds = np.array(classIds)
         boxes = np.array(boxes)
@@ -388,7 +334,6 @@ def postprocess(frame, outs, game):
     else:
         indices = np.arange(0, len(classIds))
     
-    #print("Detected cards reset")
     for i in indices:
         box = boxes[i]
         left = box[0]
@@ -397,19 +342,26 @@ def postprocess(frame, outs, game):
         height = box[3]
         drawPred(frame, classIds[i], confidences[i], left, top, left + width, top + height)
     
+    # Generate detectedCards
     generate_cards(classIds, confidences, boxes)
+    # Sort into piles
     add_piles(detectedCards, game)
+    # Sort the tableauPiles
     sort_tableau_piles()
+    # Check if the cards are placed properly 
     piles_legal()
+    # Print the text based terminal representation of the game
     print_table(game)
 
 
 # Process inputs
 winName = 'CV Solitaire solver - Gruppe 7'
 cv2.namedWindow(winName, cv2.WINDOW_NORMAL)
-
-cap = cv2.VideoCapture(cv2.samples.findFileOrKeep(args.input) if args.input else 0)
-
+if len(sys.argv) == 3:
+    cap = cv2.VideoCapture(sys.argv[2])
+else:
+    cap = cv2.VideoCapture(0)
+    
 class QueueFPS(queue.Queue):
     def __init__(self):
         queue.Queue.__init__(self)
@@ -446,7 +398,7 @@ def framesThreadBody():
 processedFramesQueue = queue.Queue()
 predictionsQueue = QueueFPS()
 def processingThreadBody():
-    global processedFramesQueue, predictionsQueue, args, process
+    global processedFramesQueue, predictionsQueue, process
 
     futureOutputs = []
     while process:
@@ -455,8 +407,8 @@ def processingThreadBody():
         try:
             frame = framesQueue.get_nowait()
 
-            if args.asyncN:
-                if len(futureOutputs) == args.asyncN:
+            if asynchronous:
+                if len(futureOutputs) == 0:
                     frame = None  # Skip the frame
             else:
                 framesQueue.queue.clear()  # Skip the rest of frames
@@ -468,18 +420,18 @@ def processingThreadBody():
             frameWidth = frame.shape[1]
 
             # Create a 4D blob from a frame.
-            inpWidth = args.width if args.width else frameWidth
-            inpHeight = args.height if args.height else frameHeight
-            blob = cv2.dnn.blobFromImage(frame, size=(inpWidth, inpHeight), swapRB=args.rgb, ddepth=cv2.CV_8U)
+            inpWidth = int(resolution) if int(resolution) else frameWidth
+            inpHeight = int(resolution) if int(resolution) else frameHeight
+            blob = cv2.dnn.blobFromImage(frame, size=(inpWidth, inpHeight), swapRB=1, ddepth=cv2.CV_8U)
             processedFramesQueue.put(frame)
 
             # Run a model
-            net.setInput(blob, scalefactor=args.scale, mean=args.mean)
+            net.setInput(blob, scalefactor=0.00392)
             if net.getLayer(0).outputNameToIndex('im_info') != -1:  # Faster-RCNN or R-FCN
                 frame = cv2.resize(frame, (inpWidth, inpHeight))
                 net.setInput(np.array([[inpHeight, inpWidth, 1.6]], dtype=np.float32), 'im_info')
 
-            if args.asyncN:
+            if asynchronous:
                 futureOutputs.append(net.forwardAsync())
             else:
                 outs = net.forward(outNames)
@@ -507,13 +459,16 @@ while cv2.waitKey(1) < 0:
         outs = predictionsQueue.get_nowait()
         frame = processedFramesQueue.get_nowait()
 
+        # Use the game and check if stockpile is empty to run give_advice()
         give_advice(game, stockpile_is_empty(frame, game), frame)
+        # Check if the game has been won
         win_check(game)
 
         postprocess(frame, outs, game)
 
         # Put efficiency information.
         if predictionsQueue.counter > 1:
+            # Only show the network speed:
             label = '%.2f FPS' % (predictionsQueue.getFPS())
             cv2.putText(frame, label, (5, 30), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
 
