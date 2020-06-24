@@ -160,7 +160,9 @@ def move_to_foundation_advice_and_do(game, frame):
                     print("Function 1 og 2: Move card to foundation")
                     print("Move the " + card.value.name + " of " + card.suit.to_string()+ " from stock pile to the foundation pile")
                     highlight_card(frame, card)
-                    highlight_pile(frame, "foundation", foundPile.suit.value)
+                    highlight_pile(frame, "foundation", foundPiles.suit.value)
+                    print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string() + " to the " + NUMBER_ARRAY[foundPiles.suit.value] + " foundation pile")
+
                     return '1'
     return '0'
     
@@ -262,7 +264,7 @@ def move_from_stock7(game, frame):
                                 card = stockCard
                                 targetPile = tableau
                             # Check top card
-                            elif stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.cards[0].value.value == -1:
+                            elif stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.cards[LAST_INDEX].value.value == -1:
                                 card = stockCard
                                 targetPile = tableau
                 # Check top card
@@ -274,7 +276,7 @@ def move_from_stock7(game, frame):
                                 card = stockCard
                                 targetPile = tableau
                             # Check top card
-                            elif stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.cards[0].value.value == -1:
+                            elif stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.cards[LAST_INDEX].value.value == -1:
                                 card = stockCard
                                 targetPile = tableau
             #If the pile is empty the stock card is a king.
@@ -286,7 +288,7 @@ def move_from_stock7(game, frame):
                             card = stockCard
                             targetPile = tableau
                         # Check top card
-                        elif stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.cards[0].value.value == -1:
+                        elif stockCard.color != tableau.frontCard.color and stockCard.value.value - tableau.cards[LAST_INDEX].value.value == -1:
                             card = stockCard
                             targetPile = tableau
         if card != None and targetPile != None:# If a card and targetPile is found, give advice
@@ -312,12 +314,20 @@ def stockpile_to_tableau(game, frame):
             elif card.value.value == 13: # If it was an empty pile and the stock card was a king.
                     targetPile = tableauPile
     if card != None and targetPile != None: # If a card and targetPile is found, give advice
-        print("Function 8: Move any card from stock to tableau")
-        print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to to the tableau pile containing: " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string())
-        highlight_card(frame, card)
-        highlight_pile(frame, "tableau", targetPile.number-1)
-        print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string()+ " to to the tableau pile containing: " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string())
-        return '1'
+        if targetPile.frontCard == None: # If the pile is empty
+            print("Function 8: Move any card from stock to tableau")
+            print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to to the empty "+ NUMBER_ARRAY[targetPile.number-1] + " tableau pile.")
+            highlight_card(frame, card)
+            highlight_pile(frame, "tableau", targetPile.number-1)
+            print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string()+ " to to the empty "+ NUMBER_ARRAY[targetPile.number-1] + " tableau pile.")
+            return '1'
+        else:
+            print("Function 8: Move any card from stock to tableau")
+            print("Move the " + card.value.name + " of " + card.suit.to_string()+ " to to the tableau pile containing: " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string())
+            highlight_card(frame, card)
+            highlight_pile(frame, "tableau", targetPile.number-1)
+            print_advice(frame, "Move the " + card.value.name + " of " + card.suit.to_string()+ " to to the tableau pile containing: " + targetPile.frontCard.value.name + " of " + targetPile.frontCard.suit.to_string())
+            return '1'
     return '0'
 
 
@@ -330,13 +340,13 @@ def move_to_foundation_advice_without_limit_and_do(game, frame):
         if len(pile.cards) != 0:  # If the pile is not empty
             tabCard = pile.frontCard
             for foundPile in game.foundationPiles: # go through the foundation piles and see if theres a card that can be added to the foundation piles 
-                if card.suit == foundPile.suit and card.value == foundPile.nextCard:
+                if tabCard.suit == foundPile.suit and tabCard.value == foundPile.nextCard:
                     targetPile = foundPile
                     card = tabCard
     if game.stock.frontCard != None: # See if the stock card can be added to a foundation pile.
         stockCard = game.stock.frontCard
         for foundPiles in game.foundationPiles:
-            if card.suit == foundPiles.suit and card.value == foundPiles.nextCard:
+            if stockCard.suit == foundPiles.suit and stockCard.value == foundPiles.nextCard:
                 targetPile = foundPile
                 card = stockCard
     if card != None and targetPile != None: # If a card and targetPile is found, give advice

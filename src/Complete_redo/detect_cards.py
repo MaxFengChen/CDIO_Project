@@ -43,13 +43,10 @@ from classes import *
 from testing import *
 from prediction import *
 from threading import Thread
-if sys.version_info[0] == 2:
-    import Queue as queue
-else:
-    import queue
+import queue
 import os
 
-# Import needed OpenCV example python documents to run the code
+# Import needed OpenCV example documents to run the code
 from common import *
 
 resolution = sys.argv[1]
@@ -139,6 +136,7 @@ def generate_cards(cardIDs, confidences, boxes):
     # Clear all the tableau piles
     for tableauPile in game.tableauPiles:
         tableauPile.cards.clear()
+        tableauPile.frontCard = None
     # CardsIDS contains the "raw" number corresponding to the cards.names file of all the detected cards.
     # If the confidence level is high enough, create a card and append to detectedCards.
     for cardID in cardIDs:
