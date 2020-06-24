@@ -61,7 +61,6 @@ def add_to_goal(card, goalPile, game):
         goalPile.nextCard = Value(13)
     else:
         goalPile.nextCard = Value(goalPile.nextCard.value + 1)
-    # remove_from_tableau_pile(card, fromPile)
     goalPile.cards.append(card)
 
 def start_add_to_goal(card, foundPile, game):
