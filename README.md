@@ -58,5 +58,5 @@ Simply follow the advice that is written on the screen and illustrated with the 
 ![Image of solitaire game](https://raw.githubusercontent.com/MaxTheScrub/CDIO_Project/master/src/Complete_redo/CV%20Solitaire%20solver%20-%20Gruppe%207_screenshot_24.06.2020.png)
 
 
-[![Image of solitaire game](https://raw.githubusercontent.com/MaxTheScrub/CDIO_Project/master/src/Complete_redo/CV%20Solitaire%20solver%20-%20Gruppe%207_screenshot_24.06.2020.png)](https://www.youtube.com/watch?v=8L-qnswyDxg "Video Title")
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8L-qnswyDxg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
