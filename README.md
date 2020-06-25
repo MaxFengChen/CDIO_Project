@@ -58,6 +58,4 @@ Simply follow the advice that is written on the screen and illustrated with the 
 
 Video demonstration of running a complete game of solitaire (with a random deck):
 
-Smid videoen ind her med http://embedyoutube.org/
-
-[![](http://img.youtube.com/vi/8L-qnswyDxg/0.jpg)](http://www.youtube.com/watch?v=8L-qnswyDxg "Video link")
+[![](http://img.youtube.com/vi/_YRsYZZIzUQ/0.jpg)](http://www.youtube.com/watch?v=_YRsYZZIzUQ "Link to video")
