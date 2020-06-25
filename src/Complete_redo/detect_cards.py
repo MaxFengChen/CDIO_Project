@@ -35,7 +35,6 @@
 # https://github.com/opencv/opencv/tree/master/samples/dnn 
 
 import cv2
-import argparse
 import numpy as np
 import sys
 import time
