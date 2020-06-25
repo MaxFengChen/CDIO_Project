@@ -7,7 +7,7 @@ Group 7:
 Henrik Peter Warncke s184801                
 Max Feng Chen Bjørnsen s184811              
 Jeppe Møller Bak s164871                    
-Adam Aron Edelsten s173057                  
+Adam Aron Edelsten s173057                 
 Tobias Lauge Borgstrøm s184810              
 Tobias Ladefoged Jensen s184815             
 Markus Repnak Jacobsen s184808              
@@ -46,12 +46,17 @@ python3 detect_cards.py 1216 http://192.168.31.97:8080/video
 # Use IP camera (fast for setup)
 #python3 detect_cards.py 320 http://192.168.31.97:8080/video
 ```
-Where the IP-address is a video source such as an IP-camera.
+Where the IP-address is a video source such as an IP-camera. We have used the following app: https://play.google.com/store/apps/details?id=com.pas.webcam&hl=da
+Running the app on a local network will show the IP-address for the video-stream. This IP-address  needs to be put into the **run.sh** commands. Alternatively, a webcam can be used, as long as its resolution is 1080p since that is the resolution that our program is made to run at. If a higher or lower resolution is wanted, the constants: **RESOLUTION_X** and **RESOLUTION_Y** can be modified in **classes.py**, this has not been tested and is not guaranteed to work.
 
 A game of solitaire is played by first running one of the "fast for setup" commands from **run.sh** and laying a game of solitaire properly in the given piles. When the game is ready to be played, simply modify **run.sh** again to run with one of the higher resolution commands.
 ```bash
 bash run.sh
 ```
-Simply follow the advice that is written on the screen and illustrated with the yellow highlighting.
+Simply follow the advice that is written on the screen and illustrated with the yellow highlighting. The terminal shows a text-based solitaire game based on what is detected on the screen and also shows errors in detection. A high performance processor is needed to run the game at a usable FPS. An AMD 3700X (8 core processor) runs the code at 0.6 FPS.
 
 ![Image of solitaire game](https://raw.githubusercontent.com/MaxTheScrub/CDIO_Project/master/src/Complete_redo/CV%20Solitaire%20solver%20-%20Gruppe%207_screenshot_24.06.2020.png)
+
+
+[![Image of solitaire game](https://raw.githubusercontent.com/MaxTheScrub/CDIO_Project/master/src/Complete_redo/CV%20Solitaire%20solver%20-%20Gruppe%207_screenshot_24.06.2020.png)](https://www.youtube.com/watch?v=8L-qnswyDxg "Video Title")
+
