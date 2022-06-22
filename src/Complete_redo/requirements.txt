@@ -1,4 +1,4 @@
 opencv_python==4.2.0.34
 colorama==0.4.3
 playsound==1.2.2
-numpy==1.18.5
+numpy==1.22.0
